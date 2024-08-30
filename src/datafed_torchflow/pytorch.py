@@ -10,21 +10,78 @@ from os.path import basename
 import zipfile
 from datafed_torchflow.datafed import DataFed
 
+
+from datafed.CommandLib import API
+
+
 class TorchLogger(nn.Module):
     
-    def __init__(self, datafed_path, model_name_base):
+    def __init__(self, DataFed_path, model_name_base, isRecord = True):
         super(TorchLogger, self).__init__()
-        self.model_name = model_name_base + '.pt'
-        self.DataFed = DataFed(datafed_path)
+        self.model_name = model_name_base + '.pt' # what is this????? 
         
+        self.DataFed_instance = DataFed() #datafed_path
         
+        self.df_api = API()
+        self.DataFed_Path = DataFed_path
+        self.isRecord = isRecord
+
         # TODO: write a function to extract project name and searches the filename hierarchy for the collection.
         ## project/collection --> create if not exists -- get ID.
         ## project/collection/ collection --> create if not exists -- get ID.
         
-        self.project_name = project_name
         
         
+    def get_DataFed_ID_from_path(self):
+    
+        DataFed_path_list = self.datafed_path._parse_cwd(self.DataFed_path)
+        
+        
+        try: 
+            ls_resp = self.df_api.collectionItemsList(f"c/p_{DataFed_path_list[0].lower()}_root")
+            
+            for idx, elem in enumerate(DataFed_path_list[1:]):
+                
+                DataFed_parent_collection_id = ls_resp[0].item[idx-1].id 
+                trials_already_in_DataFed = []
+                for record in ls_resp[0].item:
+                    trials_already_in_DataFed.append(record.title)
+                    
+                if elem in trials_already_in_DataFed:
+                    #coll_resp = folder_model
+                    Datafed_collection_id = ls_resp[0].item[np.where(elem in trials_already_in_DataFed)[0].item()].id
+                    ls_resp_2 = self.df_api.collectionItemsList(Datafed_collection_id)
+                    #Datafed_collection_name = folder_model
+
+                    
+                else: #create collection or record if path at end and is for a record
+                    if idx == len(DataFed_path_list)-1 and self.isRecord == True: 
+                        rec_resp = self.df_api.dataCreate(elem,parent_id=DataFed_parent_collection_id) # ADD DATA/METADATA STUFF??????? 
+                        ls_resp_2 = self.df_api.collectionItemsList(coll_resp[0].coll[0].id)
+                        Datafed_collection_id = rec_resp[0].coll[0].id
+                        
+                    else: 
+                        coll_resp = self.df_api.collectionCreate(elem,parent_id=DataFed_parent_collection_id)
+                        ls_resp_2 = self.df_api.collectionItemsList(coll_resp[0].coll[0].id)
+                        Datafed_collection_id = coll_resp[0].coll[0].id
+
+                    
+                        
+                if ls_resp_2[0].total == 10000:
+
+                    new_collections_made+=1
+                    coll_resp = self.df_api.collectionCreate(f"{elem}_{new_collections_made}",
+                                            parent_id=DataFed_parent_collection_id
+                                            )
+                    Datafed_collection_id = coll_resp[0].coll[0].id
+                    
+                if idx == len(DataFed_path_list)-1:
+                    return Datafed_collection_id
+            
+        except:
+            print("Project does not exist")
+            print("Manually create the project and try again")        
+    
         
     def save_state(self):
         torch.save(self.state_dict(), self.model_name)
