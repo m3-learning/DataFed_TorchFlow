@@ -20,7 +20,7 @@ class TorchLogger(nn.Module):
         super(TorchLogger, self).__init__()
         self.model_name = model_name_base + '.pt' # what is this????? 
         
-        self.DataFed_instance = DataFed() #datafed_path
+        self.DataFed_instance = DataFed(DataFed_path) #datafed_path
         
         self.df_api = API()
         self.DataFed_Path = DataFed_path
@@ -34,51 +34,75 @@ class TorchLogger(nn.Module):
         
     def get_DataFed_ID_from_path(self):
     
-        DataFed_path_list = self.datafed_path._parse_cwd(self.DataFed_path)
+        DataFed_path_list = self.DataFed_instance._parse_cwd
         
         
         try: 
-            ls_resp = self.df_api.collectionItemsList(f"c/p_{DataFed_path_list[0].lower()}_root")
             
             for idx, elem in enumerate(DataFed_path_list[1:]):
                 
-                DataFed_parent_collection_id = ls_resp[0].item[idx-1].id 
-                trials_already_in_DataFed = []
-                for record in ls_resp[0].item:
-                    trials_already_in_DataFed.append(record.title)
+                if idx == 0: 
+                    ls_resp = self.df_api.collectionItemsList(f"c/p_{DataFed_path_list[0].lower()}_root")
                     
+                else: 
+                    ls_resp = self.df_api.collectionItemsList(DataFed_parent_collection_id)                
+                
+                
+                if ls_resp[0].item == []:
+                    trials_already_in_DataFed = []
+                    if idx == 0: 
+                        DataFed_parent_collection_id = f"c/p_{DataFed_path_list[0].lower()}_root"
+                    # otherwise use the same one from the previous iteration of the loop. 
+                    
+                    # just create the record
+                    
+                
+                else: # collection not empty 
+                    DataFed_parent_collection_id = ls_resp[0].item[idx].id 
+                    trials_already_in_DataFed = []
+                    for record in ls_resp[0].item:
+                        trials_already_in_DataFed.append(record.title)
+                        
                 if elem in trials_already_in_DataFed:
                     #coll_resp = folder_model
-                    Datafed_collection_id = ls_resp[0].item[np.where(elem in trials_already_in_DataFed)[0].item()].id
-                    ls_resp_2 = self.df_api.collectionItemsList(Datafed_collection_id)
+                    DataFed_parent_collection_id = ls_resp[0].item[np.where(elem in trials_already_in_DataFed)[0].item()].id
+                    ls_resp_2 = self.df_api.collectionItemsList(DataFed_parent_collection_id)
                     #Datafed_collection_name = folder_model
 
-                    
+                
                 else: #create collection or record if path at end and is for a record
-                    if idx == len(DataFed_path_list)-1 and self.isRecord == True: 
-                        rec_resp = self.df_api.dataCreate(elem,parent_id=DataFed_parent_collection_id) # ADD DATA/METADATA STUFF??????? 
+                    if idx == len(DataFed_path_list)-2 and self.isRecord == True: 
+                        #rec_resp = self.df_api.dataCreate("/".join(DataFed_path_list[0:idx+1]),metadata = json.dumsp({"testing": 123}), parent_id=DataFed_parent_collection_id) # ADD DATA/METADATA STUFF??????? 
+                        rec_resp = self.df_api.dataCreate(elem,metadata = json.dumps({"testing": 123}), parent_id=DataFed_parent_collection_id) # ADD DATA/METADATA STUFF??????? 
+
                         ls_resp_2 = self.df_api.collectionItemsList(coll_resp[0].coll[0].id)
-                        Datafed_collection_id = rec_resp[0].coll[0].id
+                        DataFed_parent_collection_id = rec_resp[0].data[0].id
                         
                     else: 
+                       # coll_resp = self.df_api.collectionCreate("/".join(DataFed_path_list[0:idx+1]),parent_id=DataFed_parent_collection_id)
                         coll_resp = self.df_api.collectionCreate(elem,parent_id=DataFed_parent_collection_id)
                         ls_resp_2 = self.df_api.collectionItemsList(coll_resp[0].coll[0].id)
-                        Datafed_collection_id = coll_resp[0].coll[0].id
+                        DataFed_parent_collection_id = coll_resp[0].coll[0].id
 
                     
                         
                 if ls_resp_2[0].total == 10000:
 
                     new_collections_made+=1
+                    #coll_resp = self.df_api.collectionCreate(f"{'/'.join(DataFed_path_list[0:idx+1])}_{new_collections_made}",
                     coll_resp = self.df_api.collectionCreate(f"{elem}_{new_collections_made}",
                                             parent_id=DataFed_parent_collection_id
                                             )
-                    Datafed_collection_id = coll_resp[0].coll[0].id
+                    DataFed_parent_collection_id = coll_resp[0].coll[0].id
                     
-                if idx == len(DataFed_path_list)-1:
-                    return Datafed_collection_id
+                if idx == len(DataFed_path_list)-2:
+                    return DataFed_parent_collection_id
             
-        except:
+        except Exception as e:
+            print("Exception:", e)
+            print("*"*20)
+            print("Traceback:",traceback.format_exc())
+            print("*"*20)
             print("Project does not exist")
             print("Manually create the project and try again")        
     
