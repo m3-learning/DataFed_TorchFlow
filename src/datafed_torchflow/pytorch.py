@@ -42,7 +42,8 @@ class TorchLogger(nn.Module):
             for idx, elem in enumerate(DataFed_path_list[1:]):
                 
                 if idx == 0: 
-                    ls_resp = self.df_api.collectionItemsList(f"c/p_{DataFed_path_list[0].lower()}_root")
+                    DataFed_parent_collection_id = f"c/p_{DataFed_path_list[0].lower()}_root"
+                    ls_resp = self.df_api.collectionItemsList(DataFed_parent_collection_id)
                     
                 else: 
                     ls_resp = self.df_api.collectionItemsList(DataFed_parent_collection_id)                
@@ -58,15 +59,20 @@ class TorchLogger(nn.Module):
                     
                 
                 else: # collection not empty 
-                    DataFed_parent_collection_id = ls_resp[0].item[idx].id 
                     trials_already_in_DataFed = []
-                    for record in ls_resp[0].item:
+                    for index, record in enumerate(ls_resp[0].item):
+                        #DataFed_parent_collection_id = ls_resp[0].item[index].id 
                         trials_already_in_DataFed.append(record.title)
                         
                 if elem in trials_already_in_DataFed:
                     #coll_resp = folder_model
-                    DataFed_parent_collection_id = ls_resp[0].item[np.where(elem in trials_already_in_DataFed)[0].item()].id
-                    ls_resp_2 = self.df_api.collectionItemsList(DataFed_parent_collection_id)
+                    DataFed_parent_collection_id = ls_resp[0].item[trials_already_in_DataFed.index(elem)].id
+                    
+                    try: 
+                        ls_resp_2 = self.df_api.collectionItemsList(DataFed_parent_collection_id)
+                    except: # DataFed_parent_collection_id actually refers to a data record, not a collection
+                        #DataFed_parent_collection_id = self.df_api.collectionGetParents(DataFed_parent_collection_id)[0].path[0].item[0].id
+                        ls_resp_2 = self.df_api.collectionItemsList(self.df_api.collectionGetParents(DataFed_parent_collection_id)[0].path[0].item[0].id)
                     #Datafed_collection_name = folder_model
 
                 
@@ -75,8 +81,10 @@ class TorchLogger(nn.Module):
                         #rec_resp = self.df_api.dataCreate("/".join(DataFed_path_list[0:idx+1]),metadata = json.dumsp({"testing": 123}), parent_id=DataFed_parent_collection_id) # ADD DATA/METADATA STUFF??????? 
                         rec_resp = self.df_api.dataCreate(elem,metadata = json.dumps({"testing": 123}), parent_id=DataFed_parent_collection_id) # ADD DATA/METADATA STUFF??????? 
 
-                        ls_resp_2 = self.df_api.collectionItemsList(coll_resp[0].coll[0].id)
+                        ls_resp_2 = self.df_api.collectionItemsList(DataFed_parent_collection_id)
                         DataFed_parent_collection_id = rec_resp[0].data[0].id
+
+
                         
                     else: 
                        # coll_resp = self.df_api.collectionCreate("/".join(DataFed_path_list[0:idx+1]),parent_id=DataFed_parent_collection_id)
