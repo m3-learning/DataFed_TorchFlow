@@ -3,13 +3,15 @@ from datafed.CommandLib import API
 
 class DataFed(API):
 	
-    def __init__(self, cwd):
+    def __init__(self, cwd, verbose=False):
         super(API, self).__init__()
         self.cwd = cwd
+        self.verbose = verbose
         self.df_api = API()
         
         self.check_if_logged_in()
         self.check_if_endpoint_set()
+        self.check_string_for_dot_or_slash(self.cwd)
         
     def check_if_logged_in(self):   
         if self.df_api.getAuthUser():
@@ -24,7 +26,6 @@ class DataFed(API):
                 print(f"Success! You have set up the Globus endpoint {self.df_api.endpointDefaultGet()}.")
         else:
             raise Exception("You have not set up the Globus endpoint. Please follow instructions in the 'Basic Configuration' section in the link below to set up the Globus endpoint: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
-
     
     def get_collection_id(self):
         # main function that navigates through the DataFed project and collections to find the collection ID
@@ -33,7 +34,11 @@ class DataFed(API):
         df_paths = self._parse_cwd()
         
         # Check if the project exists
-        
+    
+    def check_string_for_dot_or_slash(s):
+        if '.' in s or '/' in s:
+            raise ValueError("String contains either '.' or '/'")
+    
     @property    
     def _parse_cwd(self):
         return self.cwd.split('/')
