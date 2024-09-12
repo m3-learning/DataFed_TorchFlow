@@ -11,7 +11,14 @@ class DataFed(API):
         
         self.check_if_logged_in()
         self.check_if_endpoint_set()
+        
+        # checks if the cwd is a valid path
         self.check_string_for_dot_or_slash(self.cwd)
+        
+        items, response = self.get_projects
+        
+        # checks if the project exists in DataFed
+        self.project_id = self.find_id_by_title(items, self._parse_cwd[0])
         
     def check_if_logged_in(self):   
         if self.df_api.getAuthUser():
@@ -35,9 +42,25 @@ class DataFed(API):
         
         # Check if the project exists
     
+    @staticmethod
     def check_string_for_dot_or_slash(s):
-        if '.' in s or '/' in s:
-            raise ValueError("String contains either '.' or '/'")
+        if s.startswith('.') or s.startswith('/'):
+            raise ValueError("String starts with either '.' or '/'")
+    
+    @staticmethod    
+    def find_id_by_title(listing_reply, title_to_find):
+        for item in listing_reply.item:  
+            if item.title == title_to_find:
+                return item.id
+
+        # If no matching title is found, raise an error with a custom message
+        raise ValueError(f"Project '{title_to_find}' does not exist. "
+                        "Please create the project and provide an allocation.")
+        
+    @property
+    def get_projects(self, count=500):
+        response = self.df_api.projectList(count=count)
+        return response[0], response[1]
     
     @property    
     def _parse_cwd(self):
