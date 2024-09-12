@@ -15,10 +15,16 @@ class DataFed(API):
         # checks if the cwd is a valid path
         self.check_string_for_dot_or_slash(self.cwd)
         
-        items, response = self.get_projects
-        
-        # checks if the project exists in DataFed
-        self.project_id = self.find_id_by_title(items, self._parse_cwd[0])
+        # checks if user is saving in the root collection
+        if self._parse_cwd[0] == self.user_id:
+            
+            self.project_id = self.user_id
+        else:
+            # gets all the projects in DataFed
+            items, response = self.get_projects
+            
+            # checks if the project exists in DataFed
+            self.project_id = self.find_id_by_title(items, self._parse_cwd[0])
         
     def check_if_logged_in(self):   
         if self.df_api.getAuthUser():
@@ -26,6 +32,10 @@ class DataFed(API):
                 print("Success! You have been authenticated into DataFed as: " + self.df_api.getAuthUser())
         else:
             raise Exception("You have not authenticated into DataFed Client. Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
+        
+    @property
+    def user_id(self):
+        return self.df_api.getAuthUser().split("/")[-1]
         
     def check_if_endpoint_set(self):
         if self.df_api.endpointDefaultGet():
