@@ -1,15 +1,29 @@
 import numpy as np
 from datafed.CommandLib import API
 
-
-
-
 class DataFed(API):
 	
     def __init__(self, cwd):
         super(API, self).__init__()
         self.cwd = cwd
         self.df_api = API()
+        
+        self.check_if_logged_in()
+        self.check_if_endpoint_set()
+        
+    def check_if_logged_in(self):   
+        if self.df_api.getAuthUser():
+            if self.verbose:
+                print("Success! You have been authenticated into DataFed as: " + self.df_api.getAuthUser())
+        else:
+            raise Exception("You have not authenticated into DataFed Client. Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
+        
+    def check_if_endpoint_set(self):
+        if self.df_api.endpointDefaultGet():
+            if self.verbose:
+                print(f"Success! You have set up the Globus endpoint {self.df_api.endpointDefaultGet()}.")
+        else:
+            raise Exception("You have not set up the Globus endpoint. Please follow instructions in the 'Basic Configuration' section in the link below to set up the Globus endpoint: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
 
     
     def get_collection_id(self):

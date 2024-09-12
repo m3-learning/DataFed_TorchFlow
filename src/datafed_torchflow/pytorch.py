@@ -11,19 +11,14 @@ import zipfile
 from datafed_torchflow.datafed import DataFed
 from datafed.CommandLib import API
 
-def TorchLogger(model, DataFed_path):
+class TorchLogger(nn.Module):
+    def __init__(self, model, DataFed_path, verbose=False):
+        super(TorchLogger, self).__init__()
+        self.model = model
+        self.DataFed_path = DataFed_path
+        self.verbose = verbose
+        self.df_api = API()
     
-    def check_if_logged_in():   
-        if df_api.getAuthUser():
-            print(
-                "Success! You have been authenticated into DataFed as: " + df_api.getAuthUser()
-            )
-        else:
-            raise Exception("You have not authenticated into DataFed Client. Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
-            
-    df_api = API()
-    
-    check_if_logged_in()
 
         
 
