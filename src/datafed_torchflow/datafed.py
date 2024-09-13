@@ -4,10 +4,9 @@ from datafed.CommandLib import API
 
 class DataFed(API):
     def __init__(self, cwd, verbose=False):
-        super(API, self).__init__()
+        super().__init__()
         self.cwd = cwd
         self.verbose = verbose
-        self.df_api = API()
 
         self.check_if_logged_in()
         self.check_if_endpoint_set()
@@ -26,11 +25,11 @@ class DataFed(API):
             self.project_id = self.find_id_by_title(items, self._parse_cwd[0])
 
     def check_if_logged_in(self):
-        if self.df_api.getAuthUser():
+        if self.getAuthUser():
             if self.verbose:
                 print(
                     "Success! You have been authenticated into DataFed as: "
-                    + self.df_api.getAuthUser()
+                    + self.getAuthUser()
                 )
         else:
             raise Exception(
@@ -39,13 +38,13 @@ class DataFed(API):
 
     @property
     def user_id(self):
-        return self.df_api.getAuthUser().split("/")[-1]
+        return self.getAuthUser().split("/")[-1]
 
     def check_if_endpoint_set(self):
-        if self.df_api.endpointDefaultGet():
+        if self.endpointDefaultGet():
             if self.verbose:
                 print(
-                    f"Success! You have set up the Globus endpoint {self.df_api.endpointDefaultGet()}."
+                    f"Success! You have set up the Globus endpoint {self.endpointDefaultGet()}."
                 )
         else:
             raise Exception(
@@ -79,7 +78,7 @@ class DataFed(API):
 
     @property
     def get_projects(self, count=500):
-        response = self.df_api.projectList(count=count)
+        response = self.projectList(count=count)
         return response[0], response[1]
 
     @property
@@ -90,7 +89,7 @@ class DataFed(API):
         self, DataFed_collection_name, DataFed_subcollection_name
     ):
         # check if the sub-collection exists in DataFed
-        ls_resp = self.df_api.collectionItemsList(DataFed_collection_name)
+        ls_resp = self.collectionItemsList(DataFed_collection_name)
 
         trials_already_in_DataFed = []
         for record in ls_resp[0].item:
@@ -107,15 +106,12 @@ class DataFed(API):
                 ]
                 .id
             )
-        # ls_resp_2 = self.df_api.collectionItemsList(Datafed_collection_id) ## WE DON'T CARE ABOUT THE CONTENTS OF THE COLLECTION, SO DON'T NEED THIS LINE
-        # Datafed_collection_name = folder_model
 
         else:
             # create sub-collection if doesn't exist
-            coll_resp = self.df_api.collectionCreate(
+            coll_resp = self.collectionCreate(
                 DataFed_subcollection_name, parent_id=DataFed_collection_name
             )
-            # ls_resp_2 = self.df_api.collectionItemsList(coll_resp[0].coll[0].id) ## WE DON'T CARE ABOUT THE CONTENTS OF THE COLLECTION, SO DON'T NEED THIS LINE
             Datafed_collection_id = coll_resp[0].coll[0].id
 
         return Datafed_collection_id
