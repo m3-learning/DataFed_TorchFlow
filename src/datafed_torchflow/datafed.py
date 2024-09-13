@@ -51,13 +51,13 @@ class DataFed(API):
                 "You have not set up the Globus endpoint. Please follow instructions in the 'Basic Configuration' section in the link below to set up the Globus endpoint: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration"
             )
 
-    def get_collection_id(self):
-        # main function that navigates through the DataFed project and collections to find the collection ID
+    # def get_collection_id(self):
+    #     # main function that navigates through the DataFed project and collections to find the collection ID
 
-        # Function to parse the DataFed project
-        df_paths = self._parse_cwd()
+    #     # Function to parse the DataFed project
+    #     df_paths = self._parse_cwd()
 
-        # Check if the project exists
+    #     # Check if the project exists
 
     @staticmethod
     def check_string_for_dot_or_slash(s):
@@ -82,36 +82,46 @@ class DataFed(API):
         return response[0], response[1]
 
     @property
+    def getRootColl(self):
+        new_str = self.project_id[:1] + "_" + self.project_id[2:]
+        return f"c/{new_str}_root"
+
+    @property
     def _parse_cwd(self):
         return self.cwd.split("/")
 
-    def create_subfolder_if_not_exits(
-        self, DataFed_collection_name, DataFed_subcollection_name
-    ):
+    def getCollList(self, collection_id):
         # check if the sub-collection exists in DataFed
-        ls_resp = self.collectionItemsList(DataFed_collection_name)
+        ls_resp = self.collectionItemsList(collection_id)
 
-        trials_already_in_DataFed = []
+        collections = []
         for record in ls_resp[0].item:
-            trials_already_in_DataFed.append(record.title)
+            collections.append(record.title)
 
-        if DataFed_subcollection_name in trials_already_in_DataFed:
-            # navigate to the sub-collection if exists
-            Datafed_collection_id = (
-                ls_resp[0]
-                .item[
-                    np.where(DataFed_subcollection_name in trials_already_in_DataFed)[
-                        0
-                    ].item()
-                ]
-                .id
-            )
+        return collections, ls_resp
 
-        else:
-            # create sub-collection if doesn't exist
-            coll_resp = self.collectionCreate(
-                DataFed_subcollection_name, parent_id=DataFed_collection_name
-            )
-            Datafed_collection_id = coll_resp[0].coll[0].id
+    def create_subfolder_if_not_exits(self):
+        # gets the root context from the parent collection
+        collections, ls_resp = self.getCollList(self.getRootColl)
+        current_collection = self.getRootColl
 
-        return Datafed_collection_id
+        # iterate through the sub-collections
+        for collection in self._parse_cwd[1:]:
+            # check if the collection exists in DataFed
+            if collection in collections:
+                # navigate to the sub-collection if exists
+                current_collection = (
+                    ls_resp[0].item[np.where(collection in collections)[0].item()].id
+                )
+
+            else:
+                # create sub-collection if doesn't exist
+                coll_resp = self.collectionCreate(
+                    collection, parent_id=current_collection
+                )
+                current_collection = coll_resp[0].coll[0].id
+
+            # update the collections list
+            collections, ls_resp = self.getCollList(current_collection)
+
+        self.collection_id = current_collection
