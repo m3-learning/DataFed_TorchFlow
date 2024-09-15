@@ -1,15 +1,7 @@
 import torch
 import torch.nn as nn
-import numpy as np
-from pathlib import Path
-import json
 import datetime
-import traceback
-from datafed.CommandLib import API
-from os.path import basename
-import zipfile
 from datafed_torchflow.datafed import DataFed
-from datafed.CommandLib import API
 from datafed_torchflow.computer import get_system_info
 import getpass
 from datetime import datetime
@@ -18,6 +10,21 @@ from m3util.notebooks.checksum import calculate_notebook_checksum
 
 
 class TorchLogger(nn.Module):
+    """
+    TorchLogger is a class designed to log PyTorch model training details, 
+    including model architecture, optimizer state, and system information. 
+    It also integrates with the DataFed API for file and metadata management.
+
+    Attributes:
+        model (torch.nn.Module): The PyTorch model to be logged.
+        optimizer (torch.optim.Optimizer): The optimizer used during training.
+        DataFed_path (str): The path to the DataFed configuration or API.
+        script_path (str): Path to the script or notebook for checksum calculation.
+        local_path (str): Local directory to store model files.
+        verbose (bool): Whether to display verbose output.
+        df_api (DataFed): Instance of the DataFed API client for managing data records.
+    """
+
     def __init__(
         self,
         model,
@@ -27,6 +34,17 @@ class TorchLogger(nn.Module):
         local_path="./",
         verbose=False,
     ):
+        """
+        Initializes the TorchLogger class.
+
+        Args:
+            model (torch.nn.Module): The PyTorch model to log.
+            optimizer (torch.optim.Optimizer): The optimizer used for training.
+            DataFed_path (str): Path to the DataFed configuration or API.
+            script_path (str, optional): Path to the script or notebook. Default is None.
+            local_path (str, optional): Local directory to store model files. Default is './'.
+            verbose (bool, optional): Flag for verbose output. Default is False.
+        """
         super(TorchLogger, self).__init__()
         self.__file__ = script_path
         self.model = model
@@ -36,11 +54,22 @@ class TorchLogger(nn.Module):
         self.local_path = local_path
         self.df_api = DataFed(self.DataFed_path)
 
+        # Check if Globus has access to the local path
         check_globus_file_access(self.df_api.endpointDefaultGet, self.local_path)
 
         self.save
 
     def getMetadata(self, **kwargs):
+        """
+        Gathers metadata including the serialized model, optimizer, system info, and user details.
+        
+        Args:
+            **kwargs: Additional key-value pairs to be added to the metadata.
+        
+        Returns:
+            dict: A dictionary containing the metadata including model, optimizer, 
+                  system information, user, timestamp, and optional script checksum.
+        """
         # Get the current user and current time
         current_user = getpass.getuser()
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -50,7 +79,7 @@ class TorchLogger(nn.Module):
         optimizer = self.serialize_pytorch_optimizer()
         computer_info = get_system_info()
 
-        # Add current user and time to metadata
+        # Combine metadata and add user and timestamp
         metadata = (
             model
             | optimizer
@@ -59,6 +88,7 @@ class TorchLogger(nn.Module):
             | kwargs
         )
 
+        # If the script path is provided, calculate and include its checksum
         if self.__file__ is not None:
             script_checksum = calculate_notebook_checksum(self.__file__)
             file_info = {"script": {"path": self.__file__, "checksum": script_checksum}}
@@ -67,49 +97,84 @@ class TorchLogger(nn.Module):
         return metadata
 
     def save(self, metadata, record_file_name, datafed=True, **kwargs):
+        """
+        Saves the model's state dictionary locally and optionally uploads it to DataFed.
+        
+        Args:
+            metadata (dict): Metadata to be associated with the model record.
+            record_file_name (str): The name of the file to save the model locally.
+            datafed (bool, optional): If True, the record is uploaded to DataFed. Default is True.
+            **kwargs: Additional metadata or attributes to include in the record.
+        """
         path = f"{self.local_path}/{record_file_name}"
 
+        # Save the model state dict locally
         torch.save(self.model.state_dict(), path)
 
         if datafed:
+            # Generate metadata and create a data record in DataFed
             self.getMetadata(**kwargs)
             dc_resp = self.df_api.data_record_create(
                 metadata, record_file_name.split(".")[0]
             )
+            # Upload the saved model to DataFed
             self.df_api.upload_file(dc_resp, path)
-            
+
     def serialize_model(self):
+        """
+        Serializes the model architecture into a dictionary format with detailed layer information.
+
+        Returns:
+            dict: A dictionary containing the model's architecture with layer types, 
+                  names, and configurations.
+        """
         model_info = {}
-        model_info['layers'] = {}
-        
+        model_info["layers"] = {}
+
         top_level_count = 0  # Counter for the top-level layers
-        num_top_level_layers = len(set([layer_name.split('.')[0] for layer_name, _ in self.model.named_modules() if layer_name != ""]))
-        pad_length = len(str(num_top_level_layers))  # Padding length for top-level numbering
+        num_top_level_layers = len(
+            set(
+                [
+                    layer_name.split(".")[0]
+                    for layer_name, _ in self.model.named_modules()
+                    if layer_name != ""
+                ]
+            )
+        )
+        pad_length = len(
+            str(num_top_level_layers)
+        )  # Padding length for top-level numbering
 
         for layer_name, layer in self.model.named_modules():
             # Skip the top layer which is the entire model itself
             if layer_name != "":
                 # Split the layer name at the first '.'
-                parts = layer_name.split('.', 1)
+                parts = layer_name.split(".", 1)
                 top_level_name = parts[0]
                 sub_name = parts[1] if len(parts) > 1 else None
-                
+
                 # Check if this is a new top-level layer (ignoring numbering)
-                if top_level_name not in [key.split('-', 1)[1] for key in model_info['layers'].keys()]:
+                if top_level_name not in [
+                    key.split("-", 1)[1] for key in model_info["layers"].keys()
+                ]:
                     # Increment the top-level counter
                     top_level_count += 1
                     padded_count = str(top_level_count).zfill(pad_length)
-                    
+
                     # Create a top-level entry with zero-padded numbering
-                    model_info['layers'][f"{padded_count}-{top_level_name}"] = {}
+                    model_info["layers"][f"{padded_count}-{top_level_name}"] = {}
 
                 # Reference the top-level dictionary without the number prefix
-                current_level_key = [key for key in model_info['layers'].keys() if key.endswith(f"-{top_level_name}")][0]
-                current_level = model_info['layers'][current_level_key]
-                
+                current_level_key = [
+                    key
+                    for key in model_info["layers"].keys()
+                    if key.endswith(f"-{top_level_name}")
+                ][0]
+                current_level = model_info["layers"][current_level_key]
+
                 # If there is a sub_name (nested), create nested entries
                 if sub_name:
-                    sub_parts = sub_name.split('.')
+                    sub_parts = sub_name.split(".")
                     for sub in sub_parts[:-1]:
                         if sub not in current_level:
                             current_level[sub] = {}
@@ -120,32 +185,39 @@ class TorchLogger(nn.Module):
 
                 # Collect the layer information
                 layer_descriptor = {
-                    'type': layer.__class__.__name__,
-                    'layer_name': layer_name,
-                    'config': {}
+                    "type": layer.__class__.__name__,
+                    "layer_name": layer_name,
+                    "config": {},
                 }
 
                 # Automatically collect layer parameters
                 for param, value in layer.__dict__.items():
                     # Filter out unnecessary attributes
-                    if not param.startswith('_') and not callable(value):
-                        layer_descriptor['config'][param] = value
+                    if not param.startswith("_") and not callable(value):
+                        layer_descriptor["config"][param] = value
 
                 # Add the layer descriptor under the correct key
                 current_level[layer_key] = layer_descriptor
 
         return model_info
-    
+
     def serialize_pytorch_optimizer(self):
+        """
+        Serializes the optimizer's state dictionary, converting tensors to lists for JSON compatibility.
+
+        Returns:
+            dict: A dictionary containing the optimizer's serialized parameters.
+        """
         state_dict = self.optimizer.state_dict()
         state_dict_serializable = {}
         for key, value in state_dict.items():
             if isinstance(value, torch.Tensor):
                 state_dict_serializable[key] = value.tolist()
-            # elif isinstance(value, dict):
-            #     state_dict_serializable[key] = serialize_pytorch_optimizer(value)
             elif isinstance(value, list):
-                state_dict_serializable[key] = [v.tolist() if isinstance(v, torch.Tensor) else v for v in value]
+                # Convert tensors within lists to lists
+                state_dict_serializable[key] = [
+                    v.tolist() if isinstance(v, torch.Tensor) else v for v in value
+                ]
             else:
                 state_dict_serializable[key] = value
-        return state_dict_serializable['param_groups'][0]
+        return state_dict_serializable["param_groups"][0]
