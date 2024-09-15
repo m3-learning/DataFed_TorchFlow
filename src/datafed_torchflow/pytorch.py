@@ -57,7 +57,8 @@ class TorchLogger(nn.Module):
         # Check if Globus has access to the local path
         check_globus_file_access(self.df_api.endpointDefaultGet, self.local_path)
 
-        self.save
+        # Save the notebook to DataFed
+        self.save_notebook()
 
     def getMetadata(self, **kwargs):
         """
@@ -101,19 +102,52 @@ class TorchLogger(nn.Module):
         Returns:
             dict: A dictionary containing system information.
         """
-        # Get the current user and current time
+        # Get the current user
         current_user = getpass.getuser()
+        
+        # Get the current time
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         return current_user, current_time
     
     def getNotebookMetadata(self):
+        """
+        Calculates the checksum of the script or notebook file and includes it in the metadata.
+        
+        Returns:
+            dict: A dictionary containing the path and checksum of the script or notebook file.
+        """
         
         # If the script path is provided, calculate and include its checksum
         if self.__file__ is not None:
             script_checksum = calculate_notebook_checksum(self.__file__)
             file_info = {"script": {"path": self.__file__, "checksum": script_checksum}}
             return file_info
+        
+    def save_notebook(self):
+        
+        if self.__file__ is not None:
+                
+                # output to user
+                if self.verbose:
+                    print(f"Uploading notebook {self.__file__} to DataFed...")
+                    
+                notebook_metadata = self.getNotebookMetadata()
+                
+                current_user, current_time = self.getUserClock()
+                
+                notebook_metadata = (
+                    notebook_metadata
+                                | {"user": current_user, "timestamp": current_time}
+                            )
+                
+                self.notebook_record_resp = self.df_api.data_record_create(
+                notebook_metadata, self.__file__
+                )
+                
+                self.df_api.upload_file(self.notebook_record_resp, self.__file__)
+                
+                self.notebook_record_id = self.notebook_record_resp[0].data[0].id,
         
     def save(self, metadata, record_file_name, datafed=True, **kwargs):
         """
@@ -131,16 +165,6 @@ class TorchLogger(nn.Module):
         torch.save(self.model.state_dict(), path)
 
         if datafed:
-            
-            if self.__file__ is not None:
-                
-                # output to user
-                if self.verbose:
-                    print(f"Uploading notebook {self.__file__} to DataFed...")
-                    
-                self.getNotebookMetadata(**kwargs)
-                
-                
             
             # Generate metadata and create a data record in DataFed
             self.getMetadata(**kwargs)
