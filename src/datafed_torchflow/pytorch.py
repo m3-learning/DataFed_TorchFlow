@@ -70,10 +70,9 @@ class TorchLogger(nn.Module):
             dict: A dictionary containing the metadata including model, optimizer, 
                   system information, user, timestamp, and optional script checksum.
         """
-        # Get the current user and current time
-        current_user = getpass.getuser()
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+        
+        current_user, current_time = self.getUserClock()
+        
         # Serialize model, optimizer, and get system info
         model = self.serialize_model()
         optimizer = self.serialize_pytorch_optimizer()
@@ -87,15 +86,35 @@ class TorchLogger(nn.Module):
             | {"user": current_user, "timestamp": current_time}
             | kwargs
         )
+        
+        file_info = self.getNotebookMetadata(self)
 
-        # If the script path is provided, calculate and include its checksum
-        if self.__file__ is not None:
-            script_checksum = calculate_notebook_checksum(self.__file__)
-            file_info = {"script": {"path": self.__file__, "checksum": script_checksum}}
+        if file_info is not None:
             metadata |= file_info
 
         return metadata
 
+    def getUserClock(self):
+        """
+        Gathers system information including CPU, memory, and GPU details.
+
+        Returns:
+            dict: A dictionary containing system information.
+        """
+        # Get the current user and current time
+        current_user = getpass.getuser()
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        return current_user, current_time
+    
+    def getNotebookMetadata(self):
+        
+        # If the script path is provided, calculate and include its checksum
+        if self.__file__ is not None:
+            script_checksum = calculate_notebook_checksum(self.__file__)
+            file_info = {"script": {"path": self.__file__, "checksum": script_checksum}}
+            return file_info
+        
     def save(self, metadata, record_file_name, datafed=True, **kwargs):
         """
         Saves the model's state dictionary locally and optionally uploads it to DataFed.
@@ -112,6 +131,17 @@ class TorchLogger(nn.Module):
         torch.save(self.model.state_dict(), path)
 
         if datafed:
+            
+            if self.__file__ is not None:
+                
+                # output to user
+                if self.verbose:
+                    print(f"Uploading notebook {self.__file__} to DataFed...")
+                    
+                self.getNotebookMetadata(**kwargs)
+                
+                
+            
             # Generate metadata and create a data record in DataFed
             self.getMetadata(**kwargs)
             dc_resp = self.df_api.data_record_create(
