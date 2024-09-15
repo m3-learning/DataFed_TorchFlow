@@ -148,4 +148,4 @@ class TorchLogger(nn.Module):
                 state_dict_serializable[key] = [v.tolist() if isinstance(v, torch.Tensor) else v for v in value]
             else:
                 state_dict_serializable[key] = value
-        return state_dict_serializable['param_groups']
+        return state_dict_serializable['param_groups'][0]
