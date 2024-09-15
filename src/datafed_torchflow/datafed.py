@@ -1,5 +1,11 @@
+from datetime import datetime
+from inspect import Traceback
+import traceback
 import numpy as np
 from datafed.CommandLib import API
+import json
+from m3util.globus.globus import check_globus_endpoint
+
 
 class DataFed(API):
     """
@@ -14,7 +20,7 @@ class DataFed(API):
         project_id (str): The ID of the project.
     """
 
-    def __init__(self, cwd, verbose=False):
+    def __init__(self, cwd, verbose=False, log_file_path=".log.txt"):
         """
         Initializes the DataFed instance.
 
@@ -34,6 +40,9 @@ class DataFed(API):
 
         # Checks if the cwd is a valid path.
         self.check_string_for_dot_or_slash(self.cwd)
+
+        # Set the log file path
+        self.log_file_path = log_file_path
 
         # Checks if user is saving in the root collection.
         if self._parse_cwd[0] == self.user_id:
@@ -221,3 +230,56 @@ class DataFed(API):
             collections, ls_resp = self.getCollList(current_collection)
 
         self.collection_id = current_collection
+
+    def data_record_create(self, metadata, record_title):
+        self.check_if_endpoint_set()
+        self.check_if_logged_in()
+
+        try:
+            dc_resp = self.dataCreate(
+                record_title,
+                metadata=json.dumps(metadata),
+                parent_id=self.collection_id,
+            )
+
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - Data creation successful")
+
+            return dc_resp
+
+        except Exception:
+            tb = Traceback.format_exc()
+
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
+
+    def upload_file(self, dc_resp, file_path, wait=False):
+        check_globus_endpoint(self.endpointDefaultGet())
+
+        try:
+            put_resp = self.dataPut(
+                dc_resp[0].data[0].id,
+                file_path,
+                wait=wait,  # Waits until transfer completes.
+            )
+
+            with open(self.log_file_path, "a") as f:
+                current_task_status = put_resp[0].task.msg
+
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - Data put status: {current_task_status}")
+                f.write(
+                    "\n This just means that the Data put command ran without errors. \n If the status is not complete, check the DataFed and Globus websites \n to ensure the Globus Endpoint is connected and the file transfer completes."
+                )
+
+        except Exception:
+            tb = traceback.format_exc()
+
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"\n {timestamp} - Data put failed with error: {tb}")

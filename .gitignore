@@ -54,3 +54,4 @@ MANIFEST
 .python-version
 
 /examples/data/*
+examples/mnist_cnn.pth
