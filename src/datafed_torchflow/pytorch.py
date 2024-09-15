@@ -14,11 +14,21 @@ from datafed_torchflow.computer import get_system_info
 import getpass
 from datetime import datetime
 from m3util.globus.globus import check_globus_file_access
+from m3util.notebooks.checksum import calculate_notebook_checksum
 
 
 class TorchLogger(nn.Module):
-    def __init__(self, model, optimizer, DataFed_path, local_path="./", verbose=False):
+    def __init__(
+        self,
+        model,
+        optimizer,
+        DataFed_path,
+        script_path=None,
+        local_path="./",
+        verbose=False,
+    ):
         super(TorchLogger, self).__init__()
+        self.__file__ = script_path
         self.model = model
         self.optimizer = optimizer
         self.DataFed_path = DataFed_path
@@ -48,6 +58,11 @@ class TorchLogger(nn.Module):
             | {"user": current_user, "timestamp": current_time}
             | kwargs
         )
+
+        if self.__file__ is not None:
+            script_checksum = calculate_notebook_checksum(self.__file__)
+            file_info = {"script": {"path": self.__file__, "checksum": script_checksum}}
+            metadata |= file_info
 
         return metadata
 
