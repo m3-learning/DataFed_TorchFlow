@@ -236,6 +236,11 @@ class DataFed(API):
     def data_record_create(self, metadata, record_title, deps=None, **kwargs):
         self.check_if_endpoint_set()
         self.check_if_logged_in()
+        
+        if len(record_title) > 80:
+            record_title = record_title.replace(".", "_")[:80]
+            if self.verbose:
+                print("Record title is too long. Truncating to 80 characters.")
 
         try:
             dc_resp = self.dataCreate(

@@ -107,7 +107,7 @@ class TorchLogger(nn.Module):
         # Combine metadata and add user and timestamp
         metadata = (
             model
-            | optimizer
+            | {"optimizer" : optimizer}
             | computer_info
             | {"user": current_user, "timestamp": current_time}
             | kwargs
