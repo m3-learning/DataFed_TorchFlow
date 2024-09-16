@@ -1,5 +1,4 @@
 from datetime import datetime
-from inspect import Traceback
 import traceback
 import numpy as np
 from datafed.CommandLib import API
@@ -233,16 +232,16 @@ class DataFed(API):
 
         self.collection_id = current_collection
 
-    def data_record_create(self, metadata, record_title, add_deps=None, **kwargs):
+    def data_record_create(self, metadata, record_title, deps=None, **kwargs):
         self.check_if_endpoint_set()
         self.check_if_logged_in()
 
         try:
             dc_resp = self.dataCreate(
-                record_title,
+                record_title.replace(" ", "_").replace(".", "_"),
                 metadata=json.dumps(metadata),
                 parent_id=self.collection_id,
-                add_deps=add_deps,
+                deps=deps,
                 **kwargs,
             )
 
@@ -253,33 +252,34 @@ class DataFed(API):
 
             return dc_resp
 
-        except Exception:
-            tb = Traceback.format_exc()
+        except Exception as e:
+            tb = traceback.format_exc()
 
             with open(self.log_file_path, "a") as f:
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
 
                 f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
+
+            raise e
+                
     @staticmethod            
-    def addDerivedFrom(deps_add = None):
+    def addDerivedFrom(deps = None):
         """
         Adds derived from information to the data record.
 
         Args:
-            deps_add (str, optional): The derived from information to add. Defaults to None.
+            deps (str, optional): The derived from information to add. Defaults to None.
 
         Returns:
             list: A list containing the derived from information.
         """
-        if deps_add:
-            return [["der", deps_add]]
+        if deps:
+            return [["der", deps]]
         else:
             return []
         
-    def upload_file(self, dc_resp, file_path, deps_add=None, wait=False):
+    def upload_file(self, dc_resp, file_path, wait=False):
         check_globus_endpoint(self.endpointDefaultGet())
-        
-        deps_add = self.addDerivedFrom(deps_add)
 
         try:
             put_resp = self.dataPut(
@@ -298,9 +298,11 @@ class DataFed(API):
                     "\n This just means that the Data put command ran without errors. \n If the status is not complete, check the DataFed and Globus websites \n to ensure the Globus Endpoint is connected and the file transfer completes."
                 )
 
-        except Exception:
+        except Exception as e:
             tb = traceback.format_exc()
 
             with open(self.log_file_path, "a") as f:
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
                 f.write(f"\n {timestamp} - Data put failed with error: {tb}")
+
+            raise e

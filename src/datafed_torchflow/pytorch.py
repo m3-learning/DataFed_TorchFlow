@@ -167,16 +167,18 @@ class TorchLogger(nn.Module):
 
         if datafed:
             
-            deps_add = self.df_api.addDerivedFrom(self.notebook_record_id)
+            deps = self.df_api.addDerivedFrom(self.notebook_record_id[0])
             
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(**kwargs)
             dc_resp = self.df_api.data_record_create(
                 metadata, record_file_name.split(".")[0],   
-                deps_add=deps_add,
+                deps=deps,
             )
             # Upload the saved model to DataFed
             self.df_api.upload_file(dc_resp, path)
+            
+            self.current_checkpoint_id = dc_resp[0].data[0].id
 
     def serialize_model(self):
         """
