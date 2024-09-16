@@ -4,6 +4,7 @@ import numpy as np
 from datafed.CommandLib import API
 import json
 from m3util.globus.globus import check_globus_endpoint
+from datafed_torchflow.JSON import UniversalEncoder
 
 
 class DataFed(API):
@@ -239,7 +240,7 @@ class DataFed(API):
         try:
             dc_resp = self.dataCreate(
                 record_title.replace(".", "_"),
-                metadata=json.dumps(metadata),
+                metadata=json.dumps(metadata, cls=UniversalEncoder),
                 parent_id=self.collection_id,
                 deps=deps,
                 **kwargs,
