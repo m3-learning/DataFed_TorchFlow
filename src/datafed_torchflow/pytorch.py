@@ -8,6 +8,8 @@ from datetime import datetime
 from m3util.globus.globus import check_globus_file_access
 from m3util.notebooks.checksum import calculate_notebook_checksum
 
+#TODO: Look for checksum and if notebook checksum exists add derived from
+#TODO: Add data and dataloader derivative. 
 
 class TorchLogger(nn.Module):
     """
@@ -191,7 +193,10 @@ class TorchLogger(nn.Module):
 
         if datafed:
             
-            deps = self.df_api.addDerivedFrom([self.notebook_record_id[0], self.current_checkpoint_id])
+            try:                             
+                deps = self.df_api.addDerivedFrom([self.notebook_record_id[0], self.current_checkpoint_id])
+            except:
+                deps = None
             
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(**kwargs)
