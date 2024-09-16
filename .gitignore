@@ -6,13 +6,15 @@
 !.isort.cfg
 !setup.cfg
 *.orig
-*.log
+*.log.txt
 *.pot
 __pycache__/*
 .cache/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
+*.pth
+
 
 # Project files
 .ropeproject
@@ -55,3 +57,4 @@ MANIFEST
 
 /examples/data/*
 examples/mnist_cnn.pth
+examples/.log.txt
