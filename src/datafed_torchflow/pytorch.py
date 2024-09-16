@@ -176,7 +176,7 @@ class TorchLogger(nn.Module):
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(**kwargs)
             dc_resp = self.df_api.data_record_create(
-                metadata, record_file_name.split(".")[0],   
+                metadata, record_file_name.split(".")[:-1],   
                 deps=deps,
             )
             # Upload the saved model to DataFed
