@@ -28,8 +28,8 @@ class TorchLogger(nn.Module):
     def __init__(
         self,
         model,
-        optimizer,
         DataFed_path,
+        optimizer = None,
         script_path=None,
         local_path="./",
         verbose=False,
@@ -64,6 +64,26 @@ class TorchLogger(nn.Module):
 
     def reset(self):
         self.current_checkpoint_id = None
+        
+    @property
+    def optimizer(self):
+        """
+        Returns the optimizer used for training.
+
+        Returns:
+            torch.optim.Optimizer: The optimizer instance.
+        """
+        return self._optimizer
+
+    @optimizer.setter
+    def optimizer(self, optimizer):
+        """
+        Sets the optimizer used for training.
+
+        Args:
+            optimizer (torch.optim.Optimizer): The optimizer to be set.
+        """
+        self._optimizer = optimizer
         
     def getMetadata(self, **kwargs):
         """
