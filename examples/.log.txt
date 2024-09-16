@@ -1,0 +1,37 @@
+
+ 2024-09-16 00:03:28 - Data creation successful
+ 2024-09-16 00:03:29 - Data put failed with error: Traceback (most recent call last):
+  File "/home/jca92/DataFed_TorchFlow/src/datafed_torchflow/datafed.py", line 283, in upload_file
+    put_resp = self.dataPut(
+               ^^^^^^^^^^^^^
+TypeError: API.dataPut() got an unexpected keyword argument 'deps_add'
+
+ 2024-09-16 00:04:39 - Data creation successful
+ 2024-09-16 00:04:40 - Data put failed with error: Traceback (most recent call last):
+  File "/home/jca92/DataFed_TorchFlow/src/datafed_torchflow/datafed.py", line 283, in upload_file
+    put_resp = self.dataPut(
+               ^^^^^^^^^^^^^
+TypeError: API.dataPut() got an unexpected keyword argument 'deps_add'
+
+ 2024-09-16 00:05:58 - Data creation successful
+ 2024-09-16 00:07:44 - Data put failed with error: Traceback (most recent call last):
+  File "/home/jca92/DataFed_TorchFlow/src/datafed_torchflow/datafed.py", line 283, in upload_file
+    put_resp = self.dataPut(
+               ^^^^^^^^^^^^^
+TypeError: API.dataPut() got an unexpected keyword argument 'deps_add'
+
+ 2024-09-16 00:13:48 - Data creation successful
+ 2024-09-16 00:13:49 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.
+ 2024-09-16 00:17:05 - Data creation successful
+ 2024-09-16 00:17:06 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.
+ 2024-09-16 00:24:55 - Data creation successful
+ 2024-09-16 00:24:56 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.

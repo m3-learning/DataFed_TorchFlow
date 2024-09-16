@@ -53,6 +53,8 @@ class DataFed(API):
 
             # Checks if the project exists in DataFed.
             self.project_id = self.find_id_by_title(items, self._parse_cwd[0])
+            
+            self.create_subfolder_if_not_exists()
 
     def check_if_logged_in(self):
         """
@@ -231,7 +233,7 @@ class DataFed(API):
 
         self.collection_id = current_collection
 
-    def data_record_create(self, metadata, record_title):
+    def data_record_create(self, metadata, record_title, add_deps=None, **kwargs):
         self.check_if_endpoint_set()
         self.check_if_logged_in()
 
@@ -240,6 +242,8 @@ class DataFed(API):
                 record_title,
                 metadata=json.dumps(metadata),
                 parent_id=self.collection_id,
+                add_deps=add_deps,
+                **kwargs,
             )
 
             with open(self.log_file_path, "a") as f:
@@ -256,9 +260,26 @@ class DataFed(API):
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
 
                 f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
+    @staticmethod            
+    def addDerivedFrom(deps_add = None):
+        """
+        Adds derived from information to the data record.
 
-    def upload_file(self, dc_resp, file_path, wait=False):
+        Args:
+            deps_add (str, optional): The derived from information to add. Defaults to None.
+
+        Returns:
+            list: A list containing the derived from information.
+        """
+        if deps_add:
+            return [["der", deps_add]]
+        else:
+            return []
+        
+    def upload_file(self, dc_resp, file_path, deps_add=None, wait=False):
         check_globus_endpoint(self.endpointDefaultGet())
+        
+        deps_add = self.addDerivedFrom(deps_add)
 
         try:
             put_resp = self.dataPut(

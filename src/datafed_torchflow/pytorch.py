@@ -46,6 +46,7 @@ class TorchLogger(nn.Module):
             verbose (bool, optional): Flag for verbose output. Default is False.
         """
         super(TorchLogger, self).__init__()
+        self.notebook_record_id = None
         self.__file__ = script_path
         self.model = model
         self.optimizer = optimizer
@@ -88,7 +89,7 @@ class TorchLogger(nn.Module):
             | kwargs
         )
         
-        file_info = self.getNotebookMetadata(self)
+        file_info = self.getNotebookMetadata()
 
         if file_info is not None:
             metadata |= file_info
@@ -142,14 +143,14 @@ class TorchLogger(nn.Module):
                             )
                 
                 self.notebook_record_resp = self.df_api.data_record_create(
-                notebook_metadata, self.__file__
+                notebook_metadata, self.__file__.split("/")[-1].split(".")[0]
                 )
                 
                 self.df_api.upload_file(self.notebook_record_resp, self.__file__)
                 
                 self.notebook_record_id = self.notebook_record_resp[0].data[0].id,
         
-    def save(self, metadata, record_file_name, datafed=True, **kwargs):
+    def save(self, record_file_name, datafed=True, **kwargs):
         """
         Saves the model's state dictionary locally and optionally uploads it to DataFed.
         
@@ -159,17 +160,20 @@ class TorchLogger(nn.Module):
             datafed (bool, optional): If True, the record is uploaded to DataFed. Default is True.
             **kwargs: Additional metadata or attributes to include in the record.
         """
-        path = f"{self.local_path}/{record_file_name}"
+        path = f"{self.local_path}/{record_file_name}.pth"
 
         # Save the model state dict locally
         torch.save(self.model.state_dict(), path)
 
         if datafed:
             
+            deps_add = self.df_api.addDerivedFrom(self.notebook_record_id)
+            
             # Generate metadata and create a data record in DataFed
-            self.getMetadata(**kwargs)
+            metadata = self.getMetadata(**kwargs)
             dc_resp = self.df_api.data_record_create(
-                metadata, record_file_name.split(".")[0]
+                metadata, record_file_name.split(".")[0],   
+                deps_add=deps_add,
             )
             # Upload the saved model to DataFed
             self.df_api.upload_file(dc_resp, path)
