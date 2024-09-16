@@ -8,7 +8,7 @@ from datetime import datetime
 from m3util.globus.globus import check_globus_file_access
 from m3util.notebooks.checksum import calculate_notebook_checksum
 
-#TODO: Look for checksum and if notebook checksum exists add derived from
+#TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.  
 #TODO: Add data and dataloader derivative. 
 
 class TorchLogger(nn.Module):
