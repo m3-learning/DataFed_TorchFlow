@@ -46,6 +46,7 @@ class TorchLogger(nn.Module):
             verbose (bool, optional): Flag for verbose output. Default is False.
         """
         super(TorchLogger, self).__init__()
+        self.current_checkpoint_id = None
         self.notebook_record_id = None
         self.__file__ = script_path
         self.model = model
@@ -61,6 +62,9 @@ class TorchLogger(nn.Module):
         # Save the notebook to DataFed
         self.save_notebook()
 
+    def reset(self):
+        self.current_checkpoint_id = None
+        
     def getMetadata(self, **kwargs):
         """
         Gathers metadata including the serialized model, optimizer, system info, and user details.
@@ -167,7 +171,7 @@ class TorchLogger(nn.Module):
 
         if datafed:
             
-            deps = self.df_api.addDerivedFrom(self.notebook_record_id[0])
+            deps = self.df_api.addDerivedFrom([self.notebook_record_id[0], self.current_checkpoint_id])
             
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(**kwargs)

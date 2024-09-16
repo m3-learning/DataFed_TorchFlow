@@ -238,7 +238,7 @@ class DataFed(API):
 
         try:
             dc_resp = self.dataCreate(
-                record_title.replace(" ", "_").replace(".", "_"),
+                record_title.replace(".", "_"),
                 metadata=json.dumps(metadata),
                 parent_id=self.collection_id,
                 deps=deps,
@@ -263,20 +263,29 @@ class DataFed(API):
             raise e
                 
     @staticmethod            
-    def addDerivedFrom(deps = None):
+    def addDerivedFrom(deps=None):
         """
-        Adds derived from information to the data record.
+        Adds derived from information to the data record, skipping any None values.
 
         Args:
-            deps (str, optional): The derived from information to add. Defaults to None.
+            deps (list or str, optional): A list of dependencies or a single 
+                                        dependency to add. Defaults to None.
 
         Returns:
-            list: A list containing the derived from information.
+            list: A list of lists containing the "derived from" information, excluding None entries.
         """
-        if deps:
-            return [["der", deps]]
-        else:
-            return []
+        derived_from_info = []
+
+        # If deps is a string, convert it into a list
+        if isinstance(deps, str):
+            deps = [deps]
+
+        # If deps is a list, process each entry and skip None entries
+        if deps and isinstance(deps, list):
+            derived_from_info = [["der", dep] for dep in deps if dep is not None]
+        
+        return derived_from_info
+
         
     def upload_file(self, dc_resp, file_path, wait=False):
         check_globus_endpoint(self.endpointDefaultGet())
