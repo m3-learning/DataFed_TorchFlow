@@ -310,7 +310,14 @@ class TorchLogger(nn.Module):
             else:
                 state_dict_serializable[key] = value
         return state_dict_serializable["param_groups"][0]
+
+class TorchViewer(nn.Module):
     
+    def __init__(self, DataFed_path):
+        
+        self.DataFed_path = DataFed_path
+        self.df_api = DataFed(self.DataFed_path)
+
     def getModelCheckpoints(self, exclude_metadata='computing',excluded_keys='script', non_unique= ['id','timestamp','total_time'], format="pandas"):
         """
         Retrieves the metadata record for a specified record ID.
