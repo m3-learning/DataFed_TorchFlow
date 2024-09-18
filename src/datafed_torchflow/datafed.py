@@ -334,21 +334,46 @@ class DataFed(API):
         """
         return [record.id for record in listing_reply.item]
 
-    def get_metadata(self, record_id, format="pandas"):
+    def get_metadata(self,
+                     exclude_metadata=None,
+                     excluded_keys=None,
+                     non_unique=None,
+                     format="pandas"):
         """
         Retrieves the metadata record for a specified record ID.
 
         Args:
             record_id (str): The ID of the record to retrieve.
+            exclude_metadata (str, list, or None, optional): Metadata fields to exclude from the extraction record.
+            excluded_keys (str, list, or None, optional): Keys if the metadata record contains to exclude.
+            non_unique (str, list, or None, optional): Keys which are expected to be unique independent of record uniqueness - these are not considered when finding unique records.
+            format (str, optional): The format to return the metadata in. Defaults to "pandas".
 
         Returns:
             dict: The metadata record.
         """
 
+        # Retrieve the data view response for the given record ID
+        #TODO: make it so it can return more than 10000 records -- not hardcoded
         collection_list = self.collectionItemsList(self.collection_id, count=10000)[0]
-        record_ids = self.getIDs(collection_list)
-
-        return self.dataGet(record_id)[0].data[0].metadata
+        
+        # Get the record IDs from the collection list
+        record_ids_ = self.getIDs(collection_list)
+        
+        # Gets a list of Metadata excluding specific metadata terms
+        metadata_ = self._get_metadata_list(record_ids_, exclude=exclude_metadata)
+        
+        # Exclude specific records if specified key is in the record
+        metadata_ = self.exclude_keys(metadata_, excluded_keys)
+        
+        if non_unique is not None:
+            metadata_ = self.get_unique_dicts(metadata_, exclude_keys=non_unique)
+        
+        if format == "pandas":
+            import pandas as pd
+            return pd.DataFrame(metadata_)
+        else:
+            return ValueError("Invalid format. Please use 'pandas'.")
 
     def _get_metadata_list(self, record_ids, exclude=None):
         metadata = []
@@ -372,31 +397,86 @@ class DataFed(API):
     @staticmethod
     def required_keys(dict_list, required_keys):
         """
-        Checks if a list of dictionaries contains the required keys.
+        Filters a list of dictionaries to include only those that contain all specified required keys.
 
         Args:
-            dict_list (list): A list of dictionaries to check.
-            required_keys (list): A list of keys that must be present in each dictionary.
+            dict_list (list): A list of dictionaries to filter.
+            required_keys (str, list, or set): The keys that each dictionary must contain. 
+                                               Can be a single string, a list of strings, or a set of strings.
 
         Returns:
-            bool: True if all dictionaries contain the required keys, False otherwise.
+            list: A list of dictionaries that contain all the specified required keys.
+
+        Raises:
+            ValueError: If the required_keys parameter is not a string, list of strings, or set of strings.
         """
-        return all(all(key in d for key in required_keys) for d in dict_list)
+        # Ensure required_keys is a list, even if a single string is provided
+        if isinstance(required_keys, str):
+            required_keys = [required_keys]
+        elif not isinstance(required_keys, (list, set)):
+            raise ValueError(
+                "Invalid value for required_keys parameter. Must be either a string, list of strings, or set of strings."
+            )
+        
+        # Filter the list of dictionaries to include only those that contain all required keys
+        return [d for d in dict_list if all(key in d for key in required_keys)]
 
     @staticmethod
-    def excluded_keys(dict_list, excluded_keys):
+    def exclude_keys(dict_list, excluded_keys):
         """
-        Checks if a list of dictionaries contains the excluded keys.
+        Filters a list of dictionaries to exclude those that contain any of the specified excluded keys.
 
         Args:
-            dict_list (list): A list of dictionaries to check.
-            excluded_keys (list): A list of keys that must not be present in any dictionary.
+            dict_list (list): A list of dictionaries to filter.
+            excluded_keys (str, list, or set): The keys that, if present in a dictionary, will exclude it from the result.
+                                            Can be a single string, a list of strings, or a set of strings.
 
         Returns:
-            bool: True if no dictionary contains the excluded keys, False otherwise.
-        """
-        return all(all(key not in d for key in excluded_keys) for d in dict_list)
+            list: A list of dictionaries that do not contain any of the specified excluded keys.
 
+        Raises:
+            ValueError: If the excluded_keys parameter is not a string, list of strings, or set of strings.
+        """
+        # If excluded_keys is None, return the original list of dictionaries
+        if excluded_keys is None:
+            return dict_list
+        
+        # Ensure excluded_keys is a list, even if a single string is provided
+        if isinstance(excluded_keys, str):
+            excluded_keys = [excluded_keys]
+        elif not isinstance(excluded_keys, (list, set)):
+            raise ValueError(
+                "Invalid value for excluded_keys parameter. Must be either a string, list of strings, or set of strings."
+            )
+        
+        # Filter the list of dictionaries to exclude those that contain any of the excluded keys
+        return [d for d in dict_list if not any(key in d for key in excluded_keys)]
+
+    @staticmethod
+    def get_unique_dicts(dict_list, exclude_keys=None):
+        if exclude_keys is None:
+            exclude_keys = []
+        
+        # Convert exclude_keys to a set for efficient lookup
+        exclude_keys = set(exclude_keys)
+        
+        # Set to store unique dictionaries
+        unique_dicts = []
+        
+        # Set to store hashes of dictionaries excluding exclude_keys
+        seen = set()
+        
+        for d in dict_list:
+            # Create a tuple that excludes the specified keys from each dictionary
+            filtered_items = tuple((k, v) for k, v in d.items() if k not in exclude_keys)
+            
+            # If the tuple is not in seen, add it to the unique_dicts
+            if filtered_items not in seen:
+                seen.add(filtered_items)
+                unique_dicts.append(d)
+        
+        return unique_dicts
+    
     @staticmethod
     def _exclude_metadata_fields(metadata, fields):
         """
