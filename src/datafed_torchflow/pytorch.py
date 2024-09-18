@@ -310,3 +310,20 @@ class TorchLogger(nn.Module):
             else:
                 state_dict_serializable[key] = value
         return state_dict_serializable["param_groups"][0]
+    
+    def getModelCheckpoints(self, exclude_metadata='computing',excluded_keys='script', non_unique= ['id','timestamp','total_time'], format="pandas"):
+        """
+        Retrieves the metadata record for a specified record ID.
+
+        Args:
+            record_id (str): The ID of the record to retrieve.
+            exclude_metadata (str, list, or None, optional): Metadata fields to exclude from the extraction record.
+            excluded_keys (str, list, or None, optional): Keys if the metadata record contains to exclude.
+            non_unique (str, list, or None, optional): Keys which are expected to be unique independent of record uniqueness - these are not considered when finding unique records.
+            format (str, optional): The format to return the metadata in. Defaults to "pandas".
+
+        Returns:
+            dict: The metadata record.
+        """
+        
+        return self.df_api.get_metadata(exclude_metadata=exclude_metadata, excluded_keys=excluded_keys, non_unique=non_unique, format=format)
