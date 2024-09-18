@@ -5,6 +5,7 @@ from datafed.CommandLib import API
 import json
 from m3util.globus.globus import check_globus_endpoint
 from datafed_torchflow.JSON import UniversalEncoder
+from tqdm import tqdm
 
 
 class DataFed(API):
@@ -53,7 +54,7 @@ class DataFed(API):
 
             # Checks if the project exists in DataFed.
             self.project_id = self.find_id_by_title(items, self._parse_cwd[0])
-            
+
             self.create_subfolder_if_not_exists()
 
     def check_if_logged_in(self):
@@ -236,7 +237,7 @@ class DataFed(API):
     def data_record_create(self, metadata, record_title, deps=None, **kwargs):
         self.check_if_endpoint_set()
         self.check_if_logged_in()
-        
+
         if len(record_title) > 80:
             record_title = record_title.replace(".", "_")[:80]
             if self.verbose:
@@ -267,14 +268,14 @@ class DataFed(API):
                 f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
 
             raise e
-                
-    @staticmethod            
+
+    @staticmethod
     def addDerivedFrom(deps=None):
         """
         Adds derived from information to the data record, skipping any None values.
 
         Args:
-            deps (list or str, optional): A list of dependencies or a single 
+            deps (list or str, optional): A list of dependencies or a single
                                         dependency to add. Defaults to None.
 
         Returns:
@@ -289,10 +290,9 @@ class DataFed(API):
         # If deps is a list, process each entry and skip None entries
         if deps and isinstance(deps, list):
             derived_from_info = [["der", dep] for dep in deps if dep is not None]
-        
+
         return derived_from_info
 
-        
     def upload_file(self, dc_resp, file_path, wait=False):
         check_globus_endpoint(self.endpointDefaultGet())
 
@@ -321,3 +321,146 @@ class DataFed(API):
                 f.write(f"\n {timestamp} - Data put failed with error: {tb}")
 
             raise e
+
+    def getIDs(self, listing_reply):
+        """
+        Gets the IDs of items from a listing response.
+
+        Args:
+            listing_reply (object): The response object containing a list of items.
+
+        Returns:
+            list: A list of item IDs.
+        """
+        return [record.id for record in listing_reply.item]
+
+    def get_metadata(self, record_id, format="pandas"):
+        """
+        Retrieves the metadata record for a specified record ID.
+
+        Args:
+            record_id (str): The ID of the record to retrieve.
+
+        Returns:
+            dict: The metadata record.
+        """
+
+        collection_list = self.collectionItemsList(self.collection_id, count=10000)[0]
+        record_ids = self.getIDs(collection_list)
+
+        return self.dataGet(record_id)[0].data[0].metadata
+
+    def _get_metadata_list(self, record_ids, exclude=None):
+        metadata = []
+        for record_id in tqdm(record_ids):
+            metadata_ = self._get_metadata(record_id)
+
+            if exclude is not None:
+                if exclude == "computing":
+                    metadata_ = self._remove_computing_metadata(metadata_)
+                elif isinstance(exclude, list):
+                    metadata_ = self._exclude_metadata_fields(metadata_, exclude)
+                else:
+                    raise ValueError(
+                        "Invalid value for exclude parameter. Must be either 'computing' or a list of fields to exclude."
+                    )
+
+            metadata.append(metadata_)
+
+        return metadata
+
+    @staticmethod
+    def required_keys(dict_list, required_keys):
+        """
+        Checks if a list of dictionaries contains the required keys.
+
+        Args:
+            dict_list (list): A list of dictionaries to check.
+            required_keys (list): A list of keys that must be present in each dictionary.
+
+        Returns:
+            bool: True if all dictionaries contain the required keys, False otherwise.
+        """
+        return all(all(key in d for key in required_keys) for d in dict_list)
+
+    @staticmethod
+    def excluded_keys(dict_list, excluded_keys):
+        """
+        Checks if a list of dictionaries contains the excluded keys.
+
+        Args:
+            dict_list (list): A list of dictionaries to check.
+            excluded_keys (list): A list of keys that must not be present in any dictionary.
+
+        Returns:
+            bool: True if no dictionary contains the excluded keys, False otherwise.
+        """
+        return all(all(key not in d for key in excluded_keys) for d in dict_list)
+
+    @staticmethod
+    def _exclude_metadata_fields(metadata, fields):
+        """
+        Excludes specified fields from a metadata dictionary.
+
+        Args:
+            metadata (dict): The metadata dictionary to exclude fields from.
+            fields (list): A list of fields to exclude from the metadata.
+
+        Returns:
+            dict: A dictionary with the specified fields excluded.
+        """
+        # Use dictionary comprehension to create a new dictionary excluding specified fields
+        return {key: value for key, value in metadata.items() if key not in fields}
+
+    def _remove_computing_metadata(
+        self, metadata, fields=["gpu", "optimizer", "cpu", "memory", "python", "layers"]
+    ):
+        """
+        Removes computing-related metadata fields from the metadata dictionary.
+
+        Args:
+            metadata (dict): The metadata dictionary to remove fields from.
+            fields (list, optional): A list of fields to remove from the metadata.
+                                     Defaults to ['gpu', 'optimizer', 'cpu', 'memory', 'python', 'layers'].
+
+        Returns:
+            dict: A dictionary with the specified fields removed.
+        """
+        # Use the _exclude_metadata_fields method to remove the specified fields from the metadata
+        return self._exclude_metadata_fields(metadata, fields)
+
+    @staticmethod
+    def _extract_metadata_fields(metadata, fields):
+        """
+        Extracts specified fields from a metadata dictionary.
+
+        Args:
+            metadata (dict): The metadata dictionary to extract fields from.
+            fields (list): A list of fields to extract from the metadata.
+
+        Returns:
+            dict: A dictionary containing only the specified fields from the metadata.
+        """
+        return {field: metadata[field] for field in fields}
+
+    def _get_metadata(self, record_id):
+        """
+        Retrieves the metadata for a specified record ID.
+
+        Args:
+            record_id (str): The ID of the record to retrieve metadata for.
+
+        Returns:
+            dict: A dictionary containing the metadata of the specified record,
+                  including the record ID.
+        """
+        # Retrieve the data view response for the given record ID
+        dv_resp = self.dataView(record_id)
+
+        # Parse the metadata from the response and convert it to a dictionary
+        dict_ = json.loads(dv_resp[0].data[0].metadata)
+
+        # Add the record ID to the dictionary
+        dict_["id"] = dv_resp[0].data[0].id
+
+        return dict_
