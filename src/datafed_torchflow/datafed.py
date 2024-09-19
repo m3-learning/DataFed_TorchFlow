@@ -544,3 +544,37 @@ class DataFed(API):
         dict_["id"] = dv_resp[0].data[0].id
 
         return dict_
+    
+    def check_no_files(self, record_ids):
+        """
+        Checks if any of the specified DataFed records have no associated files.
+
+        Args:
+            record_ids (list): A list of DataFed record IDs to check.
+
+        Returns:
+            list or None: A list of record IDs that have no associated files, or None if all records have files.
+        """
+        no_files = []
+        for record_id in tqdm(record_ids):
+            # Check if the record has no associated files by checking the size attribute
+            if self.dataView(record_id)[0].data[0].size == 0:
+                no_files.append(record_id)
+
+        # Return None if all records have files, otherwise return the list of record IDs with no files
+        if no_files == []:
+            return None
+        else:
+            return no_files
+        
+    def getRecordTitle(self, record_id):
+        """
+        Retrieves the title of a record from its ID.
+
+        Args:
+            record_id (str): The ID of the record to retrieve the title for.
+
+        Returns:
+            str: The title of the record.
+        """
+        return self.dataView(record_id)[0].data[0].title

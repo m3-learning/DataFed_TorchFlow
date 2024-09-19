@@ -7,6 +7,7 @@ import getpass
 from datetime import datetime
 from m3util.globus.globus import check_globus_file_access
 from m3util.notebooks.checksum import calculate_notebook_checksum
+from tqdm import tqdm
 
 #TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.  
 #TODO: Add data and dataloader derivative. 
@@ -310,6 +311,7 @@ class TorchLogger(nn.Module):
             else:
                 state_dict_serializable[key] = value
         return state_dict_serializable["param_groups"][0]
+
 
 class TorchViewer(nn.Module):
     
