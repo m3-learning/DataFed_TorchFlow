@@ -567,6 +567,24 @@ class DataFed(API):
         else:
             return no_files
         
+    def getFileName(self, record_id):
+        """
+        Retrieves the file name (without extension) associated with a record ID.
+
+        Args:
+            record_id (str): The ID of the record to retrieve the file name for.
+
+        Returns:
+            str: The file name without the extension.
+        """
+        # Get the source path of the file associated with the record
+        source_path = self.dataView(record_id)[0].data[0].source
+        
+        # Extract the file name from the source path and remove the extension
+        file_name = source_path.split('/')[-1].split('.')[0]
+        
+        return file_name
+        
     def getRecordTitle(self, record_id):
         """
         Retrieves the title of a record from its ID.
