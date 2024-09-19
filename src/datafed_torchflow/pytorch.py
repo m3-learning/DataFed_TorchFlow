@@ -8,6 +8,7 @@ from datetime import datetime
 from m3util.globus.globus import check_globus_file_access
 from m3util.notebooks.checksum import calculate_notebook_checksum
 from tqdm import tqdm
+import logging
 
 #TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.  
 #TODO: Add data and dataloader derivative. 
@@ -311,6 +312,25 @@ class TorchLogger(nn.Module):
             else:
                 state_dict_serializable[key] = value
         return state_dict_serializable["param_groups"][0]
+
+class InferenceEvaluation:
+    def __init__(self,
+                 dataframe, 
+                 dataset, 
+                 model,
+                 df_api = df_api
+                 root_directory=None, 
+                 save_directory=None):
+        self.df = dataframe
+        self.dataset = dataset
+        self.root_directory = root_directory
+        self.save_directory = save_directory
+        self.model = model
+        self.df_api = df_api
+
+        # Create a logger
+        self.logger = logging.getLogger(__name__)
+        logging.basicConfig(level=logging.WARNING)
 
 
 class TorchViewer(nn.Module):

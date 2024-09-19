@@ -581,7 +581,7 @@ class DataFed(API):
         source_path = self.dataView(record_id)[0].data[0].source
         
         # Extract the file name from the source path and remove the extension
-        file_name = source_path.split('/')[-1].split('.')[0]
+        file_name = source_path.split('/')[-1]
         
         return file_name
         
