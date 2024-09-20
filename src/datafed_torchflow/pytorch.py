@@ -7,6 +7,8 @@ import getpass
 from datetime import datetime
 from m3util.globus.globus import check_globus_file_access
 from m3util.notebooks.checksum import calculate_notebook_checksum
+from m3util.util.IO import find_files_recursive
+import json
 from tqdm import tqdm
 import logging
 
@@ -317,20 +319,137 @@ class InferenceEvaluation:
     def __init__(self,
                  dataframe, 
                  dataset, 
-                 model,
-                 df_api = df_api
+                 df_api,
                  root_directory=None, 
-                 save_directory=None):
+                 save_directory="./tmp/",
+                 skip = None,
+                 **Kwargs):
+        
         self.df = dataframe
         self.dataset = dataset
         self.root_directory = root_directory
         self.save_directory = save_directory
-        self.model = model
         self.df_api = df_api
+        self.skip = skip
+        
+        self.model = self.build_model(**Kwargs)
 
         # Create a logger
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.WARNING)
+        
+    def file_not_found(self, filename, row):
+        self.logger.warning('{filename} was not found')
+            
+        print(f'Attempting to download {filename} from DataFed using record id {row.id}')
+        
+        ds_rep = self.df_api.dataGet(row.id, self.save_directory, wait=True)
+        
+        if ds_rep[0].task[0].status == 3:
+            # Download was successful
+            self.logger.info(f'{filename} was downloaded successfully')
+            
+            # finds the downloaded file recursively
+            file_path = find_files_recursive(self.root_directory, filename)
+            
+            return file_path
+        
+        else:
+            
+            # Download was not successful
+            self.logger.error(f'{filename} could not be downloaded')
+            
+            # returns a None object
+            return None 
+            
+        
+        return ds_rep
+    
+    def _getFileName(self, row):
+        return self.df_api.getFileName(row.id)
+    
+    @staticmethod
+    def get_first_entry_if_list(data):
+        if isinstance(data, list) and len(data) > 0:
+            return data[0]  # Return the first entry if it's a non-empty list
+        else:
+            return data
+        
+    def run_inference(self, row):
+    
+        # retrive the filename from the API datarecords
+        filename = self._getFileName(row)
+        
+        print(filename)
+        
+        # checks if the file can be found in the root directory
+        file_path = find_files_recursive(self.root_directory, filename)
+    
+        
+        if len(file_path) == 0:
+            
+            # if the file is not found, attempt to download it from DataFed
+            file_path = self.file_not_found(filename, row)
+            
+            file_path = self.get_first_entry_if_list(file_path)
+            
+            if file_path is None:
+                
+                print(f'{filename} could not be downloaded, skipping inference.')
+                
+                return None
+        
+        # load the model
+        self.model.load(file_path[0])
+        
+        return self.evaluate(row, file_path)
+    
+    def build_model(self):
+        """
+        Builds and returns the model to be used for inference.
+
+        This method should be implemented by the child class to define the specific model architecture
+        and any necessary configurations.
+
+        Returns:
+            torch.nn.Module: The model object to be used for inference.
+        """
+        raise NotImplementedError('Child class must implement this method. This method should return a model object.')
+            
+    def evaluate(self, row, file_path):
+        """
+        Evaluates the model on the given data. This method should be implemented by the child class.
+        The parent class does not implement this method.
+
+        Args:
+            row (pd.Series): A row from the dataframe containing metadata and other information.
+            file_path (str): The path to the file to be used for evaluation.
+
+        Returns:
+            dict: The evaluation results as a dictionary.
+        """
+        raise NotImplementedError('Child class must implement this method. This method should return evaluation results as a dictionary.')
+        
+    def run(self):
+        for i, row in tqdm(self.df.iterrows(), total=self.df.shape[0]):
+            
+            # set to restart and skip
+            if self.skip is not None and i <= self.skip:
+                continue
+            
+            # runs the inference
+            msg = self.run_inference(row)
+            
+            # if file cannot be found, skip inference
+            if msg is None:
+                continue
+            
+            # updates the metadata of the record
+            self.df_api.dataUpdate(row.id, metadata = json.dumps(msg))
+            
+            # logs the success of the inference
+            self.logger.info(f'Inference for {i} record {row.id} was successful')
+            
 
 
 class TorchViewer(nn.Module):
