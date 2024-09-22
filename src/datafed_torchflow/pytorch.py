@@ -180,7 +180,7 @@ class TorchLogger(nn.Module):
                 
                 self.notebook_record_id = self.notebook_record_resp[0].data[0].id,
         
-    def save(self, record_file_name, datafed=True, **kwargs):
+    def save(self, record_file_name, datafed=True, dataset_id=None, **kwargs):
         """
         Saves the model's state dictionary locally and optionally uploads it to DataFed.
         
@@ -197,10 +197,19 @@ class TorchLogger(nn.Module):
 
         if datafed:
             
-            try:                             
-                deps = self.df_api.addDerivedFrom([self.notebook_record_id[0], self.current_checkpoint_id])
-            except:
-                deps = None
+            # Safely retrieve values and replace with None if undefined or not present
+            notebook_record_id = self.notebook_record_id[0] if self.notebook_record_id and len(self.notebook_record_id) > 0 else None
+            current_checkpoint_id = self.current_checkpoint_id if self.current_checkpoint_id is not None else None
+            dataset_id = dataset_id if dataset_id is not None else None
+
+            # Create a list of IDs, excluding any that are None
+            ids_to_add = [id for id in [notebook_record_id, current_checkpoint_id, dataset_id] if id is not None]
+
+            # Call the API method with the valid IDs (if any)
+            if ids_to_add:
+                deps = self.df_api.addDerivedFrom(ids_to_add)
+            else:
+                deps = None  # If no valid IDs are present, set deps to None
             
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(**kwargs)
