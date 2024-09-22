@@ -1,18 +1,19 @@
 import json
-import torch
+import numpy as np
+
 
 class UniversalEncoder(json.JSONEncoder):
     def default(self, obj):
-        # Handle PyTorch objects
-        if isinstance(obj, torch.nn.Module):
-            return str(obj)  # Convert PyTorch models or layers to string
-        elif isinstance(obj, torch.Tensor):
-            return obj.tolist()  # Convert tensors to lists
-        elif callable(obj):
-            return str(obj)  # Convert functions or callables to strings
+        # Convert numpy types to their Python equivalents
+        if isinstance(obj, np.integer):
+            return int(obj)  # Convert numpy integers to Python int
+        elif isinstance(obj, np.floating):
+            return float(obj)  # Convert numpy floats to Python float
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()  # Convert numpy arrays to lists
         elif isinstance(obj, set):
             return list(obj)  # Convert sets to lists
-        elif hasattr(obj, '__dict__'):
+        elif hasattr(obj, "__dict__"):
             return obj.__dict__  # Serialize object attributes
         else:
             # Call the default method for other cases

@@ -254,7 +254,6 @@ class DataFed(API):
 
             with open(self.log_file_path, "a") as f:
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
-
                 f.write(f"\n {timestamp} - Data creation successful")
 
             return dc_resp
