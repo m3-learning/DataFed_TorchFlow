@@ -12,13 +12,14 @@ import json
 from tqdm import tqdm
 import logging
 
-#TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.  
-#TODO: Add data and dataloader derivative. 
+# TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.
+# TODO: Add data and dataloader derivative.
+
 
 class TorchLogger(nn.Module):
     """
-    TorchLogger is a class designed to log PyTorch model training details, 
-    including model architecture, optimizer state, and system information. 
+    TorchLogger is a class designed to log PyTorch model training details,
+    including model architecture, optimizer state, and system information.
     It also integrates with the DataFed API for file and metadata management.
 
     Attributes:
@@ -35,7 +36,7 @@ class TorchLogger(nn.Module):
         self,
         model,
         DataFed_path,
-        optimizer = None,
+        optimizer=None,
         script_path=None,
         local_path="./",
         verbose=False,
@@ -70,7 +71,7 @@ class TorchLogger(nn.Module):
 
     def reset(self):
         self.current_checkpoint_id = None
-        
+
     @property
     def optimizer(self):
         """
@@ -90,21 +91,21 @@ class TorchLogger(nn.Module):
             optimizer (torch.optim.Optimizer): The optimizer to be set.
         """
         self._optimizer = optimizer
-        
+
     def getMetadata(self, **kwargs):
         """
         Gathers metadata including the serialized model, optimizer, system info, and user details.
-        
+
         Args:
             **kwargs: Additional key-value pairs to be added to the metadata.
-        
+
         Returns:
-            dict: A dictionary containing the metadata including model, optimizer, 
+            dict: A dictionary containing the metadata including model, optimizer,
                   system information, user, timestamp, and optional script checksum.
         """
-        
+
         current_user, current_time = self.getUserClock()
-        
+
         # Serialize model, optimizer, and get system info
         model = self.serialize_model()
         optimizer = self.serialize_pytorch_optimizer()
@@ -113,12 +114,12 @@ class TorchLogger(nn.Module):
         # Combine metadata and add user and timestamp
         metadata = (
             model
-            | {"optimizer" : optimizer}
+            | {"optimizer": optimizer}
             | computer_info
             | {"user": current_user, "timestamp": current_time}
             | kwargs
         )
-        
+
         file_info = self.getNotebookMetadata()
 
         if file_info is not None:
@@ -135,55 +136,55 @@ class TorchLogger(nn.Module):
         """
         # Get the current user
         current_user = getpass.getuser()
-        
+
         # Get the current time
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         return current_user, current_time
-    
+
     def getNotebookMetadata(self):
         """
         Calculates the checksum of the script or notebook file and includes it in the metadata.
-        
+
         Returns:
             dict: A dictionary containing the path and checksum of the script or notebook file.
         """
-        
+
         # If the script path is provided, calculate and include its checksum
         if self.__file__ is not None:
             script_checksum = calculate_notebook_checksum(self.__file__)
             file_info = {"script": {"path": self.__file__, "checksum": script_checksum}}
             return file_info
-        
+
     def save_notebook(self):
-        
-        if self.__file__ is not None:
-                
-                # output to user
-                if self.verbose:
-                    print(f"Uploading notebook {self.__file__} to DataFed...")
-                    
-                notebook_metadata = self.getNotebookMetadata()
-                
-                current_user, current_time = self.getUserClock()
-                
-                notebook_metadata = (
-                    notebook_metadata
-                                | {"user": current_user, "timestamp": current_time}
-                            )
-                
-                self.notebook_record_resp = self.df_api.data_record_create(
+        if self.__file__.startswith("d/"):
+            self.notebook_record_id = self.__file__
+        elif self.__file__ is not None:
+            # output to user
+            if self.verbose:
+                print(f"Uploading notebook {self.__file__} to DataFed...")
+
+            notebook_metadata = self.getNotebookMetadata()
+
+            current_user, current_time = self.getUserClock()
+
+            notebook_metadata = notebook_metadata | {
+                "user": current_user,
+                "timestamp": current_time,
+            }
+
+            self.notebook_record_resp = self.df_api.data_record_create(
                 notebook_metadata, self.__file__.split("/")[-1].split(".")[0]
-                )
-                
-                self.df_api.upload_file(self.notebook_record_resp, self.__file__)
-                
-                self.notebook_record_id = self.notebook_record_resp[0].data[0].id,
-        
+            )
+
+            self.df_api.upload_file(self.notebook_record_resp, self.__file__)
+
+            self.notebook_record_id = (self.notebook_record_resp[0].data[0].id,)
+
     def save(self, record_file_name, datafed=True, dataset_id=None, **kwargs):
         """
         Saves the model's state dictionary locally and optionally uploads it to DataFed.
-        
+
         Args:
             metadata (dict): Metadata to be associated with the model record.
             record_file_name (str): The name of the file to save the model locally.
@@ -196,30 +197,42 @@ class TorchLogger(nn.Module):
         torch.save(self.model.state_dict(), path)
 
         if datafed:
-            
             # Safely retrieve values and replace with None if undefined or not present
-            notebook_record_id = self.notebook_record_id[0] if self.notebook_record_id and len(self.notebook_record_id) > 0 else None
-            current_checkpoint_id = self.current_checkpoint_id if self.current_checkpoint_id is not None else None
+            notebook_record_id = (
+                self.notebook_record_id[0]
+                if self.notebook_record_id and len(self.notebook_record_id) > 0
+                else None
+            )
+            current_checkpoint_id = (
+                self.current_checkpoint_id
+                if self.current_checkpoint_id is not None
+                else None
+            )
             dataset_id = dataset_id if dataset_id is not None else None
 
             # Create a list of IDs, excluding any that are None
-            ids_to_add = [id for id in [notebook_record_id, current_checkpoint_id, dataset_id] if id is not None]
+            ids_to_add = [
+                id
+                for id in [notebook_record_id, current_checkpoint_id, dataset_id]
+                if id is not None
+            ]
 
             # Call the API method with the valid IDs (if any)
             if ids_to_add:
                 deps = self.df_api.addDerivedFrom(ids_to_add)
             else:
                 deps = None  # If no valid IDs are present, set deps to None
-            
+
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(**kwargs)
             dc_resp = self.df_api.data_record_create(
-                metadata, str(record_file_name),   
+                metadata,
+                str(record_file_name),
                 deps=deps,
             )
             # Upload the saved model to DataFed
             self.df_api.upload_file(dc_resp, path)
-            
+
             self.current_checkpoint_id = dc_resp[0].data[0].id
 
     def serialize_model(self):
@@ -227,7 +240,7 @@ class TorchLogger(nn.Module):
         Serializes the model architecture into a dictionary format with detailed layer information.
 
         Returns:
-            dict: A dictionary containing the model's architecture with layer types, 
+            dict: A dictionary containing the model's architecture with layer types,
                   names, and configurations.
         """
         model_info = {}
@@ -324,95 +337,93 @@ class TorchLogger(nn.Module):
                 state_dict_serializable[key] = value
         return state_dict_serializable["param_groups"][0]
 
+
 class InferenceEvaluation:
-    def __init__(self,
-                 dataframe, 
-                 dataset, 
-                 df_api,
-                 root_directory=None, 
-                 save_directory="./tmp/",
-                 skip = None,
-                 **Kwargs):
-        
+    def __init__(
+        self,
+        dataframe,
+        dataset,
+        df_api,
+        root_directory=None,
+        save_directory="./tmp/",
+        skip=None,
+        **Kwargs,
+    ):
         self.df = dataframe
         self.dataset = dataset
         self.root_directory = root_directory
         self.save_directory = save_directory
         self.df_api = df_api
         self.skip = skip
-        
+
         self.model = self.build_model(**Kwargs)
 
         # Create a logger
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.WARNING)
-        
+
     def file_not_found(self, filename, row):
-        self.logger.warning('{filename} was not found')
-            
-        print(f'Attempting to download {filename} from DataFed using record id {row.id}')
-        
+        self.logger.warning("{filename} was not found")
+
+        print(
+            f"Attempting to download {filename} from DataFed using record id {row.id}"
+        )
+
         ds_rep = self.df_api.dataGet(row.id, self.save_directory, wait=True)
-        
+
         if ds_rep[0].task[0].status == 3:
             # Download was successful
-            self.logger.info(f'{filename} was downloaded successfully')
-            
+            self.logger.info(f"{filename} was downloaded successfully")
+
             # finds the downloaded file recursively
             file_path = find_files_recursive(self.root_directory, filename)
-            
+
             return file_path
-        
+
         else:
-            
             # Download was not successful
-            self.logger.error(f'{filename} could not be downloaded')
-            
+            self.logger.error(f"{filename} could not be downloaded")
+
             # returns a None object
-            return None 
-            
-        
+            return None
+
         return ds_rep
-    
+
     def _getFileName(self, row):
         return self.df_api.getFileName(row.id)
-    
+
     @staticmethod
     def get_first_entry_if_list(data):
         if isinstance(data, list) and len(data) > 0:
             return data[0]  # Return the first entry if it's a non-empty list
         else:
             return data
-        
+
     def run_inference(self, row):
-    
         # retrive the filename from the API datarecords
         filename = self._getFileName(row)
-        
+
         print(filename)
-        
+
         # checks if the file can be found in the root directory
         file_path = find_files_recursive(self.root_directory, filename)
-    
-        
+
         if len(file_path) == 0:
-            
             # if the file is not found, attempt to download it from DataFed
             file_path = self.file_not_found(filename, row)
-            
+
             file_path = self.get_first_entry_if_list(file_path)
-            
+
             if file_path is None:
-                
-                print(f'{filename} could not be downloaded, skipping inference.')
-                
+                print(f"{filename} could not be downloaded, skipping inference.")
+
                 return None
-        
+
         # load the model
         self.model.load(file_path[0])
-        
+
         return self.evaluate(row, file_path)
-    
+
     def build_model(self):
         """
         Builds and returns the model to be used for inference.
@@ -423,8 +434,10 @@ class InferenceEvaluation:
         Returns:
             torch.nn.Module: The model object to be used for inference.
         """
-        raise NotImplementedError('Child class must implement this method. This method should return a model object.')
-            
+        raise NotImplementedError(
+            "Child class must implement this method. This method should return a model object."
+        )
+
     def evaluate(self, row, file_path):
         """
         Evaluates the model on the given data. This method should be implemented by the child class.
@@ -437,38 +450,42 @@ class InferenceEvaluation:
         Returns:
             dict: The evaluation results as a dictionary.
         """
-        raise NotImplementedError('Child class must implement this method. This method should return evaluation results as a dictionary.')
-        
+        raise NotImplementedError(
+            "Child class must implement this method. This method should return evaluation results as a dictionary."
+        )
+
     def run(self):
         for i, row in tqdm(self.df.iterrows(), total=self.df.shape[0]):
-            
             # set to restart and skip
             if self.skip is not None and i <= self.skip:
                 continue
-            
+
             # runs the inference
             msg = self.run_inference(row)
-            
+
             # if file cannot be found, skip inference
             if msg is None:
                 continue
-            
+
             # updates the metadata of the record
-            self.df_api.dataUpdate(row.id, metadata = json.dumps(msg))
-            
+            self.df_api.dataUpdate(row.id, metadata=json.dumps(msg))
+
             # logs the success of the inference
-            self.logger.info(f'Inference for {i} record {row.id} was successful')
-            
+            self.logger.info(f"Inference for {i} record {row.id} was successful")
 
 
 class TorchViewer(nn.Module):
-    
     def __init__(self, DataFed_path):
-        
         self.DataFed_path = DataFed_path
         self.df_api = DataFed(self.DataFed_path)
 
-    def getModelCheckpoints(self, exclude_metadata='computing',excluded_keys='script', non_unique= ['id','timestamp','total_time'], format="pandas"):
+    def getModelCheckpoints(
+        self,
+        exclude_metadata="computing",
+        excluded_keys="script",
+        non_unique=["id", "timestamp", "total_time"],
+        format="pandas",
+    ):
         """
         Retrieves the metadata record for a specified record ID.
 
@@ -482,5 +499,10 @@ class TorchViewer(nn.Module):
         Returns:
             dict: The metadata record.
         """
-        
-        return self.df_api.get_metadata(exclude_metadata=exclude_metadata, excluded_keys=excluded_keys, non_unique=non_unique, format=format)
+
+        return self.df_api.get_metadata(
+            exclude_metadata=exclude_metadata,
+            excluded_keys=excluded_keys,
+            non_unique=non_unique,
+            format=format,
+        )
