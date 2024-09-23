@@ -41,6 +41,7 @@ class TorchLogger(nn.Module):
         local_path="./",
         verbose=False,
         notebook_metadata=None,
+        dataset_id=None,
     ):
         """
         Initializes the TorchLogger class.
@@ -64,6 +65,7 @@ class TorchLogger(nn.Module):
         self.verbose = verbose
         self.local_path = local_path
         self.df_api = DataFed(self.DataFed_path)
+        self.dataset = dataset_id
 
         # Check if Globus has access to the local path
         check_globus_file_access(self.df_api.endpointDefaultGet, self.local_path)
@@ -180,14 +182,14 @@ class TorchLogger(nn.Module):
             }
 
             self.notebook_record_resp = self.df_api.data_record_create(
-                notebook_metadata, self.__file__.split("/")[-1].split(".")[0]
+                notebook_metadata, self.__file__.split("/")[-1].split(".")[0], deps=self.dataset,
             )
 
             self.df_api.upload_file(self.notebook_record_resp, self.__file__)
 
             self.notebook_record_id = self.notebook_record_resp[0].data[0].id
 
-    def save(self, record_file_name, datafed=True, dataset_id=None, **kwargs):
+    def save(self, record_file_name, datafed=True, **kwargs):
         """
         Saves the model's state dictionary locally and optionally uploads it to DataFed.
 
@@ -218,13 +220,11 @@ class TorchLogger(nn.Module):
                 if self.current_checkpoint_id is not None
                 else None
             )
-
-            dataset_id = dataset_id if dataset_id is not None else None
-
+            
             # Create a list of IDs, excluding any that are None
             ids_to_add = [
                 id
-                for id in [notebook_record_id, current_checkpoint_id, dataset_id]
+                for id in [notebook_record_id, current_checkpoint_id, self.dataset_id]
                 if id is not None
             ]
 
