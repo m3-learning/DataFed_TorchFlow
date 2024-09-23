@@ -15,7 +15,7 @@ import logging
 # TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.
 # TODO: Add data and dataloader derivative.
 
-
+# TODO: do I need this? 
 class TorchLogger(nn.Module):
     """
     TorchLogger is a class designed to log PyTorch model training details,
@@ -65,7 +65,7 @@ class TorchLogger(nn.Module):
         self.verbose = verbose
         self.local_path = local_path
         self.df_api = DataFed(self.DataFed_path)
-        self.dataset = dataset_id
+        self.dataset_id = dataset_id
 
         # Check if Globus has access to the local path
         check_globus_file_access(self.df_api.endpointDefaultGet, self.local_path)
@@ -182,7 +182,7 @@ class TorchLogger(nn.Module):
             }
 
             self.notebook_record_resp = self.df_api.data_record_create(
-                notebook_metadata, self.__file__.split("/")[-1].split(".")[0], deps=self.dataset,
+                notebook_metadata, self.__file__.split("/")[-1].split(".")[0], deps=self.dataset_id,
             )
 
             self.df_api.upload_file(self.notebook_record_resp, self.__file__)
@@ -361,7 +361,7 @@ class InferenceEvaluation:
         **Kwargs,
     ):
         self.df = dataframe
-        self.dataset = dataset
+        self.dataset_id = dataset
         self.root_directory = root_directory
         self.save_directory = save_directory
         self.df_api = df_api
