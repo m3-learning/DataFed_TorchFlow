@@ -16,7 +16,7 @@ import logging
 # TODO: Add data and dataloader derivative.
 
 # TODO: do I need this? 
-class TorchLogger(nn.Module):
+class TorchLogger:
     """
     TorchLogger is a class designed to log PyTorch model training details,
     including model architecture, optimizer state, and system information.
@@ -54,7 +54,6 @@ class TorchLogger(nn.Module):
             local_path (str, optional): Local directory to store model files. Default is './'.
             verbose (bool, optional): Flag for verbose output. Default is False.
         """
-        super(TorchLogger, self).__init__()
         self.current_checkpoint_id = None
         self.notebook_record_id = None
         self.notebook_metadata = notebook_metadata
@@ -132,6 +131,7 @@ class TorchLogger(nn.Module):
 
         if self.notebook_metadata is not None:
             metadata |= self.notebook_metadata
+            self.notebook_id = self.__file__
 
         return metadata
 
@@ -182,14 +182,16 @@ class TorchLogger(nn.Module):
             }
 
             self.notebook_record_resp = self.df_api.data_record_create(
-                notebook_metadata, self.__file__.split("/")[-1].split(".")[0], deps=self.dataset_id,
+                notebook_metadata,
+                self.__file__.split("/")[-1].split(".")[0],
+                deps=self.df_api.addDerivedFrom(self.dataset_id),
             )
 
             self.df_api.upload_file(self.notebook_record_resp, self.__file__)
 
             self.notebook_record_id = self.notebook_record_resp[0].data[0].id
 
-    def save(self, record_file_name, datafed=True, **kwargs):
+    def save(self, record_file_name, training_loss=None, datafed=True, **kwargs):
         """
         Saves the model's state dictionary locally and optionally uploads it to DataFed.
 
@@ -197,6 +199,7 @@ class TorchLogger(nn.Module):
             metadata (dict): Metadata to be associated with the model record.
             record_file_name (str): The name of the file to save the model locally.
             datafed (bool, optional): If True, the record is uploaded to DataFed. Default is True.
+            training_loss (str, optional): The final training loss to include in the metadata.
             **kwargs: Additional metadata or attributes to include in the record.
         """
         path = f"{self.local_path}/{record_file_name}.pth"
@@ -205,6 +208,7 @@ class TorchLogger(nn.Module):
         torch.save(self.model.state_dict(), path)
 
         if datafed:
+            
             # Safely retrieve values and replace with None if undefined or not present
             notebook_record_id = (
                 self.notebook_record_id
@@ -245,6 +249,12 @@ class TorchLogger(nn.Module):
             self.df_api.upload_file(dc_resp, path)
 
             self.current_checkpoint_id = dc_resp[0].data[0].id
+            
+            dc_resp = self.df_api.data_record_create(
+                metadata,
+                f"{record_file_name}_training_loss",
+                deps=self.df_api.addDerivedFrom(self.current_checkpoint_id),
+            )
 
     def serialize_model(self):
         """
