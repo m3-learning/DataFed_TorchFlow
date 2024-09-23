@@ -40,6 +40,7 @@ class TorchLogger(nn.Module):
         script_path=None,
         local_path="./",
         verbose=False,
+        notebook_metadata=None,
     ):
         """
         Initializes the TorchLogger class.
@@ -55,6 +56,7 @@ class TorchLogger(nn.Module):
         super(TorchLogger, self).__init__()
         self.current_checkpoint_id = None
         self.notebook_record_id = None
+        self.notebook_metadata = notebook_metadata
         self.__file__ = script_path
         self.model = model
         self.optimizer = optimizer
@@ -120,10 +122,14 @@ class TorchLogger(nn.Module):
             | kwargs
         )
 
-        file_info = self.getNotebookMetadata()
+        # Check if the script path is provided and does not start with "d/"
+        if self.__file__ is not None and not self.__file__.startswith("d/"):
+            # If notebook metadata is not already set, calculate and set it
+            if self.notebook_metadata is None:
+                self.notebook_metadata = self.getNotebookMetadata()
 
-        if file_info is not None:
-            metadata |= file_info
+        if self.notebook_metadata is not None:
+            metadata |= self.notebook_metadata
 
         return metadata
 
@@ -179,7 +185,7 @@ class TorchLogger(nn.Module):
 
             self.df_api.upload_file(self.notebook_record_resp, self.__file__)
 
-            self.notebook_record_id = (self.notebook_record_resp[0].data[0].id,)
+            self.notebook_record_id = self.notebook_record_resp[0].data[0].id
 
     def save(self, record_file_name, datafed=True, dataset_id=None, **kwargs):
         """
@@ -199,15 +205,20 @@ class TorchLogger(nn.Module):
         if datafed:
             # Safely retrieve values and replace with None if undefined or not present
             notebook_record_id = (
-                self.notebook_record_id[0]
+                self.notebook_record_id
                 if self.notebook_record_id and len(self.notebook_record_id) > 0
                 else None
             )
+
+            # Saves the record id to the object
+            self.notebook_record_id = notebook_record_id
+
             current_checkpoint_id = (
                 self.current_checkpoint_id
                 if self.current_checkpoint_id is not None
                 else None
             )
+
             dataset_id = dataset_id if dataset_id is not None else None
 
             # Create a list of IDs, excluding any that are None
