@@ -202,7 +202,7 @@ class TorchLogger:
             training_loss (str, optional): The final training loss to include in the metadata.
             **kwargs: Additional metadata or attributes to include in the record.
         """
-        path = f"{self.local_path}/{record_file_name}.pth"
+        path = f"{self.local_path}/{record_file_name}"
 
         # Save the model state dict locally
         torch.save(self.model.state_dict(), path)
