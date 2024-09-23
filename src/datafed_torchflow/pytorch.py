@@ -250,11 +250,15 @@ class TorchLogger:
 
             self.current_checkpoint_id = dc_resp[0].data[0].id
             
-            dc_resp = self.df_api.data_record_create(
-                metadata,
-                f"{record_file_name}_training_loss",
-                deps=self.df_api.addDerivedFrom(self.current_checkpoint_id),
-            )
+            if training_loss is not None:
+                dc_resp = self.df_api.data_record_create(
+                    metadata,
+                    f"Training_loss_{record_file_name}",
+                    deps=self.df_api.addDerivedFrom(self.current_checkpoint_id),
+                )
+                
+                # Upload the saved model to DataFed
+                self.df_api.upload_file(dc_resp, training_loss)
 
     def serialize_model(self):
         """
