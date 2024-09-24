@@ -11,6 +11,7 @@ from m3util.util.IO import find_files_recursive
 import json
 from tqdm import tqdm
 import logging
+import numpy as np
 
 # TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.
 # TODO: Add data and dataloader derivative.
@@ -167,29 +168,37 @@ class TorchLogger:
     def save_notebook(self):
         if self.__file__.startswith("d/"):
             self.notebook_record_id = self.__file__
+            
         elif self.__file__ is not None:
-            # output to user
-            if self.verbose:
-                print(f"Uploading notebook {self.__file__} to DataFed...")
+            
+            
+            try: 
+                self.notebook_record_id = self.df_api.get_notebook_DataFed_ID_from_path_and_title(self.__file__)
+            
+            except:
+           
+                # output to user
+                if self.verbose:
+                    print(f"Uploading notebook {self.__file__} to DataFed...")
 
-            notebook_metadata = self.getNotebookMetadata()
+                notebook_metadata = self.getNotebookMetadata()
 
-            current_user, current_time = self.getUserClock()
+                current_user, current_time = self.getUserClock()
 
-            notebook_metadata = notebook_metadata | {
-                "user": current_user,
-                "timestamp": current_time,
-            }
+                notebook_metadata = notebook_metadata | {
+                    "user": current_user,
+                    "timestamp": current_time,
+                }
 
-            self.notebook_record_resp = self.df_api.data_record_create(
-                notebook_metadata,
-                self.__file__.split("/")[-1].split(".")[0],
-                deps=self.df_api.addDerivedFrom(self.dataset_id),
-            )
+                self.notebook_record_resp = self.df_api.data_record_create(
+                    notebook_metadata,
+                    self.__file__.split("/")[-1], #.split(".")[0],
+                    deps=self.df_api.addDerivedFrom(self.dataset_id),
+                )
 
-            self.df_api.upload_file(self.notebook_record_resp, self.__file__)
+                self.df_api.upload_file(self.notebook_record_resp, self.__file__)
 
-            self.notebook_record_id = self.notebook_record_resp[0].data[0].id
+                self.notebook_record_id = self.notebook_record_resp[0].data[0].id
 
     def save(self, record_file_name, training_loss=None, datafed=True, **kwargs):
         """

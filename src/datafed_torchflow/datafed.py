@@ -233,19 +233,25 @@ class DataFed(API):
             collections, ls_resp = self.getCollList(current_collection)
 
         self.collection_id = current_collection
+        
+    def get_notebook_DataFed_ID_from_path_and_title(self,notebook_filename):
+        ls_resp_2 = self.collectionItemsList(self.collection_id)
+        notebook_ID = ls_resp_2[0].item[np.where([record.title == notebook_filename for record in ls_resp_2[0].item])[0].item()].id
+        
+        return notebook_ID 
 
     def data_record_create(self, metadata, record_title, deps=None, **kwargs):
         self.check_if_endpoint_set()
         self.check_if_logged_in()
 
         if len(record_title) > 80:
-            record_title = record_title.replace(".", "_")[:80]
+            record_title = record_title[:80] #.replace(".", "_")[:80]
             if self.verbose:
                 print("Record title is too long. Truncating to 80 characters.")
 
         try:
             dc_resp = self.dataCreate(
-                record_title.replace(".", "_"),
+                record_title, #.replace(".", "_"),
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
                 parent_id=self.collection_id,
                 deps=deps,
@@ -267,6 +273,7 @@ class DataFed(API):
                 f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
 
             raise e
+
 
     @staticmethod
     def addDerivedFrom(deps=None):
