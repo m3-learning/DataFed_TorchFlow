@@ -6,7 +6,9 @@ import json
 from m3util.globus.globus import check_globus_endpoint
 from datafed_torchflow.JSON import UniversalEncoder
 from tqdm import tqdm
-
+from pathlib import Path
+from os.path import basename
+import zipfile
 
 class DataFed(API):
     """
@@ -21,7 +23,7 @@ class DataFed(API):
         project_id (str): The ID of the project.
     """
 
-    def __init__(self, cwd, verbose=False, log_file_path=".log.txt"):
+    def __init__(self, cwd, record_title, folder_model, weights_file_path, embedding_file_path, reconstruction_file_path=None, verbose=False, log_file_path=".log.txt"):
         """
         Initializes the DataFed instance.
 
@@ -34,6 +36,10 @@ class DataFed(API):
         """
         super().__init__()
         self.cwd = cwd
+        self.folder_model = folder_model
+        self.weights_file_path = weights_file_path
+        self.embedding_file_path = embedding_file_path
+        self.reconstruction_file_path = reconstruction_file_path
         self.verbose = verbose
 
         self.check_if_logged_in()
@@ -239,8 +245,38 @@ class DataFed(API):
         notebook_ID = ls_resp_2[0].item[np.where([record.title == notebook_filename for record in ls_resp_2[0].item])[0].item()].id
         
         return notebook_ID 
+    
+    def zip_files_create(Folder_model,record_title,weights_file_path,embedding_file_path, reconstruction_file_path=None):
+        zip_file_folder = Path(f"{Folder_model}/zip_files")
+        zip_file = f"{record_title}.zip"
+        zip_file_path = zip_file_folder / zip_file
+        zip_file_folder.mkdir(parents=True,exist_ok=True)
+            
+        if reconstruction_file_path == None:
+            filenames = [weights_file_path,embedding_file_path]
 
-    def data_record_create(self, metadata, record_title, deps=None, **kwargs):
+            with zipfile.ZipFile(zip_file_path,mode='w') as archive:
+                for filename in filenames:
+                    archive.write(filename, basename(filename))
+                    
+        elif embedding_file_path == None:
+            filenames = [weights_file_path,reconstruction_file_path]
+
+            with zipfile.ZipFile(zip_file_path,mode='w') as archive:
+                for filename in filenames:
+                    archive.write(filename, basename(filename))          
+        
+        else:
+            filenames = [weights_file_path,embedding_file_path,reconstruction_file_path]
+
+            
+            
+            with zipfile.ZipFile(zip_file_path) as archive:
+                for filename in filenames:
+                    archive.write(filename, basename(filename))         
+
+    def data_record_create(self, metadata, record_title, deps=None, folder_model = None, weights_file_path = None, embedding_file_path = None,
+         reconstruction_file_path=None, **kwargs):
         self.check_if_endpoint_set()
         self.check_if_logged_in()
 
@@ -248,6 +284,11 @@ class DataFed(API):
             record_title = record_title[:80] #.replace(".", "_")[:80]
             if self.verbose:
                 print("Record title is too long. Truncating to 80 characters.")
+                
+        if self.embedding_file_path != None or self.reconstruction_file_path != None:
+            
+            self.zip_files_create(folder_model,record_title, weights_file_path, embedding_file_path)
+             
 
         try:
             dc_resp = self.dataCreate(
