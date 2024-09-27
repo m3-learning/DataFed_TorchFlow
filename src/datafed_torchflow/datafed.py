@@ -466,12 +466,14 @@ class DataFed(API):
         seen = set()
         
         for d in dict_list:
-            # Create a tuple that excludes the specified keys from each dictionary
-            filtered_items = tuple((k, v) for k, v in d.items() if k not in exclude_keys)
+            # Create a JSON string that excludes the specified keys from each dictionary
+            # Sort keys to ensure consistent ordering
+            filtered_dict = {k: v for k, v in d.items() if k not in exclude_keys}
+            filtered_json = json.dumps(filtered_dict, sort_keys=True)
             
-            # If the tuple is not in seen, add it to the unique_dicts
-            if filtered_items not in seen:
-                seen.add(filtered_items)
+            # If the JSON string is not in seen, add it to the unique_dicts
+            if filtered_json not in seen:
+                seen.add(filtered_json)
                 unique_dicts.append(d)
         
         return unique_dicts
