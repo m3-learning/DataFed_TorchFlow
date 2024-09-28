@@ -23,7 +23,7 @@ class DataFed(API):
         project_id (str): The ID of the project.
     """
 
-    def __init__(self, cwd, record_title, folder_model, weights_file_path, embedding_file_path, reconstruction_file_path=None, verbose=False, log_file_path=".log.txt"):
+    def __init__(self, cwd, folder_model, verbose=False, log_file_path=".log.txt"):
         """
         Initializes the DataFed instance.
 
@@ -37,9 +37,7 @@ class DataFed(API):
         super().__init__()
         self.cwd = cwd
         self.folder_model = folder_model
-        self.weights_file_path = weights_file_path
-        self.embedding_file_path = embedding_file_path
-        self.reconstruction_file_path = reconstruction_file_path
+
         self.verbose = verbose
 
         self.check_if_logged_in()
@@ -246,12 +244,12 @@ class DataFed(API):
         
         return notebook_ID 
     
-    def zip_files_create(Folder_model,record_title,weights_file_path,embedding_file_path, reconstruction_file_path=None):
-        zip_file_folder = Path(f"{Folder_model}/zip_files")
+    def zip_files_create(self,folder_model=".",record_title = "demo_record",weights_file_path=None,embedding_file_path=None, reconstruction_file_path=None):
+        zip_file_folder = Path(f"{folder_model}/zip_files")
         zip_file = f"{record_title}.zip"
         zip_file_path = zip_file_folder / zip_file
         zip_file_folder.mkdir(parents=True,exist_ok=True)
-            
+        
         if reconstruction_file_path == None:
             filenames = [weights_file_path,embedding_file_path]
 
@@ -275,7 +273,7 @@ class DataFed(API):
                 for filename in filenames:
                     archive.write(filename, basename(filename))         
 
-    def data_record_create(self, metadata, record_title, deps=None, folder_model = None, weights_file_path = None, embedding_file_path = None,
+    def data_record_create(self, metadata=None, record_title=None, deps=None, weights_file_path = None, embedding_file_path = None,
          reconstruction_file_path=None, **kwargs):
         self.check_if_endpoint_set()
         self.check_if_logged_in()
@@ -285,9 +283,12 @@ class DataFed(API):
             if self.verbose:
                 print("Record title is too long. Truncating to 80 characters.")
                 
-        if self.embedding_file_path != None or self.reconstruction_file_path != None:
-            
-            self.zip_files_create(folder_model,record_title, weights_file_path, embedding_file_path)
+        if embedding_file_path != None and reconstruction_file_path != None:     
+       
+     
+        
+            self.zip_files_create(folder_model = self.folder_model,record_title=record_title, 
+                              weights_file_path=weights_file_path, embedding_file_path=embedding_file_path,reconstruction_file_path=reconstruction_file_path)
              
 
         try:
@@ -296,7 +297,7 @@ class DataFed(API):
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
                 parent_id=self.collection_id,
                 deps=deps,
-                **kwargs,
+                #**kwargs,
             )
 
             with open(self.log_file_path, "a") as f:
