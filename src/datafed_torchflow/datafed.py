@@ -23,12 +23,13 @@ class DataFed(API):
         project_id (str): The ID of the project.
     """
 
-    def __init__(self, cwd, folder_model, verbose=False, log_file_path=".log.txt"):
+    def __init__(self, cwd, local_model_path, verbose=False, log_file_path=".log.txt"):
         """
         Initializes the DataFed instance.
 
         Args:
             cwd (str): The current working directory.
+            local_model_path (str): Local directory to store model files.
             verbose (bool, optional): Flag to enable verbose logging. Defaults to False.
 
         Raises:
@@ -36,10 +37,12 @@ class DataFed(API):
         """
         super().__init__()
         self.cwd = cwd
-        self.folder_model = folder_model
+        self.local_model_path = local_model_path
 
         self.verbose = verbose
 
+        # checks if the user is autenticated with DataFed 
+        # and the Globus endpoint is set
         self.check_if_logged_in()
         self.check_if_endpoint_set()
 
@@ -130,7 +133,7 @@ class DataFed(API):
             title_to_find (str): The title of the item to find.
 
         Returns:
-            str: The ID of the item with the specified title.
+            str: The DataFed ID of the item with the specified title.
 
         Raises:
             ValueError: If no item with the specified title is found.
@@ -239,73 +242,149 @@ class DataFed(API):
         self.collection_id = current_collection
         
     def get_notebook_DataFed_ID_from_path_and_title(self,notebook_filename):
-        ls_resp_2 = self.collectionItemsList(self.collection_id)
-        notebook_ID = ls_resp_2[0].item[np.where([record.title == notebook_filename for record in ls_resp_2[0].item])[0].item()].id
+        """
+        Gets the DataFed ID for the Jupyter notebook from the file name and DataFed path
+        
+        Args: 
+            notebook_filename (str): The filename of the notebook. Can be the local filepath or just the filename. 
+        
+        Returns: 
+            str: The DataFed ID of the specified notebook
+            
+        Raises
+            ValueError: If no item with the specified title is found
+        """
+        ls_resp_2 = self.collectionItemsList(self.collection_id,count = 10000000)
+        notebook_ID = ls_resp_2[0].item[np.where([record.title == notebook_filename.rsplit("/",1)[-1] for record in ls_resp_2[0].item])[0].item()].id
         
         return notebook_ID 
     
-    def zip_files_create(self,folder_model=".",record_title = "demo_record",weights_file_path=None,embedding_file_path=None, reconstruction_file_path=None):
-        zip_file_folder = Path(f"{folder_model}/zip_files")
-        zip_file = f"{record_title}.zip"
-        zip_file_path = zip_file_folder / zip_file
-        zip_file_folder.mkdir(parents=True,exist_ok=True)
+    def zip_files_create(self,local_model_path=".",record_title = "demo_record",weights_file_path=None,embedding_file_path=None, reconstruction_file_path=None):
+        """
+        DataFed only allows one data file per record, so zip the relevant model files into one. 
+        Assume the relevant model files are the model weights pickle file and the visualizations of the model 
+        embeddings and reconstructions
         
+        Args: 
+            local_model_path (str): Local directory to store model files
+            record_title (str): The zip file's filename. Also the title of the DataFed record for the zip file 
+            weights_file_path (str): Local file path to the saved model weights
+            embedding_file_path (str): Local file path to the visualization of the model embeddings
+            reconstruction_file_path (str): Local file path to the visualization of the model reconstructions
+            
+            
+        Returns: 
+            pathlib.PosixPath: the file path to the zip file
+        """
+        # construct the local path to the folder containing the zip files
+        zip_file_folder = Path(f"{local_model_path.rsplit('/',1)[0]}/zip_files/{local_model_path.rsplit('/',1)[1]}")
+        
+        # if the user includes the *.zip in the record title, ignore it for flexibility 
+        if record_title.endswith(".zip"):
+            zip_file = record_title
+        else:
+            zip_file = f"{record_title}.zip"
+            
+        # construct the local path to the zip file 
+        zip_file_path = zip_file_folder / zip_file
+        # ensure the local folder path exists 
+        zip_file_folder.mkdir(parents=True,exist_ok=True) 
+        
+        # create the zip files.  I assume that the weights file is always specified because it should always exist and be saved. I also assume that 
+        # the weights file is not the only file specified because if there is only 1 file, there is no need to zip. 
+        # Therefore, either the model embeddings or reconstructions (or both) must be specified. 
+        # These are the 3 cases handled by the if..elif..else clause below. 
+        
+        # if there is no model reconstruction file given, just zip the weights and model embedding files 
         if reconstruction_file_path == None:
             filenames = [weights_file_path,embedding_file_path]
 
             with zipfile.ZipFile(zip_file_path,mode='w') as archive:
                 for filename in filenames:
                     archive.write(filename, basename(filename))
-                    
+        
+        # if there is no model embedding file given, just zip the weights and model reconstruction files    
         elif embedding_file_path == None:
             filenames = [weights_file_path,reconstruction_file_path]
 
             with zipfile.ZipFile(zip_file_path,mode='w') as archive:
                 for filename in filenames:
                     archive.write(filename, basename(filename))          
-        
+
+        # if both the model embeddings and reconstruction files are specified, zip them both along with the weights
         else:
             filenames = [weights_file_path,embedding_file_path,reconstruction_file_path]
 
             
-            
-            with zipfile.ZipFile(zip_file_path) as archive:
+            with zipfile.ZipFile(zip_file_path,mode='w') as archive:
                 for filename in filenames:
-                    archive.write(filename, basename(filename))         
+                    archive.write(filename, basename(filename))
+        # return the local file path of the zip file
+        return zip_file_path         
 
     def data_record_create(self, metadata=None, record_title=None, deps=None, weights_file_path = None, embedding_file_path = None,
          reconstruction_file_path=None, **kwargs):
+        """
+        Creates the DataFed record for the saved checkpoint and uploads the relevant metadata
+        
+        Args: 
+            metadata (dict): The relevant model and system metadata for the checkpoint. 
+            record_title (str): The title of the DataFed record. 
+            deps (list or str, optional): A list of dependencies or a single dependency to add. Defaults to None.
+            weights_file_path (str, optional): Local file path to the saved model weights. Defaults to None.
+            embedding_file_path (str, optional): Local file path to the visualization of the model embeddings. Defaults to None.
+            reconstruction_file_path (str, optional): Local file path to the visualization of the model reconstructions. Defaults to None.
+        Raises: 
+            Exception: If user is not authenticated or must re-authenticate 
+        
+        """
+        #make sure the Globus endpoint is set 
         self.check_if_endpoint_set()
+        # make sure the user is logged into DataFed
         self.check_if_logged_in()
 
+        # If the record title is longer than the maximum allowed by DataFed (80 characters) 
+        # truncate the record title to 80 characters. If verbose is true, print out a statement letting the user 
+        # know the record_title has been truncated. 
         if len(record_title) > 80:
             record_title = record_title[:80] #.replace(".", "_")[:80]
             if self.verbose:
                 print("Record title is too long. Truncating to 80 characters.")
-                
-        if embedding_file_path != None and reconstruction_file_path != None:     
+        
+        # initialize the local file path of the record to the record title. 
+        # It will be modified if there are multiple associated files during the creation of the zip file, but 
+        # is initialized in case there are only one or no associated files and therefore no need to create a zip file
+        # for example for the Jupyter notebooks. 
+        file_path = record_title 
+        
+        # if there are multiple associated files, assume one of them is either the model embedding or reconstruction visualizations
+        # and create the zip file
+        if embedding_file_path != None or reconstruction_file_path != None:     
        
      
         
-            self.zip_files_create(folder_model = self.folder_model,record_title=record_title, 
+            file_path = self.zip_files_create(local_model_path = self.local_model_path,record_title=record_title, 
                               weights_file_path=weights_file_path, embedding_file_path=embedding_file_path,reconstruction_file_path=reconstruction_file_path)
              
-
+        # try creating the Data record and uploading the relevant metadata. 
+        # This will fail when DataFed decides the user must reauthenticate.
         try:
             dc_resp = self.dataCreate(
-                record_title, #.replace(".", "_"),
+                str(file_path).rsplit("/",1)[-1],
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
                 parent_id=self.collection_id,
                 deps=deps,
                 #**kwargs,
             )
-
+            # log that the DataFed data record has been successfully created. 
             with open(self.log_file_path, "a") as f:
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
                 f.write(f"\n {timestamp} - Data creation successful")
 
-            return dc_resp
+            # return the DataFed listing reply and zip file path 
+            return dc_resp, file_path
 
+        # if the DataFed record creating fails, log the error. 
         except Exception as e:
             tb = traceback.format_exc()
 
@@ -341,16 +420,27 @@ class DataFed(API):
 
         return derived_from_info
 
-    def upload_file(self, dc_resp, file_path, wait=False):
+    def upload_file(self, DataFed_ID, file_path, wait=False):
+        """
+        Uploads the file to the DataFed record
+        
+        Args: 
+            DataFed_ID (str): The DataFed ID the data record to upload the file
+            file_path (str): The local filepath of the file to upload to DataFed
+            wait (bool, optional): whether or not to pause the script until the file has been uploaded. Defaults to False
+        """
+        # make sure the GLobus enpoint is set
         check_globus_endpoint(self.endpointDefaultGet())
-
+        
+        # try uploading the file. 
         try:
             put_resp = self.dataPut(
-                dc_resp[0].data[0].id,
+                DataFed_ID,
                 file_path,
                 wait=wait,  # Waits until transfer completes.
             )
-
+            
+            # log that the DataFed data record has been successfully created. 
             with open(self.log_file_path, "a") as f:
                 current_task_status = put_resp[0].task.msg
 
@@ -360,7 +450,8 @@ class DataFed(API):
                 f.write(
                     "\n This just means that the Data put command ran without errors. \n If the status is not complete, check the DataFed and Globus websites \n to ensure the Globus Endpoint is connected and the file transfer completes."
                 )
-
+                
+        # if the DataFed record creating fails, log the error. 
         except Exception as e:
             tb = traceback.format_exc()
 
