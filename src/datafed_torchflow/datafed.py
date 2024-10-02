@@ -259,71 +259,73 @@ class DataFed(API):
         
         return notebook_ID 
     
-    def zip_files_create(self,local_model_path=".",record_title = "demo_record",weights_file_path=None,embedding_file_path=None, reconstruction_file_path=None):
-        """
-        DataFed only allows one data file per record, so zip the relevant model files into one. 
-        Assume the relevant model files are the model weights pickle file and the visualizations of the model 
-        embeddings and reconstructions
+    # def zip_files_create(self,local_model_path=".",record_title = "demo_record",weights_file_path=None,embedding_file_path=None, reconstruction_file_path=None):
+    #     """
+    #     DataFed only allows one data file per record, so zip the relevant model files into one. 
+    #     Assume the relevant model files are the model weights pickle file and the visualizations of the model 
+    #     embeddings and reconstructions
         
-        Args: 
-            local_model_path (str): Local directory to store model files
-            record_title (str): The zip file's filename. Also the title of the DataFed record for the zip file 
-            weights_file_path (str): Local file path to the saved model weights
-            embedding_file_path (str): Local file path to the visualization of the model embeddings
-            reconstruction_file_path (str): Local file path to the visualization of the model reconstructions
+    #     Args: 
+    #         local_model_path (str): Local directory to store model files
+    #         record_title (str): The zip file's filename. Also the title of the DataFed record for the zip file 
+    #         weights_file_path (str): Local file path to the saved model weights
+    #         embedding_file_path (str): Local file path to the visualization of the model embeddings
+    #         reconstruction_file_path (str): Local file path to the visualization of the model reconstructions
             
             
-        Returns: 
-            pathlib.PosixPath: the file path to the zip file
-        """
-        # construct the local path to the folder containing the zip files
-        zip_file_folder = Path(f"{local_model_path.rsplit('/',1)[0]}/zip_files/{local_model_path.rsplit('/',1)[1]}")
+    #     Returns: 
+    #         pathlib.PosixPath: the file path to the zip file
+    #     """
+    #     # construct the local path to the folder containing the zip files
+    #     zip_file_folder = Path(f"{local_model_path.rsplit('/',1)[0]}/zip_files/{local_model_path.rsplit('/',1)[1]}")
         
-        # if the user includes the *.zip in the record title, ignore it for flexibility 
-        if record_title.endswith(".zip"):
-            zip_file = record_title
-        else:
-            zip_file = f"{record_title}.zip"
+    #     # if the user includes the *.zip in the record title, ignore it for flexibility 
+    #     if record_title.endswith(".zip"):
+    #         zip_file = record_title
+    #     else:
+    #         zip_file = f"{record_title}.zip"
             
-        # construct the local path to the zip file 
-        zip_file_path = zip_file_folder / zip_file
-        # ensure the local folder path exists 
-        zip_file_folder.mkdir(parents=True,exist_ok=True) 
+    #     # construct the local path to the zip file 
+    #     zip_file_path = zip_file_folder / zip_file
+    #     # ensure the local folder path exists 
+    #     zip_file_folder.mkdir(parents=True,exist_ok=True) 
         
-        # create the zip files.  I assume that the weights file is always specified because it should always exist and be saved. I also assume that 
-        # the weights file is not the only file specified because if there is only 1 file, there is no need to zip. 
-        # Therefore, either the model embeddings or reconstructions (or both) must be specified. 
-        # These are the 3 cases handled by the if..elif..else clause below. 
+    #     # create the zip files.  I assume that the weights file is always specified because it should always exist and be saved. I also assume that 
+    #     # the weights file is not the only file specified because if there is only 1 file, there is no need to zip. 
+    #     # Therefore, either the model embeddings or reconstructions (or both) must be specified. 
+    #     # These are the 3 cases handled by the if..elif..else clause below. 
         
-        # if there is no model reconstruction file given, just zip the weights and model embedding files 
-        if reconstruction_file_path == None:
-            filenames = [weights_file_path,embedding_file_path]
+    #     # if there is no model reconstruction file given, just zip the weights and model embedding files 
+    #     if reconstruction_file_path == None:
+    #         filenames = [weights_file_path,embedding_file_path]
 
-            with zipfile.ZipFile(zip_file_path,mode='w') as archive:
-                for filename in filenames:
-                    archive.write(filename, basename(filename))
+    #         with zipfile.ZipFile(zip_file_path,mode='w') as archive:
+    #             for filename in filenames:
+    #                 archive.write(filename, basename(filename))
         
-        # if there is no model embedding file given, just zip the weights and model reconstruction files    
-        elif embedding_file_path == None:
-            filenames = [weights_file_path,reconstruction_file_path]
+    #     # if there is no model embedding file given, just zip the weights and model reconstruction files    
+    #     elif embedding_file_path == None:
+    #         filenames = [weights_file_path,reconstruction_file_path]
 
-            with zipfile.ZipFile(zip_file_path,mode='w') as archive:
-                for filename in filenames:
-                    archive.write(filename, basename(filename))          
+    #         with zipfile.ZipFile(zip_file_path,mode='w') as archive:
+    #             for filename in filenames:
+    #                 archive.write(filename, basename(filename))          
 
-        # if both the model embeddings and reconstruction files are specified, zip them both along with the weights
-        else:
-            filenames = [weights_file_path,embedding_file_path,reconstruction_file_path]
+    #     # if both the model embeddings and reconstruction files are specified, zip them both along with the weights
+    #     else:
+    #         filenames = [weights_file_path,embedding_file_path,reconstruction_file_path]
 
             
-            with zipfile.ZipFile(zip_file_path,mode='w') as archive:
-                for filename in filenames:
-                    archive.write(filename, basename(filename))
-        # return the local file path of the zip file
-        return zip_file_path         
+    #         with zipfile.ZipFile(zip_file_path,mode='w') as archive:
+    #             for filename in filenames:
+    #                 archive.write(filename, basename(filename))
+    #     # return the local file path of the zip file
+    #     return zip_file_path         
 
-    def data_record_create(self, metadata=None, record_title=None, deps=None, weights_file_path = None, embedding_file_path = None,
-         reconstruction_file_path=None, **kwargs):
+    def data_record_create(self, metadata=None, record_title=None, deps=None, 
+                           #weights_file_path = None, embedding_file_path = None,
+                           #reconstruction_file_path=None, 
+                            **kwargs):
         """
         Creates the DataFed record for the saved checkpoint and uploads the relevant metadata
         
@@ -355,22 +357,26 @@ class DataFed(API):
         # It will be modified if there are multiple associated files during the creation of the zip file, but 
         # is initialized in case there are only one or no associated files and therefore no need to create a zip file
         # for example for the Jupyter notebooks. 
-        file_path = record_title 
+        #file_path = record_title 
+        
+        
+            
         
         # if there are multiple associated files, assume one of them is either the model embedding or reconstruction visualizations
         # and create the zip file
-        if embedding_file_path != None or reconstruction_file_path != None:     
+        # if embedding_file_path != None or reconstruction_file_path != None:     
        
      
         
-            file_path = self.zip_files_create(local_model_path = self.local_model_path,record_title=record_title, 
-                              weights_file_path=weights_file_path, embedding_file_path=embedding_file_path,reconstruction_file_path=reconstruction_file_path)
+        #     file_path = self.zip_files_create(local_model_path = self.local_model_path,record_title=record_title, 
+        #                       weights_file_path=weights_file_path, embedding_file_path=embedding_file_path,reconstruction_file_path=reconstruction_file_path)
              
         # try creating the Data record and uploading the relevant metadata. 
         # This will fail when DataFed decides the user must reauthenticate.
         try:
+            
             dc_resp = self.dataCreate(
-                str(file_path).rsplit("/",1)[-1],
+                str(record_title).rsplit("/",1)[-1],
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
                 parent_id=self.collection_id,
                 deps=deps,
@@ -382,7 +388,7 @@ class DataFed(API):
                 f.write(f"\n {timestamp} - Data creation successful")
 
             # return the DataFed listing reply and zip file path 
-            return dc_resp, file_path
+            return dc_resp
 
         # if the DataFed record creating fails, log the error. 
         except Exception as e:
@@ -734,4 +740,5 @@ class DataFed(API):
         Returns:
             str: The title of the record.
         """
-        return self.dataView(record_id)[0].data[0].title
+        return self.dataView(record_id)[0].data[0].title 
+

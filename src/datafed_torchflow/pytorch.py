@@ -64,7 +64,6 @@ class TorchLogger:
         script_path=None,
         local_model_path = "/.",
         input_data_shape = None,
-       # notebook_metadata=None,
         dataset_id=None,
         verbose=False,
     ):
@@ -162,7 +161,7 @@ class TorchLogger:
         # loop through the local variables to add to the metadata dictionary
         for key, value in local_vars: 
                 # exclude modules and other undesired local variables. Use casefold string matching for flexibility         
-                if not key.startswith("_") and key.casefold() not in ["checkpoint", "self","local_vars", "torchlogger","notebook_filepath","model_dict"] and "datafed" not in key.casefold() and "globus" not in key.casefold() and type(value) not in [type, types.ModuleType, types.FunctionType, API, DataLoader, types.NoneType]: 
+                if not key.startswith("_") and key.casefold() not in ["checkpoint", "self","local_vars", "torchlogger","notebook_filepath","model_dict","key","value"] and "datafed" not in key.casefold() and "globus" not in key.casefold() and "dataset" not in key.casefold() and "loader" not in key.casefold() and "IPython".casefold() not in str(type(value)).casefold() and not (callable(value) and key not in model_architecture_names) and type(value) not in [type, types.ModuleType, types.FunctionType, API, DataLoader, types.NoneType,types.MethodType]: 
                     # put the model architecture into the Model Architecture sub-dictionary
                     if key in model_architecture_names:
                         # serialize the optimizer
@@ -172,9 +171,17 @@ class TorchLogger:
                         else: 
                             DataFed_record_metadata["Model Parameters"]["Model Architecture"][key] = serialize_model(value)
                             DataFed_record_metadata["Model Parameters"]["Model Architecture"][key].update(extract_instance_attributes(obj=value))
-                    # extract the value for 1 item lists
-                    elif type(value) == list and len(value) == 1:
-                        DataFed_record_metadata["Model Parameters"][key] = value[0]
+                    # extract lists if they are not too long (arbitrarily chose to be less than 1000 characters)
+                    elif type(value) == list:
+                        #ignore long lists
+                        if sum(len(str(s)) for s in value) < 1000:
+                            # extract the value for 1 item lists
+                            if len(value) == 1:
+                                DataFed_record_metadata["Model Parameters"][key] = value[0]
+                            else:
+                                # if the list has many (but not too many values) extract the whole list
+                                DataFed_record_metadata["Model Parameters"][key] = value
+
         
                     # put the model hyperparameters in the Model Hyperparameters sub-dictionary (the hyperparameters might be 1-value torch tensors or just floats)
                     elif key in model_hyperparameters.keys():
@@ -193,14 +200,17 @@ class TorchLogger:
                     elif type(value) in [pathlib.PosixPath, torch.device]:
                         DataFed_record_metadata["Model Parameters"][key] = str(value)
                     # convert class instances into dictionaries of their attributes so they can be serialized into JSON
-                    elif hasattr(value, '__dict__'):  
-                        DataFed_record_metadata["Model Parameters"][key] = extract_instance_attributes(obj=value)
-                    ### HERE ### (just incorporatae this case into the bottom)
-                    elif type(key) == dict:
-                        try: 
-                            DataFed_record_metadata["Model Parameters"][key] = value
-                        except:
-                            DataFed_record_metadata["Model Parameters"][key] = str(value)
+                    elif hasattr(value, '__dict__'): 
+                        if len(extract_instance_attributes(obj = value)) > 0:
+                            DataFed_record_metadata["Model Parameters"][key] = extract_instance_attributes(obj=value)
+                            
+                    elif type(value) == dict:    
+                        if "_" not in str(type(value[list(value.keys())[0]])):
+                            try:
+                                json.dumps(value) 
+                                DataFed_record_metadata["Model Parameters"][key] = value
+                            except: 
+                                DataFed_record_metadata["Model Parameters"][key] = str(value)
 
                     # all other cases, everything should be serializable (string, float, etc.) 
                     else:
@@ -305,7 +315,7 @@ class TorchLogger:
                 self.notebook_record_resp, file_path = self.df_api.data_record_create(
                     metadata = notebook_metadata,
                     record_title=self.__file__.split("/")[-1], #.split(".")[0],
-                    deps=self.df_api.addDerivedFrom(self.dataset_id),
+                    deps=self.df_api.addDerivedFrom(self.dataset_id)
                    
                 )
 
@@ -314,8 +324,10 @@ class TorchLogger:
                 self.notebook_record_id = self.notebook_record_resp[0].data[0].id
 
     def save(self, record_file_name, datafed=True,
-            weights_file_path = None, embedding_file_path = None,
-         reconstruction_file_path=None, local_vars = None, model_hyperparameters=None, **kwargs):
+            local_file_path = None, 
+             #embedding_file_path = None,
+            #reconstruction_file_path=None, 
+            local_vars = None, model_hyperparameters=None, **kwargs):
         """
         Saves the model's state dictionary locally and optionally uploads it to DataFed. 
         NOTE: This function assumes that the model has embeddings and reconstructions, 
@@ -332,15 +344,16 @@ class TorchLogger:
             **kwargs: Additional metadata or attributes to include in the record.
         """
             
-        #make_folder(weights_file_path.rsplit("/",1)[0])
+        #make_folder(str(DataFed_file_path).rsplit("/",1)[0])
         
         # include the model architecture state dictionary and model hyperparameters in the checkpoint
-        checkpoint = self.getModelArchitectureStateDict() | model_hyperparameters  
+        if not str(local_file_path).endswith(".zip") and not os.path.exists(str(local_file_path)):
+            
         
-        
-        
-        # Save the model state dict locally
-        torch.save(checkpoint, weights_file_path)
+            checkpoint = self.getModelArchitectureStateDict() | model_hyperparameters  
+            
+            # Save the model state dict locally
+            torch.save(checkpoint, local_file_path )
 
         if datafed:
             
@@ -376,17 +389,17 @@ class TorchLogger:
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(local_vars=local_vars, model_hyperparameters=model_hyperparameters,**kwargs)
             
-            dc_resp, zip_file_path = self.df_api.data_record_create(
+            dc_resp = self.df_api.data_record_create(
                 metadata,
                 record_title = str(record_file_name),
                 local_model_path = self.local_model_path,
-                weights_file_path = weights_file_path,
-                embedding_file_path = embedding_file_path,
-                reconstruction_file_path = reconstruction_file_path,
+                # weights_file_path = weights_file_path,
+                # embedding_file_path = embedding_file_path,
+                # reconstruction_file_path = reconstruction_file_path,
                 deps=deps,
             )
             # Upload the saved model to DataFed
-            self.df_api.upload_file(dc_resp[0].data[0].id, str(zip_file_path))
+            self.df_api.upload_file(dc_resp[0].data[0].id, str(local_file_path))
 
             self.current_checkpoint_id = dc_resp[0].data[0].id
             
