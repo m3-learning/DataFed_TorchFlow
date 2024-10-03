@@ -30,7 +30,6 @@ import logging
 import numpy as np
 import inspect
 from datafed.CommandLib import API
-from pathlib import Path
 import pathlib
 import types
 import ast
@@ -88,7 +87,6 @@ class TorchLogger:
 
         self.current_checkpoint_id = None
         self.notebook_record_id = None
-        # self.notebook_metadata = notebook_metadata
         self.__file__ = script_path
         self.model_dict = model_dict
         self.optimizer = self.model_dict["optimizer"]
@@ -140,7 +138,7 @@ class TorchLogger:
 
     def getMetadata(
         self, local_vars=None, model_hyperparameters=None, **kwargs
-    ):  # remove kwargs ??
+    ):  
         """
         Gathers metadata including the serialized model, optimizer, system info, and user details.
 
@@ -219,7 +217,7 @@ class TorchLogger:
                             "Model Architecture"
                         ][key].update(extract_instance_attributes(obj=value))
                 # extract lists if they are not too long (arbitrarily chose to be less than 1000 characters)
-                elif type(value) == list:
+                elif isinstance(value, list):
                     # ignore long lists
                     if sum(len(str(s)) for s in value) < 1000:
                         # extract the value for 1 item lists
@@ -228,7 +226,9 @@ class TorchLogger:
                         else:
                             # if the list has many (but not too many values) extract the whole list
                             DataFed_record_metadata["Model Parameters"][key] = value
-
+                    else:
+                        warning_message = f'List in key "{key}" is too long to be extracted'
+                        Warning(warning_message)
                 # put the model hyperparameters in the Model Hyperparameters sub-dictionary (the hyperparameters might be 1-value torch tensors or just floats)
                 elif key in model_hyperparameters.keys():
                     if type(value) in [np.ndarray, torch.Tensor]:
@@ -258,12 +258,12 @@ class TorchLogger:
                             extract_instance_attributes(obj=value)
                         )
 
-                elif type(value) == dict:
+                elif isinstance(value, dict):
                     if "_" not in str(type(value[list(value.keys())[0]])):
                         try:
                             json.dumps(value)
                             DataFed_record_metadata["Model Parameters"][key] = value
-                        except:
+                        except (TypeError, ValueError, json.JSONDecodeError):
                             DataFed_record_metadata["Model Parameters"][key] = str(
                                 value
                             )
@@ -275,13 +275,13 @@ class TorchLogger:
                     try:
                         json.dumps(value)
                         DataFed_record_metadata["Model Parameters"][key] = value
-                    except:
+                    except (TypeError, ValueError, json.JSONDecodeError):
                         try:
                             DataFed_record_metadata["Model Parameters"][key] = str(
                                 value
                             )
 
-                        except:
+                        except (TypeError, ValueError, json.JSONDecodeError):
                             if self.verbose:
                                 tb = traceback.format_exc()
                                 with open(self.log_file_path, "a") as f:
@@ -298,7 +298,7 @@ class TorchLogger:
                                         f"the corresponding value has type {type(value)} and value \n {value}"
                                     )
                                     f.write(f"Python error message {tb}")
-                                    f.write(f"skipping this variable.")
+                                    f.write("skipping this variable.")
 
                 #  except:
                 #      pass
@@ -367,7 +367,7 @@ class TorchLogger:
                     )
                 )
 
-            except:
+            except Exception as e:
                 # the notebook is not already in DataFed, so upload it
                 # output to user
                 if self.verbose:
@@ -509,7 +509,7 @@ class TorchLogger:
                         elt.id for elt in node.value.elts if isinstance(elt, ast.Name)
                     ]
                 elif isinstance(node.value, ast.Name):
-                    return_vars = [node.value.id]
+                    pass
                 break
 
 

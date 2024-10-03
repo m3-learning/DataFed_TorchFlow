@@ -2,13 +2,30 @@ from m3util.notebooks.checksum import calculate_notebook_checksum
 import torch
 
 
-
 def extract_instance_attributes(obj=dict()):
-    """Helper function to recursively extract attributes from class instances, ignoring keys that start with '_'."""
-    if hasattr(obj, '__dict__'):
-        return {key: extract_instance_attributes(value) for key, value in obj.__dict__.items() if not key.startswith('_')}
+    """
+    Recursively extracts attributes from class instances, ignoring keys that start with '_'.
+
+    This helper function traverses the attributes of a given object and returns a dictionary
+    representation of those attributes. If the object has a `__dict__` attribute, it means
+    the object is likely an instance of a class, and its attributes are stored in `__dict__`.
+    The function will recursively call itself to extract attributes from nested objects.
+
+    Args:
+        obj (object): The object from which to extract attributes. Defaults to an empty dictionary.
+
+    Returns:
+        dict: A dictionary containing the extracted attributes, excluding those whose keys start with '_'.
+    """
+    if hasattr(obj, "__dict__"):
+        return {
+            key: extract_instance_attributes(value)
+            for key, value in obj.__dict__.items()
+            if not key.startswith("_")
+        }
     else:
         return obj
+
 
 def getNotebookMetadata(file):
     """
@@ -23,7 +40,7 @@ def getNotebookMetadata(file):
         script_checksum = calculate_notebook_checksum(file)
         file_info = {"script": {"path": file, "checksum": script_checksum}}
         return file_info
-        
+
 def serialize_model(model_block):
     """
     Serializes the model architecture into a dictionary format with detailed layer information.
@@ -107,22 +124,22 @@ def serialize_model(model_block):
 
 
 def serialize_pytorch_optimizer(optimizer):
-        """
-        Serializes the optimizer's state dictionary, converting tensors to lists for JSON compatibility.
+    """
+    Serializes the optimizer's state dictionary, converting tensors to lists for JSON compatibility.
 
-        Returns:
-            dict: A dictionary containing the optimizer's serialized parameters.
-        """
-        state_dict = optimizer.state_dict()
-        state_dict_serializable = {}
-        for key, value in state_dict.items():
-            if isinstance(value, torch.Tensor):
-                state_dict_serializable[key] = value.tolist()
-            elif isinstance(value, list):
-                # Convert tensors within lists to lists
-                state_dict_serializable[key] = [
-                    v.tolist() if isinstance(v, torch.Tensor) else v for v in value
-                ]
-            else:
-                state_dict_serializable[key] = value
-        return state_dict_serializable["param_groups"][0]
+    Returns:
+        dict: A dictionary containing the optimizer's serialized parameters.
+    """
+    state_dict = optimizer.state_dict()
+    state_dict_serializable = {}
+    for key, value in state_dict.items():
+        if isinstance(value, torch.Tensor):
+            state_dict_serializable[key] = value.tolist()
+        elif isinstance(value, list):
+            # Convert tensors within lists to lists
+            state_dict_serializable[key] = [
+                v.tolist() if isinstance(v, torch.Tensor) else v for v in value
+            ]
+        else:
+            state_dict_serializable[key] = value
+    return state_dict_serializable["param_groups"][0]
