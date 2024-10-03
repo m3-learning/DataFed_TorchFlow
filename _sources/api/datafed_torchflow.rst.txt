@@ -1,0 +1,53 @@
+datafed\_torchflow package
+==========================
+
+Submodules
+----------
+
+datafed\_torchflow.JSON module
+------------------------------
+
+.. automodule:: datafed_torchflow.JSON
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datafed\_torchflow.computer module
+----------------------------------
+
+.. automodule:: datafed_torchflow.computer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datafed\_torchflow.datafed module
+---------------------------------
+
+.. automodule:: datafed_torchflow.datafed
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datafed\_torchflow.pytorch module
+---------------------------------
+
+.. automodule:: datafed_torchflow.pytorch
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datafed\_torchflow.utils module
+-------------------------------
+
+.. automodule:: datafed_torchflow.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: datafed_torchflow
+   :members:
+   :undoc-members:
+   :show-inheritance:
