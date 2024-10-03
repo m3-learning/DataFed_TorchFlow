@@ -6,7 +6,9 @@ import json
 from m3util.globus.globus import check_globus_endpoint
 from datafed_torchflow.JSON import UniversalEncoder
 from tqdm import tqdm
-
+from pathlib import Path
+from os.path import basename
+import zipfile
 
 class DataFed(API):
     """
@@ -21,12 +23,14 @@ class DataFed(API):
         project_id (str): The ID of the project.
     """
 
-    def __init__(self, cwd, verbose=False, log_file_path=".log.txt"):
+    def __init__(self, cwd, local_model_path, log_file_path="log.txt", verbose=False):
         """
         Initializes the DataFed instance.
 
         Args:
             cwd (str): The current working directory.
+            local_model_path (str): Local directory to store model files.
+            log_file_path (str, optional): Local file to store a log of the code evaluation. Default is 'log.txt'
             verbose (bool, optional): Flag to enable verbose logging. Defaults to False.
 
         Raises:
@@ -34,8 +38,14 @@ class DataFed(API):
         """
         super().__init__()
         self.cwd = cwd
-        self.verbose = verbose
+        self.local_model_path = local_model_path
 
+        self.verbose = verbose
+        self.log_file_path = log_file_path
+
+
+        # checks if the user is autenticated with DataFed 
+        # and the Globus endpoint is set
         self.check_if_logged_in()
         self.check_if_endpoint_set()
 
@@ -43,7 +53,6 @@ class DataFed(API):
         self.check_string_for_dot_or_slash(self.cwd)
 
         # Set the log file path
-        self.log_file_path = log_file_path
 
         # Checks if user is saving in the root collection.
         if self._parse_cwd[0] == self.user_id:
@@ -66,24 +75,21 @@ class DataFed(API):
         """
         if self.getAuthUser():
             if self.verbose:
-                print(
-                    "Success! You have been authenticated into DataFed as: "
-                    + self.getAuthUser()
-                )
+                with open(self.log_file_path, "a") as f:
+                    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    f.write(f"\n {timestamp} - Success! You have been authenticated into DataFed as: {self.getAuthUser()}.")
+
         else:
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - You have not authenticated into DataFed Client.")
+                f.write("Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself:")
+                f.write("https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
+                
             raise Exception(
                 "You have not authenticated into DataFed Client. Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration"
             )
-
-    @property
-    def user_id(self):
-        """
-        Gets the user ID from the authenticated user's information.
-
-        Returns:
-            str: The user ID extracted from the authenticated user information.
-        """
-        return self.getAuthUser().split("/")[-1]
 
     def check_if_endpoint_set(self):
         """
@@ -94,13 +100,32 @@ class DataFed(API):
         """
         if self.endpointDefaultGet():
             if self.verbose:
-                print(
-                    f"Success! You have set up the Globus endpoint {self.endpointDefaultGet()}."
-                )
+                
+                with open(self.log_file_path, "a") as f:
+                    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    f.write(f"\n {timestamp} - Success! You have set up the Globus endpoint {self.endpointDefaultGet()}.")
         else:
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - You have not authenticated into DataFed Client.")
+                f.write("Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself:")
+                f.write("https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
+                
+                
             raise Exception(
                 "You have not set up the Globus endpoint. Please follow instructions in the 'Basic Configuration' section in the link below to set up the Globus endpoint: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration"
             )
+            
+    @property
+    def user_id(self):
+        """
+        Gets the user ID from the authenticated user's information.
+
+        Returns:
+            str: The user ID extracted from the authenticated user information.
+        """
+        return self.getAuthUser().split("/")[-1]
 
     @staticmethod
     def check_string_for_dot_or_slash(s):
@@ -126,7 +151,7 @@ class DataFed(API):
             title_to_find (str): The title of the item to find.
 
         Returns:
-            str: The ID of the item with the specified title.
+            str: The DataFed ID of the item with the specified title.
 
         Raises:
             ValueError: If no item with the specified title is found.
@@ -136,6 +161,7 @@ class DataFed(API):
                 return item.id
 
         # If no matching title is found, raise an error with a custom message
+        
         raise ValueError(
             f"Project '{title_to_find}' does not exist. "
             "Please create the project and provide an allocation."
@@ -233,31 +259,73 @@ class DataFed(API):
             collections, ls_resp = self.getCollList(current_collection)
 
         self.collection_id = current_collection
+        
+    def get_notebook_DataFed_ID_from_path_and_title(self,notebook_filename):
+        """
+        Gets the DataFed ID for the Jupyter notebook from the file name and DataFed path
+        
+        Args: 
+            notebook_filename (str): The filename of the notebook. Can be the local filepath or just the filename. 
+        
+        Returns: 
+            str: The DataFed ID of the specified notebook
+            
+        Raises
+            ValueError: If no item with the specified title is found
+        """
+        ls_resp_2 = self.collectionItemsList(self.collection_id,count = 10000000)
+        notebook_ID = ls_resp_2[0].item[np.where([record.title == notebook_filename.rsplit("/",1)[-1] for record in ls_resp_2[0].item])[0].item()].id
+        
+        return notebook_ID 
+          
 
-    def data_record_create(self, metadata, record_title, deps=None, **kwargs):
+    def data_record_create(self, metadata=None, record_title=None, deps=None, **kwargs):
+        """
+        Creates the DataFed record for the saved checkpoint and uploads the relevant metadata
+        
+        Args: 
+            metadata (dict): The relevant model and system metadata for the checkpoint. 
+            record_title (str): The title of the DataFed record. 
+            deps (list or str, optional): A list of dependencies or a single dependency to add. Defaults to None.
+        Raises: 
+            Exception: If user is not authenticated or must re-authenticate 
+        
+        """
+        #make sure the Globus endpoint is set 
         self.check_if_endpoint_set()
+        # make sure the user is logged into DataFed
         self.check_if_logged_in()
 
+        # If the record title is longer than the maximum allowed by DataFed (80 characters) 
+        # truncate the record title to 80 characters. If verbose is true, print out a statement letting the user 
+        # know the record_title has been truncated. 
         if len(record_title) > 80:
-            record_title = record_title.replace(".", "_")[:80]
+            record_title = record_title[:80] #.replace(".", "_")[:80]
             if self.verbose:
-                print("Record title is too long. Truncating to 80 characters.")
-
+                with open(self.log_file_path, "a") as f:
+                    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    f.write(f"\n {timestamp} - Record title is too long. Truncating to 80 characters.")
+                    
+        # try creating the Data record and uploading the relevant metadata. 
+        # This will fail when DataFed decides the user must reauthenticate.
         try:
+            
             dc_resp = self.dataCreate(
-                record_title.replace(".", "_"),
+                str(record_title).rsplit("/",1)[-1],
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
                 parent_id=self.collection_id,
                 deps=deps,
-                **kwargs,
+                #**kwargs,
             )
-
+            # log that the DataFed data record has been successfully created. 
             with open(self.log_file_path, "a") as f:
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
                 f.write(f"\n {timestamp} - Data creation successful")
 
+            # return the DataFed listing reply and zip file path 
             return dc_resp
 
+        # if the DataFed record creating fails, log the error. 
         except Exception as e:
             tb = traceback.format_exc()
 
@@ -267,6 +335,7 @@ class DataFed(API):
                 f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
 
             raise e
+
 
     @staticmethod
     def addDerivedFrom(deps=None):
@@ -292,16 +361,27 @@ class DataFed(API):
 
         return derived_from_info
 
-    def upload_file(self, dc_resp, file_path, wait=False):
+    def upload_file(self, DataFed_ID, file_path, wait=False):
+        """
+        Uploads the file to the DataFed record
+        
+        Args: 
+            DataFed_ID (str): The DataFed ID the data record to upload the file
+            file_path (str): The local filepath of the file to upload to DataFed
+            wait (bool, optional): whether or not to pause the script until the file has been uploaded. Defaults to False
+        """
+        # make sure the GLobus enpoint is set
         check_globus_endpoint(self.endpointDefaultGet())
-
+        
+        # try uploading the file. 
         try:
             put_resp = self.dataPut(
-                dc_resp[0].data[0].id,
+                DataFed_ID,
                 file_path,
                 wait=wait,  # Waits until transfer completes.
             )
-
+            
+            # log that the DataFed data record has been successfully created. 
             with open(self.log_file_path, "a") as f:
                 current_task_status = put_resp[0].task.msg
 
@@ -311,7 +391,8 @@ class DataFed(API):
                 f.write(
                     "\n This just means that the Data put command ran without errors. \n If the status is not complete, check the DataFed and Globus websites \n to ensure the Globus Endpoint is connected and the file transfer completes."
                 )
-
+                
+        # if the DataFed record creating fails, log the error. 
         except Exception as e:
             tb = traceback.format_exc()
 
@@ -375,7 +456,7 @@ class DataFed(API):
 
             return pd.DataFrame(metadata_)
         else:
-            return ValueError("Invalid format. Please use 'pandas'.")
+            return ValueError("Invalid format in get_metadata. Please use 'pandas'.")
 
     def _get_metadata_list(self, record_ids, exclude=None):
         metadata = []
@@ -388,8 +469,16 @@ class DataFed(API):
                 elif isinstance(exclude, list):
                     metadata_ = self._exclude_metadata_fields(metadata_, exclude)
                 else:
+                    
+                    
+                    with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                        f.write(f"\n {timestamp} - Invalid value for exclude parameter in _get_metadata_list.") 
+                        f.write("Must be either 'computing' or a list of fields to exclude.")
+
                     raise ValueError(
-                        "Invalid value for exclude parameter. Must be either 'computing' or a list of fields to exclude."
+                        "Invalid value for exclude parameter in _get_metadata_list. Must be either 'computing' or a list of fields to exclude."
                     )
 
             metadata.append(metadata_)
@@ -397,7 +486,7 @@ class DataFed(API):
         return metadata
 
     @staticmethod
-    def required_keys(dict_list, required_keys):
+    def required_keys(self, dict_list, required_keys):
         """
         Filters a list of dictionaries to include only those that contain all specified required keys.
 
@@ -416,6 +505,12 @@ class DataFed(API):
         if isinstance(required_keys, str):
             required_keys = [required_keys]
         elif not isinstance(required_keys, (list, set)):
+            
+            with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                        f.write(f"\n {timestamp} - Invalid value for required_keys parameter. Must be either a string, list of strings, or set of strings.")
+            
             raise ValueError(
                 "Invalid value for required_keys parameter. Must be either a string, list of strings, or set of strings."
             )
@@ -424,7 +519,7 @@ class DataFed(API):
         return [d for d in dict_list if all(key in d for key in required_keys)]
 
     @staticmethod
-    def exclude_keys(dict_list, excluded_keys):
+    def exclude_keys(self,dict_list, excluded_keys):
         """
         Filters a list of dictionaries to exclude those that contain any of the specified excluded keys.
 
@@ -447,6 +542,11 @@ class DataFed(API):
         if isinstance(excluded_keys, str):
             excluded_keys = [excluded_keys]
         elif not isinstance(excluded_keys, (list, set)):
+            with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                        f.write(f"\n {timestamp} - Invalid value for excluded_keys parameter. Must be either a string, list of strings, or set of strings.")
+            
             raise ValueError(
                 "Invalid value for excluded_keys parameter. Must be either a string, list of strings, or set of strings."
             )
@@ -611,4 +711,5 @@ class DataFed(API):
         Returns:
             str: The title of the record.
         """
-        return self.dataView(record_id)[0].data[0].title
+        return self.dataView(record_id)[0].data[0].title 
+

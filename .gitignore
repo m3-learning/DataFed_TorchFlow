@@ -58,3 +58,7 @@ MANIFEST
 /examples/data/*
 examples/mnist_cnn.pth
 examples/.log.txt
+
+/examples/MNIST*
+examples
+

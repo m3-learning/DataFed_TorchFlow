@@ -1,21 +1,44 @@
+import sys
+import os
+
+
 import torch
 import torch.nn as nn
+from torch.utils.data import DataLoader
 import datetime
+
+sys.path.append(os.path.abspath("/home/jg3837/DataFed_TorchFlow/DataFed_TorchFlow/src"))
+
+
 from datafed_torchflow.datafed import DataFed
 from datafed_torchflow.computer import get_system_info
+from datafed_torchflow.utils import extract_instance_attributes, getNotebookMetadata,serialize_model, serialize_pytorch_optimizer
+
 import getpass
 from datetime import datetime
 from m3util.globus.globus import check_globus_file_access
-from m3util.notebooks.checksum import calculate_notebook_checksum
-from m3util.util.IO import find_files_recursive
+from m3util.util.IO import find_files_recursive, make_folder
+
 import json
 from tqdm import tqdm
 import logging
+import numpy as np
+import inspect
+from datafed.CommandLib import API
+from pathlib import Path
+import pathlib
+import types
+import ast
+import traceback
 
-# TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.
+
+# TODO: Make it so it does not upload a notebook on each reinstantiation. Compare the notebook checksum to determine whether the file has changed.
 # TODO: Add data and dataloader derivative.
 
-# TODO: do I need this? 
+
+
+
+
 class TorchLogger:
     """
     TorchLogger is a class designed to log PyTorch model training details,
@@ -23,51 +46,67 @@ class TorchLogger:
     It also integrates with the DataFed API for file and metadata management.
 
     Attributes:
-        model (torch.nn.Module): The PyTorch model to be logged.
-        optimizer (torch.optim.Optimizer): The optimizer used during training.
+        model_dict (dict): a dictionary containing the Pytorch model architecture to be logged, 
+            with the name of the block as the key and the block as the value. 
+            For example: {"vae":vae, "encoder: encoder, "decoder":decoder,"optimizer":optimizer}
         DataFed_path (str): The path to the DataFed configuration or API.
         script_path (str): Path to the script or notebook for checksum calculation.
-        local_path (str): Local directory to store model files.
+        local_model_path (str): Local directory to store model files.
+        input_data_shape (tuple): Shape of the input training data for the model. 
         verbose (bool): Whether to display verbose output.
-        df_api (DataFed): Instance of the DataFed API client for managing data records.
+
     """
 
     def __init__(
         self,
-        model,
+        model_dict,
         DataFed_path,
-        optimizer=None,
         script_path=None,
-        local_path="./",
-        verbose=False,
-        notebook_metadata=None,
+        local_model_path = "/.",
+        log_file_path = "log.txt",
+        input_data_shape = None,
         dataset_id=None,
+        verbose=False,
     ):
         """
         Initializes the TorchLogger class.
 
         Args:
-            model (torch.nn.Module): The PyTorch model to log.
-            optimizer (torch.optim.Optimizer): The optimizer used for training.
+            model_dict (dict): a dictionary containing the Pytorch model architecture to be logged, 
+                with the name of the block as the key and the block as the value. 
+                For example: {"vae":vae, "encoder: encoder, "decoder":decoder,"optimizer":optimizer}
             DataFed_path (str): Path to the DataFed configuration or API.
             script_path (str, optional): Path to the script or notebook. Default is None.
-            local_path (str, optional): Local directory to store model files. Default is './'.
+            local_model_path (str, optional): Local directory to store model files. Default is './'.
+            log_file_path (str, optional): Local file to store a log of the code evaluation. Default is 'log.txt' 
+            input_data (numpy.ndarray, default=None): Input data for training the model.
+            dataset_id (str, default=None): DataFed ID for the input dataset for the model 
             verbose (bool, optional): Flag for verbose output. Default is False.
         """
+        
         self.current_checkpoint_id = None
         self.notebook_record_id = None
-        self.notebook_metadata = notebook_metadata
+        #self.notebook_metadata = notebook_metadata
         self.__file__ = script_path
-        self.model = model
-        self.optimizer = optimizer
+        self.model_dict = model_dict
+        self.optimizer = self.model_dict["optimizer"]
         self.DataFed_path = DataFed_path
+        self.local_model_path = local_model_path
+        self.log_file_path = log_file_path
+        
         self.verbose = verbose
-        self.local_path = local_path
-        self.df_api = DataFed(self.DataFed_path)
+        self.input_data_shape = input_data_shape
+        
+        make_folder(self.local_model_path)
+        
+        
+        self.df_api = DataFed(self.DataFed_path, self.local_model_path, log_file_path=self.log_file_path, verbose=True)
         self.dataset_id = dataset_id
 
         # Check if Globus has access to the local path
-        check_globus_file_access(self.df_api.endpointDefaultGet, self.local_path)
+        check_globus_file_access(self.df_api.endpointDefaultGet, self.local_model_path)
+        
+        
 
         # Save the notebook to DataFed
         self.save_notebook()
@@ -95,11 +134,12 @@ class TorchLogger:
         """
         self._optimizer = optimizer
 
-    def getMetadata(self, **kwargs):
+    def getMetadata(self, local_vars=None, model_hyperparameters = None, **kwargs): # remove kwargs ??
         """
         Gathers metadata including the serialized model, optimizer, system info, and user details.
 
         Args:
+            local_vars (list): a list containing the local variables for the model training code, from list(locals().items()). Used to determine the metadata
             **kwargs: Additional key-value pairs to be added to the metadata.
 
         Returns:
@@ -107,33 +147,132 @@ class TorchLogger:
                   system information, user, timestamp, and optional script checksum.
         """
 
+        # get the model architecture names
+        model_architecture_names = list(self.model_dict.keys() )
+
+        # get the user information and timestamp
         current_user, current_time = self.getUserClock()
 
-        # Serialize model, optimizer, and get system info
-        model = self.serialize_model()
-        optimizer = self.serialize_pytorch_optimizer()
+        # get the computer information
         computer_info = get_system_info()
 
-        # Combine metadata and add user and timestamp
-        metadata = (
-            model
-            | {"optimizer": optimizer}
-            | computer_info
-            | {"user": current_user, "timestamp": current_time}
-            | kwargs
-        )
+        # combine metadata with user and timestamp
+        
+        #define the empty metadata dictionary to set the structure
+        DataFed_record_metadata = {"Model Parameters": {"Model Hyperparameters": {}, "Model Architecture": {}} ,"System Information": {} }
 
-        # Check if the script path is provided and does not start with "d/"
-        if self.__file__ is not None and not self.__file__.startswith("d/"):
-            # If notebook metadata is not already set, calculate and set it
-            if self.notebook_metadata is None:
-                self.notebook_metadata = self.getNotebookMetadata()
+        # loop through the local variables to add to the metadata dictionary
+        for key, value in local_vars: 
+                # exclude modules and other undesired local variables. Use casefold string matching for flexibility         
+                if not key.startswith("_") and key.casefold() not in ["checkpoint", "self","local_vars","model_dict","key","value"] and "datafed" not in key.casefold() and "globus" not in key.casefold() and "data".casefold() not in str(type(value)).casefold() and "dataloader".casefold() not in str(type(value)).casefold() and not (callable(value) and key not in model_architecture_names) and type(value) not in [type, types.ModuleType, types.FunctionType, API, DataLoader, types.NoneType,types.MethodType]: 
+                    # put the model architecture into the Model Architecture sub-dictionary
+                    if key in model_architecture_names:
+                        # serialize the optimizer
+                        if key.casefold() in ["optimizer", "optim"]: #accept "optimizer" or "optim" for flexibility 
+                            DataFed_record_metadata["Model Parameters"]["Model Architecture"][key] = serialize_pytorch_optimizer(value)
+                        # serialize the model architecture blocks (encoder, decoder, etc. )
+                        else: 
+                            DataFed_record_metadata["Model Parameters"]["Model Architecture"][key] = serialize_model(value)
+                            DataFed_record_metadata["Model Parameters"]["Model Architecture"][key].update(extract_instance_attributes(obj=value))
+                    # extract lists if they are not too long (arbitrarily chose to be less than 1000 characters)
+                    elif type(value) == list:
+                        #ignore long lists
+                        if sum(len(str(s)) for s in value) < 1000:
+                            # extract the value for 1 item lists
+                            if len(value) == 1:
+                                DataFed_record_metadata["Model Parameters"][key] = value[0]
+                            else:
+                                # if the list has many (but not too many values) extract the whole list
+                                DataFed_record_metadata["Model Parameters"][key] = value
 
-        if self.notebook_metadata is not None:
-            metadata |= self.notebook_metadata
-            self.notebook_id = self.__file__
+        
+                    # put the model hyperparameters in the Model Hyperparameters sub-dictionary (the hyperparameters might be 1-value torch tensors or just floats)
+                    elif key in model_hyperparameters.keys():
+                        if type(value) in [np.ndarray, torch.Tensor]:
+                            DataFed_record_metadata["Model Parameters"]["Model Hyperparameters"][key] = value.tolist()
+                        else:
+                            DataFed_record_metadata["Model Parameters"]["Model Hyperparameters"][key] = value
 
-        return metadata
+                    #convert numpy arrays and torch tensors that are small enough (arbitrarily chosen to be smaller than the input data dimensions) 
+                    #into lists so they can be serialized into JSON
+                    elif type(value) in [np.ndarray, torch.Tensor]:
+                        if value.shape < self.input_data_shape:
+                            # put other lists into the Model Parameters dictionary 
+                            DataFed_record_metadata["Model Parameters"][key] = value.tolist()
+                    # convert PosixPaths and pytorch devices into strings so they can be serialized into JSON
+                    elif type(value) in [pathlib.PosixPath, torch.device]:
+                        DataFed_record_metadata["Model Parameters"][key] = str(value)
+                    # convert class instances into dictionaries of their attributes so they can be serialized into JSON
+                    elif hasattr(value, '__dict__'): 
+                        if len(extract_instance_attributes(obj = value)) > 0:
+                            DataFed_record_metadata["Model Parameters"][key] = extract_instance_attributes(obj=value)
+                            
+                    elif type(value) == dict:    
+                        if "_" not in str(type(value[list(value.keys())[0]])):
+                            try:
+                                json.dumps(value) 
+                                DataFed_record_metadata["Model Parameters"][key] = value
+                            except: 
+                                DataFed_record_metadata["Model Parameters"][key] = str(value)
+
+                    # all other cases, everything should be serializable (string, float, etc.) 
+                    else:
+                        # everything should be JSON serializable at this point, but try to convert to string and then skip if not
+                    
+                        try:
+                            json.dumps(value) 
+                            DataFed_record_metadata["Model Parameters"][key] = value
+                        except: 
+                                try:
+                                    DataFed_record_metadata["Model Parameters"][key] = str(value)
+                    
+                                except:
+                                    if self.verbose:
+                                        tb = traceback.format_exc()
+                                        with open(self.log_file_path, "a") as f:
+                                            timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                                            f.write(f"\n {timestamp} - Could not convert {key} to JSON. {key} has type {type(key)}")
+                                            f.write(f"the corresponding value has type {type(value)} and value \n {value}")
+                                            f.write(f"Python error message {tb}")
+                                            f.write(f"skipping this variable.")
+                                            
+                                        
+                                        
+
+                      #  except:
+                      #      pass
+        # add the notebook checksum and file path to the Model Parameters dictionary               
+        DataFed_record_metadata['Model Parameters'].update(getNotebookMetadata(self.__file__)) 
+        # add the user and timestamp to the Model Parameters dictionary
+        DataFed_record_metadata["Model Parameters"].update({"user": current_user, "timestamp": current_time})
+        # add the computer information to the System Information section 
+        DataFed_record_metadata["System Information"] = computer_info 
+             
+
+        #return the metadata 
+        return DataFed_record_metadata
+    
+    
+
+
+    
+    def getModelArchitectureStateDict(self):
+        """
+        generates a dictionary where the key is the model architecture block 
+        and the value is the corresponding state dictionary to go in the saved checkpoint, 
+        for example
+        
+        Returns: 
+            dict: A dictionary containing the model architecture state dictionaries 
+        
+        """
+        model_architecture = {}
+
+        for block in self.model_dict.keys():
+            model_architecture[block] = self.model_dict[block].state_dict()
+            
+        return model_architecture
 
     def getUserClock(self):
         """
@@ -150,62 +289,80 @@ class TorchLogger:
 
         return current_user, current_time
 
-    def getNotebookMetadata(self):
-        """
-        Calculates the checksum of the script or notebook file and includes it in the metadata.
 
-        Returns:
-            dict: A dictionary containing the path and checksum of the script or notebook file.
-        """
-
-        # If the script path is provided, calculate and include its checksum
-        if self.__file__ is not None:
-            script_checksum = calculate_notebook_checksum(self.__file__)
-            file_info = {"script": {"path": self.__file__, "checksum": script_checksum}}
-            return file_info
 
     def save_notebook(self):
+        """
+        Saves the Jupyter notebook that runs the code training the model 
+        """
+        # don't upload the notebook to DataFed if it is already there. NOTE: The below method to check is a temporary solution and will be replaced with a comparison of the checksums
+        # first, check if the notebook filename is actually its DataFed ID, in which case it already exists in DataFed
         if self.__file__.startswith("d/"):
             self.notebook_record_id = self.__file__
+        
+        # if the notebook filename is not a DataFed ID, check if a notebook of the same name exists at the DataFed file path   
         elif self.__file__ is not None:
-            # output to user
-            if self.verbose:
-                print(f"Uploading notebook {self.__file__} to DataFed...")
+            try: 
+                # this will fail if it doesn't find a match, meaning that the notebook does not already exists on DataFed
+                self.notebook_record_id = self.df_api.get_notebook_DataFed_ID_from_path_and_title(self.__file__)
+            
+            except:
+                # the notebook is not already in DataFed, so upload it
+                # output to user
+                if self.verbose:
+                    with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                        f.write(f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed...")
 
-            notebook_metadata = self.getNotebookMetadata()
+                notebook_metadata = getNotebookMetadata(self.__file__)
 
-            current_user, current_time = self.getUserClock()
+                current_user, current_time = self.getUserClock()
 
-            notebook_metadata = notebook_metadata | {
-                "user": current_user,
-                "timestamp": current_time,
-            }
+                notebook_metadata = notebook_metadata | {
+                    "user": current_user,
+                    "timestamp": current_time,
+                }
 
-            self.notebook_record_resp = self.df_api.data_record_create(
-                notebook_metadata,
-                self.__file__.split("/")[-1].split(".")[0],
-                deps=self.df_api.addDerivedFrom(self.dataset_id),
-            )
+                self.notebook_record_resp = self.df_api.data_record_create(
+                    metadata = notebook_metadata,
+                    record_title=self.__file__.split("/")[-1], #.split(".")[0],
+                    deps=self.df_api.addDerivedFrom(self.dataset_id)
+                   
+                )
 
-            self.df_api.upload_file(self.notebook_record_resp, self.__file__)
+                self.df_api.upload_file(self.notebook_record_resp[0].data[0].id, self.__file__)
 
-            self.notebook_record_id = self.notebook_record_resp[0].data[0].id
+                self.notebook_record_id = self.notebook_record_resp[0].data[0].id
 
-    def save(self, record_file_name, training_loss=None, datafed=True, **kwargs):
+    def save(self, record_file_name, datafed=True,
+            local_file_path = None, 
+            local_vars = None, model_hyperparameters=None, **kwargs):
         """
-        Saves the model's state dictionary locally and optionally uploads it to DataFed.
+        
+        
+        Saves the model's state dictionary locally unless one has already been saved 
+        and optionally uploads it to DataFed along with the model's metadata. 
+        If you want to upload multiple files to the same DataFed data record you can zip them
+        together and pass in the local path to the zip file as "local_file_path".
 
         Args:
-            metadata (dict): Metadata to be associated with the model record.
             record_file_name (str): The name of the file to save the model locally.
             datafed (bool, optional): If True, the record is uploaded to DataFed. Default is True.
-            training_loss (str, optional): The final training loss to include in the metadata.
+            local_file_path (str or Path.PosixPath, optional): The local file path to the directory to save the weights 
+                    or to the presaved file to upload to DataFed.
+            local_vars (list): a list containing the local variables for the model training code, from list(locals().items()). Used to determine the metadata
+            model_hyperparameters (dict): a dictionary where the keys are the model hyperparameters names and the values are the model hyperparameter names. Used in the saved checkpoint. 
             **kwargs: Additional metadata or attributes to include in the record.
         """
-        path = f"{self.local_path}/{record_file_name}"
-
-        # Save the model state dict locally
-        torch.save(self.model.state_dict(), path)
+                    
+        # include the model architecture state dictionary and model hyperparameters in the checkpoint
+        if not str(local_file_path).endswith(".zip") and not os.path.exists(str(local_file_path)):
+            
+        
+            checkpoint = self.getModelArchitectureStateDict() | model_hyperparameters  
+            
+            # Save the model state dict locally
+            torch.save(checkpoint, local_file_path )
 
         if datafed:
             
@@ -239,129 +396,47 @@ class TorchLogger:
                 deps = None  # If no valid IDs are present, set deps to None
 
             # Generate metadata and create a data record in DataFed
-            metadata = self.getMetadata(**kwargs)
+            metadata = self.getMetadata(local_vars=local_vars, model_hyperparameters=model_hyperparameters,**kwargs)
+            
             dc_resp = self.df_api.data_record_create(
                 metadata,
-                str(record_file_name),
+                record_title = str(record_file_name),
+                local_model_path = self.local_model_path,
+                # weights_file_path = weights_file_path,
+                # embedding_file_path = embedding_file_path,
+                # reconstruction_file_path = reconstruction_file_path,
                 deps=deps,
             )
             # Upload the saved model to DataFed
-            self.df_api.upload_file(dc_resp, path)
+            self.df_api.upload_file(dc_resp[0].data[0].id, str(local_file_path))
 
             self.current_checkpoint_id = dc_resp[0].data[0].id
             
-            if training_loss is not None:
-                dc_resp = self.df_api.data_record_create(
-                    metadata,
-                    f"Training_loss_{record_file_name}",
-                    deps=self.df_api.addDerivedFrom(self.current_checkpoint_id),
-                )
-                
-                # Upload the saved model to DataFed
-                self.df_api.upload_file(dc_resp, training_loss)
+           
+    def get_return_variables(func):
+    # Get the source code of the function
+        source = inspect.getsource(func)
+        
+        # Parse the source code into an AST
+        tree = ast.parse(source)
+        
+        # Navigate to the function definition in the AST
+        function_node = next(node for node in tree.body if isinstance(node, ast.FunctionDef))
+        
+        # Extract the return statement
+        return_vars = []
+        for node in ast.walk(function_node):
+            if isinstance(node, ast.Return):
+                # Check if the return value is a tuple or a single value
+                if isinstance(node.value, ast.Tuple):
+                    return_vars = [elt.id for elt in node.value.elts if isinstance(elt, ast.Name)]
+                elif isinstance(node.value, ast.Name):
+                    return_vars = [node.value.id]
+                break
+    
+   
 
-    def serialize_model(self):
-        """
-        Serializes the model architecture into a dictionary format with detailed layer information.
-
-        Returns:
-            dict: A dictionary containing the model's architecture with layer types,
-                  names, and configurations.
-        """
-        model_info = {}
-        model_info["layers"] = {}
-
-        top_level_count = 0  # Counter for the top-level layers
-        num_top_level_layers = len(
-            set(
-                [
-                    layer_name.split(".")[0]
-                    for layer_name, _ in self.model.named_modules()
-                    if layer_name != ""
-                ]
-            )
-        )
-        pad_length = len(
-            str(num_top_level_layers)
-        )  # Padding length for top-level numbering
-
-        for layer_name, layer in self.model.named_modules():
-            # Skip the top layer which is the entire model itself
-            if layer_name != "":
-                # Split the layer name at the first '.'
-                parts = layer_name.split(".", 1)
-                top_level_name = parts[0]
-                sub_name = parts[1] if len(parts) > 1 else None
-
-                # Check if this is a new top-level layer (ignoring numbering)
-                if top_level_name not in [
-                    key.split("-", 1)[1] for key in model_info["layers"].keys()
-                ]:
-                    # Increment the top-level counter
-                    top_level_count += 1
-                    padded_count = str(top_level_count).zfill(pad_length)
-
-                    # Create a top-level entry with zero-padded numbering
-                    model_info["layers"][f"{padded_count}-{top_level_name}"] = {}
-
-                # Reference the top-level dictionary without the number prefix
-                current_level_key = [
-                    key
-                    for key in model_info["layers"].keys()
-                    if key.endswith(f"-{top_level_name}")
-                ][0]
-                current_level = model_info["layers"][current_level_key]
-
-                # If there is a sub_name (nested), create nested entries
-                if sub_name:
-                    sub_parts = sub_name.split(".")
-                    for sub in sub_parts[:-1]:
-                        if sub not in current_level:
-                            current_level[sub] = {}
-                        current_level = current_level[sub]
-                    layer_key = sub_parts[-1]
-                else:
-                    layer_key = top_level_name
-
-                # Collect the layer information
-                layer_descriptor = {
-                    "type": layer.__class__.__name__,
-                    "layer_name": layer_name,
-                    "config": {},
-                }
-
-                # Automatically collect layer parameters
-                for param, value in layer.__dict__.items():
-                    # Filter out unnecessary attributes
-                    if not param.startswith("_") and not callable(value):
-                        layer_descriptor["config"][param] = value
-
-                # Add the layer descriptor under the correct key
-                current_level[layer_key] = layer_descriptor
-
-        return model_info
-
-    def serialize_pytorch_optimizer(self):
-        """
-        Serializes the optimizer's state dictionary, converting tensors to lists for JSON compatibility.
-
-        Returns:
-            dict: A dictionary containing the optimizer's serialized parameters.
-        """
-        state_dict = self.optimizer.state_dict()
-        state_dict_serializable = {}
-        for key, value in state_dict.items():
-            if isinstance(value, torch.Tensor):
-                state_dict_serializable[key] = value.tolist()
-            elif isinstance(value, list):
-                # Convert tensors within lists to lists
-                state_dict_serializable[key] = [
-                    v.tolist() if isinstance(v, torch.Tensor) else v for v in value
-                ]
-            else:
-                state_dict_serializable[key] = value
-        return state_dict_serializable["param_groups"][0]
-
+   
 
 class InferenceEvaluation:
     def __init__(
@@ -388,7 +463,7 @@ class InferenceEvaluation:
         logging.basicConfig(level=logging.WARNING)
 
     def file_not_found(self, filename, row):
-        self.logger.warning("{filename} was not found")
+        self.logger.warning("{filename} was not found from DataFed using record id {row.id}")
 
         print(
             f"Attempting to download {filename} from DataFed using record id {row.id}"
@@ -428,8 +503,6 @@ class InferenceEvaluation:
         # retrive the filename from the API datarecords
         filename = self._getFileName(row)
 
-        print(filename)
-
         # checks if the file can be found in the root directory
         file_path = find_files_recursive(self.root_directory, filename)
 
@@ -440,6 +513,8 @@ class InferenceEvaluation:
             file_path = self.get_first_entry_if_list(file_path)
 
             if file_path is None:
+                self.logger.info(f"{filename} could not be downloaded, skipping inference.")
+                
                 print(f"{filename} could not be downloaded, skipping inference.")
 
                 return None
