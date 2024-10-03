@@ -1,5 +1,3 @@
-.. _examples:
-
 ========
 Examples
 ========
@@ -8,5 +6,4 @@ Examples
    :maxdepth: 2
    :caption: Example Notebooks
 
-   ../examples/PytorchModelLogger
-
+   ../examples/pytorchmodellogger
