@@ -333,11 +333,13 @@ class DataFed(API):
         """
         return [record.id for record in listing_reply.item]
 
-    def get_metadata(self,
-                     exclude_metadata=None,
-                     excluded_keys=None,
-                     non_unique=None,
-                     format="pandas"):
+    def get_metadata(
+        self,
+        exclude_metadata=None,
+        excluded_keys=None,
+        non_unique=None,
+        format="pandas",
+    ):
         """
         Retrieves the metadata record for a specified record ID.
 
@@ -353,23 +355,24 @@ class DataFed(API):
         """
 
         # Retrieve the data view response for the given record ID
-        #TODO: make it so it can return more than 10000 records -- not hardcoded
+        # TODO: make it so it can return more than 10000 records -- not hardcoded
         collection_list = self.collectionItemsList(self.collection_id, count=10000)[0]
-        
+
         # Get the record IDs from the collection list
         record_ids_ = self.getIDs(collection_list)
-        
+
         # Gets a list of Metadata excluding specific metadata terms
         metadata_ = self._get_metadata_list(record_ids_, exclude=exclude_metadata)
-        
+
         # Exclude specific records if specified key is in the record
         metadata_ = self.exclude_keys(metadata_, excluded_keys)
-        
+
         if non_unique is not None:
             metadata_ = self.get_unique_dicts(metadata_, exclude_keys=non_unique)
-        
+
         if format == "pandas":
             import pandas as pd
+
             return pd.DataFrame(metadata_)
         else:
             return ValueError("Invalid format. Please use 'pandas'.")
@@ -400,7 +403,7 @@ class DataFed(API):
 
         Args:
             dict_list (list): A list of dictionaries to filter.
-            required_keys (str, list, or set): The keys that each dictionary must contain. 
+            required_keys (str, list, or set): The keys that each dictionary must contain.
                                                Can be a single string, a list of strings, or a set of strings.
 
         Returns:
@@ -416,7 +419,7 @@ class DataFed(API):
             raise ValueError(
                 "Invalid value for required_keys parameter. Must be either a string, list of strings, or set of strings."
             )
-        
+
         # Filter the list of dictionaries to include only those that contain all required keys
         return [d for d in dict_list if all(key in d for key in required_keys)]
 
@@ -439,7 +442,7 @@ class DataFed(API):
         # If excluded_keys is None, return the original list of dictionaries
         if excluded_keys is None:
             return dict_list
-        
+
         # Ensure excluded_keys is a list, even if a single string is provided
         if isinstance(excluded_keys, str):
             excluded_keys = [excluded_keys]
@@ -447,7 +450,7 @@ class DataFed(API):
             raise ValueError(
                 "Invalid value for excluded_keys parameter. Must be either a string, list of strings, or set of strings."
             )
-        
+
         # Filter the list of dictionaries to exclude those that contain any of the excluded keys
         return [d for d in dict_list if not any(key in d for key in excluded_keys)]
 
@@ -455,29 +458,41 @@ class DataFed(API):
     def get_unique_dicts(dict_list, exclude_keys=None):
         if exclude_keys is None:
             exclude_keys = []
-        
+
         # Convert exclude_keys to a set for efficient lookup
         exclude_keys = set(exclude_keys)
-        
+
         # Set to store unique dictionaries
         unique_dicts = []
-        
+
         # Set to store hashes of dictionaries excluding exclude_keys
         seen = set()
-        
+
+        def make_hashable(value):
+            """Recursively convert unhashable types like dicts and lists to hashable types."""
+            if isinstance(value, dict):
+                # Convert dict to tuple of key-value pairs
+                return tuple((k, make_hashable(v)) for k, v in value.items())
+            elif isinstance(value, list):
+                # Convert list to a tuple
+                return tuple(make_hashable(v) for v in value)
+            else:
+                # If it's already hashable, return as-is
+                return value
+
         for d in dict_list:
-            # Create a JSON string that excludes the specified keys from each dictionary
-            # Sort keys to ensure consistent ordering
-            filtered_dict = {k: v for k, v in d.items() if k not in exclude_keys}
-            filtered_json = json.dumps(filtered_dict, sort_keys=True)
-            
-            # If the JSON string is not in seen, add it to the unique_dicts
-            if filtered_json not in seen:
-                seen.add(filtered_json)
+            # Create a tuple that excludes the specified keys from each dictionary
+            filtered_items = tuple(
+                (k, make_hashable(v)) for k, v in d.items() if k not in exclude_keys
+            )
+
+            # If the tuple is not in seen, add it to the unique_dicts
+            if filtered_items not in seen:
+                seen.add(filtered_items)
                 unique_dicts.append(d)
-        
+
         return unique_dicts
-    
+
     @staticmethod
     def _exclude_metadata_fields(metadata, fields):
         """
@@ -545,7 +560,7 @@ class DataFed(API):
         dict_["id"] = dv_resp[0].data[0].id
 
         return dict_
-    
+
     def check_no_files(self, record_ids):
         """
         Checks if any of the specified DataFed records have no associated files.
@@ -567,7 +582,7 @@ class DataFed(API):
             return None
         else:
             return no_files
-        
+
     def getFileName(self, record_id):
         """
         Retrieves the file name (without extension) associated with a record ID.
@@ -580,12 +595,12 @@ class DataFed(API):
         """
         # Get the source path of the file associated with the record
         source_path = self.dataView(record_id)[0].data[0].source
-        
+
         # Extract the file name from the source path and remove the extension
-        file_name = source_path.split('/')[-1]
-        
+        file_name = source_path.split("/")[-1]
+
         return file_name
-        
+
     def getRecordTitle(self, record_id):
         """
         Retrieves the title of a record from its ID.
