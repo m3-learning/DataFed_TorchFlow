@@ -54,7 +54,7 @@ class TorchLogger:
         script_path (str): Path to the script or notebook for checksum calculation.
         local_model_path (str): Local directory to store model files.
         input_data_shape (tuple): Shape of the input training data for the model.
-        verbose (bool): Whether to display verbose output.
+        logging (bool): Whether to display logging output.
 
     """
 
@@ -67,7 +67,7 @@ class TorchLogger:
         log_file_path="log.txt",
         input_data_shape=None,
         dataset_id=None,
-        verbose=False,
+        logging=False,
     ):
         """
         Initializes the TorchLogger class.
@@ -82,7 +82,7 @@ class TorchLogger:
             log_file_path (str, optional): Local file to store a log of the code evaluation. Default is 'log.txt'
             input_data (numpy.ndarray, default=None): Input data for training the model.
             dataset_id (str, default=None): DataFed ID for the input dataset for the model
-            verbose (bool, optional): Flag for verbose output. Default is False.
+            logging (bool, optional): Flag for logging output. Default is False.
         """
 
         self.current_checkpoint_id = None
@@ -94,7 +94,7 @@ class TorchLogger:
         self.local_model_path = local_model_path
         self.log_file_path = log_file_path
 
-        self.verbose = verbose
+        self.logging = logging
         self.input_data_shape = input_data_shape
 
         make_folder(self.local_model_path)
@@ -103,7 +103,7 @@ class TorchLogger:
             self.DataFed_path,
             self.local_model_path,
             log_file_path=self.log_file_path,
-            verbose=True,
+            logging=True,
         )
         self.dataset_id = dataset_id
 
@@ -136,9 +136,7 @@ class TorchLogger:
         """
         self._optimizer = optimizer
 
-    def getMetadata(
-        self, local_vars=None, model_hyperparameters=None, **kwargs
-    ):  
+    def getMetadata(self, local_vars=None, model_hyperparameters=None, **kwargs):
         """
         Gathers metadata including the serialized model, optimizer, system info, and user details.
 
@@ -227,7 +225,9 @@ class TorchLogger:
                             # if the list has many (but not too many values) extract the whole list
                             DataFed_record_metadata["Model Parameters"][key] = value
                     else:
-                        warning_message = f'List in key "{key}" is too long to be extracted'
+                        warning_message = (
+                            f'List in key "{key}" is too long to be extracted'
+                        )
                         Warning(warning_message)
                 # put the model hyperparameters in the Model Hyperparameters sub-dictionary (the hyperparameters might be 1-value torch tensors or just floats)
                 elif key in model_hyperparameters.keys():
@@ -282,7 +282,7 @@ class TorchLogger:
                             )
 
                         except (TypeError, ValueError, json.JSONDecodeError):
-                            if self.verbose:
+                            if self.logging:
                                 tb = traceback.format_exc()
                                 with open(self.log_file_path, "a") as f:
                                     timestamp = (
@@ -370,7 +370,7 @@ class TorchLogger:
             except Exception as e:
                 # the notebook is not already in DataFed, so upload it
                 # output to user
-                if self.verbose:
+                if self.logging:
                     with open(self.log_file_path, "a") as f:
                         timestamp = (
                             datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
