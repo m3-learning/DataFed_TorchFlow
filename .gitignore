@@ -60,5 +60,7 @@ examples/mnist_cnn.pth
 examples/.log.txt
 
 /examples/MNIST*
-examples
 
+*.log
+*.pth
+*.pkl

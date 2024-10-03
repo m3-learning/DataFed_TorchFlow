@@ -1,0 +1,66 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyscaffold
+          pip install tox
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@v1
+        if: |
+          contains(github.event.head_commit.message, '#minor') ||
+          contains(github.event.head_commit.message, '#patch') ||
+          contains(github.event.head_commit.message, '#major')
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          release_branches: main
+          DEFAULT_BUMP: patch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Build the package
+        run: |
+          tox
+          tox -e docs
+          tox -e build
+
+      - name: Publish to PyPI
+        if: |
+          contains(github.event.head_commit.message, '#patch') || 
+          contains(github.event.head_commit.message, '#minor') ||
+          contains(github.event.head_commit.message, '#major')
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          python -m pip install --upgrade twine
+          twine upload dist/*
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./docs/_build/html

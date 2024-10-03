@@ -1,0 +1,42 @@
+
+ 2024-10-03 21:50:27 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:50:27 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:51:38 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:51:38 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:52:52 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:52:52 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:53:10 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:53:10 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:53:10 - Data creation successful
+ 2024-10-03 21:53:12 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.
+ 2024-10-03 21:53:30 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:53:30 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:53:30 - Data creation successful
+ 2024-10-03 21:53:31 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.
+ 2024-10-03 21:53:49 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:53:49 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:53:49 - Data creation successful
+ 2024-10-03 21:53:50 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.
+ 2024-10-03 21:54:09 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:54:09 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:54:09 - Data creation successful
+ 2024-10-03 21:54:10 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.
+ 2024-10-03 21:54:28 - Success! You have set up the Globus endpoint 0ee42578-7301-11ef-b769-0f922496edc5.
+ 2024-10-03 21:54:28 - Success! You have been authenticated into DataFed as: u/jca318.
+ 2024-10-03 21:54:28 - Data creation successful
+ 2024-10-03 21:54:29 - Data put status: Pending
+ This just means that the Data put command ran without errors. 
+ If the status is not complete, check the DataFed and Globus websites 
+ to ensure the Globus Endpoint is connected and the file transfer completes.

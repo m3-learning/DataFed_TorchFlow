@@ -31,6 +31,7 @@ Contents
 
    Overview <readme>
    Contributions & Help <contributing>
+   Examples <examples>
    License <license>
    Authors <authors>
    Changelog <changelog>
