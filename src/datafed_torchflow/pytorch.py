@@ -32,7 +32,7 @@ import ast
 import traceback
 
 
-# TODO: Make it so it does not upload a notebook on each reinstantiation. Checksum just the file.
+# TODO: Make it so it does not upload a notebook on each reinstantiation. Compare the notebook checksum to determine whether the file has changed.
 # TODO: Add data and dataloader derivative.
 
 
@@ -63,6 +63,7 @@ class TorchLogger:
         DataFed_path,
         script_path=None,
         local_model_path = "/.",
+        log_file_path = "log.txt",
         input_data_shape = None,
         dataset_id=None,
         verbose=False,
@@ -77,6 +78,7 @@ class TorchLogger:
             DataFed_path (str): Path to the DataFed configuration or API.
             script_path (str, optional): Path to the script or notebook. Default is None.
             local_model_path (str, optional): Local directory to store model files. Default is './'.
+            log_file_path (str, optional): Local file to store a log of the code evaluation. Default is 'log.txt' 
             input_data (numpy.ndarray, default=None): Input data for training the model.
             dataset_id (str, default=None): DataFed ID for the input dataset for the model 
             verbose (bool, optional): Flag for verbose output. Default is False.
@@ -89,15 +91,16 @@ class TorchLogger:
         self.model_dict = model_dict
         self.optimizer = self.model_dict["optimizer"]
         self.DataFed_path = DataFed_path
+        self.local_model_path = local_model_path
+        self.log_file_path = log_file_path
         
         self.verbose = verbose
         self.input_data_shape = input_data_shape
-        self.local_model_path = local_model_path
         
-        make_folder(local_model_path)
+        make_folder(self.local_model_path)
         
         
-        self.df_api = DataFed(self.DataFed_path, self.local_model_path,verbose=True)
+        self.df_api = DataFed(self.DataFed_path, self.local_model_path, log_file_path=self.log_file_path, verbose=True)
         self.dataset_id = dataset_id
 
         # Check if Globus has access to the local path
@@ -161,7 +164,7 @@ class TorchLogger:
         # loop through the local variables to add to the metadata dictionary
         for key, value in local_vars: 
                 # exclude modules and other undesired local variables. Use casefold string matching for flexibility         
-                if not key.startswith("_") and key.casefold() not in ["checkpoint", "self","local_vars", "torchlogger","notebook_filepath","model_dict","key","value"] and "datafed" not in key.casefold() and "globus" not in key.casefold() and "dataset" not in key.casefold() and "loader" not in key.casefold() and "IPython".casefold() not in str(type(value)).casefold() and not (callable(value) and key not in model_architecture_names) and type(value) not in [type, types.ModuleType, types.FunctionType, API, DataLoader, types.NoneType,types.MethodType]: 
+                if not key.startswith("_") and key.casefold() not in ["checkpoint", "self","local_vars","model_dict","key","value"] and "datafed" not in key.casefold() and "globus" not in key.casefold() and "data".casefold() not in str(type(value)).casefold() and "dataloader".casefold() not in str(type(value)).casefold() and not (callable(value) and key not in model_architecture_names) and type(value) not in [type, types.ModuleType, types.FunctionType, API, DataLoader, types.NoneType,types.MethodType]: 
                     # put the model architecture into the Model Architecture sub-dictionary
                     if key in model_architecture_names:
                         # serialize the optimizer
@@ -226,10 +229,16 @@ class TorchLogger:
                                 except:
                                     if self.verbose:
                                         tb = traceback.format_exc()
-                                        print(f"Could not convert {key} to JSON. {key} has type {type(key)}")
-                                        print(f"the corresponding value has type {type(value)} and value \n {value}")
-                                        print(f"Python error message {tb}")
-                                        print(f"skipping this variable...")
+                                        with open(self.log_file_path, "a") as f:
+                                            timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                                            f.write(f"\n {timestamp} - Could not convert {key} to JSON. {key} has type {type(key)}")
+                                            f.write(f"the corresponding value has type {type(value)} and value \n {value}")
+                                            f.write(f"Python error message {tb}")
+                                            f.write(f"skipping this variable.")
+                                            
+                                        
+                                        
 
                       #  except:
                       #      pass
@@ -301,7 +310,9 @@ class TorchLogger:
                 # the notebook is not already in DataFed, so upload it
                 # output to user
                 if self.verbose:
-                    print(f"Uploading notebook {self.__file__} to DataFed...")
+                    with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                        f.write(f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed...")
 
                 notebook_metadata = getNotebookMetadata(self.__file__)
 
@@ -312,7 +323,7 @@ class TorchLogger:
                     "timestamp": current_time,
                 }
 
-                self.notebook_record_resp, file_path = self.df_api.data_record_create(
+                self.notebook_record_resp = self.df_api.data_record_create(
                     metadata = notebook_metadata,
                     record_title=self.__file__.split("/")[-1], #.split(".")[0],
                     deps=self.df_api.addDerivedFrom(self.dataset_id)
@@ -325,27 +336,25 @@ class TorchLogger:
 
     def save(self, record_file_name, datafed=True,
             local_file_path = None, 
-             #embedding_file_path = None,
-            #reconstruction_file_path=None, 
             local_vars = None, model_hyperparameters=None, **kwargs):
         """
-        Saves the model's state dictionary locally and optionally uploads it to DataFed. 
-        NOTE: This function assumes that the model has embeddings and reconstructions, 
-        and a visualization for both, along with the model weights, have been pre-saved.
+        
+        
+        Saves the model's state dictionary locally unless one has already been saved 
+        and optionally uploads it to DataFed along with the model's metadata. 
+        If you want to upload multiple files to the same DataFed data record you can zip them
+        together and pass in the local path to the zip file as "local_file_path".
 
         Args:
             record_file_name (str): The name of the file to save the model locally.
             datafed (bool, optional): If True, the record is uploaded to DataFed. Default is True.
-            weights_file_path (str, optional): The file path to the saved model weights
-            embedding_file_path (str, optional): The file path to the saved visualization of the model embeddings
-            reconstruction_file_path (str, optional): The file path to the saved visualization of the model reconstruction_file_path
+            local_file_path (str or Path.PosixPath, optional): The local file path to the directory to save the weights 
+                    or to the presaved file to upload to DataFed.
             local_vars (list): a list containing the local variables for the model training code, from list(locals().items()). Used to determine the metadata
             model_hyperparameters (dict): a dictionary where the keys are the model hyperparameters names and the values are the model hyperparameter names. Used in the saved checkpoint. 
             **kwargs: Additional metadata or attributes to include in the record.
         """
-            
-        #make_folder(str(DataFed_file_path).rsplit("/",1)[0])
-        
+                    
         # include the model architecture state dictionary and model hyperparameters in the checkpoint
         if not str(local_file_path).endswith(".zip") and not os.path.exists(str(local_file_path)):
             
@@ -454,7 +463,7 @@ class InferenceEvaluation:
         logging.basicConfig(level=logging.WARNING)
 
     def file_not_found(self, filename, row):
-        self.logger.warning("{filename} was not found")
+        self.logger.warning("{filename} was not found from DataFed using record id {row.id}")
 
         print(
             f"Attempting to download {filename} from DataFed using record id {row.id}"
@@ -494,8 +503,6 @@ class InferenceEvaluation:
         # retrive the filename from the API datarecords
         filename = self._getFileName(row)
 
-        print(filename)
-
         # checks if the file can be found in the root directory
         file_path = find_files_recursive(self.root_directory, filename)
 
@@ -506,6 +513,8 @@ class InferenceEvaluation:
             file_path = self.get_first_entry_if_list(file_path)
 
             if file_path is None:
+                self.logger.info(f"{filename} could not be downloaded, skipping inference.")
+                
                 print(f"{filename} could not be downloaded, skipping inference.")
 
                 return None

@@ -23,13 +23,14 @@ class DataFed(API):
         project_id (str): The ID of the project.
     """
 
-    def __init__(self, cwd, local_model_path, verbose=False, log_file_path=".log.txt"):
+    def __init__(self, cwd, local_model_path, log_file_path="log.txt", verbose=False):
         """
         Initializes the DataFed instance.
 
         Args:
             cwd (str): The current working directory.
             local_model_path (str): Local directory to store model files.
+            log_file_path (str, optional): Local file to store a log of the code evaluation. Default is 'log.txt'
             verbose (bool, optional): Flag to enable verbose logging. Defaults to False.
 
         Raises:
@@ -40,6 +41,8 @@ class DataFed(API):
         self.local_model_path = local_model_path
 
         self.verbose = verbose
+        self.log_file_path = log_file_path
+
 
         # checks if the user is autenticated with DataFed 
         # and the Globus endpoint is set
@@ -50,7 +53,6 @@ class DataFed(API):
         self.check_string_for_dot_or_slash(self.cwd)
 
         # Set the log file path
-        self.log_file_path = log_file_path
 
         # Checks if user is saving in the root collection.
         if self._parse_cwd[0] == self.user_id:
@@ -73,24 +75,21 @@ class DataFed(API):
         """
         if self.getAuthUser():
             if self.verbose:
-                print(
-                    "Success! You have been authenticated into DataFed as: "
-                    + self.getAuthUser()
-                )
+                with open(self.log_file_path, "a") as f:
+                    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    f.write(f"\n {timestamp} - Success! You have been authenticated into DataFed as: {self.getAuthUser()}.")
+
         else:
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - You have not authenticated into DataFed Client.")
+                f.write("Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself:")
+                f.write("https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
+                
             raise Exception(
                 "You have not authenticated into DataFed Client. Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration"
             )
-
-    @property
-    def user_id(self):
-        """
-        Gets the user ID from the authenticated user's information.
-
-        Returns:
-            str: The user ID extracted from the authenticated user information.
-        """
-        return self.getAuthUser().split("/")[-1]
 
     def check_if_endpoint_set(self):
         """
@@ -101,13 +100,32 @@ class DataFed(API):
         """
         if self.endpointDefaultGet():
             if self.verbose:
-                print(
-                    f"Success! You have set up the Globus endpoint {self.endpointDefaultGet()}."
-                )
+                
+                with open(self.log_file_path, "a") as f:
+                    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    f.write(f"\n {timestamp} - Success! You have set up the Globus endpoint {self.endpointDefaultGet()}.")
         else:
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - You have not authenticated into DataFed Client.")
+                f.write("Please follow instructions in the 'Basic Configuration' section in the link below to authenticate yourself:")
+                f.write("https://ornl.github.io/DataFed/user/client/install.html#basic-configuration")
+                
+                
             raise Exception(
                 "You have not set up the Globus endpoint. Please follow instructions in the 'Basic Configuration' section in the link below to set up the Globus endpoint: https://ornl.github.io/DataFed/user/client/install.html#basic-configuration"
             )
+            
+    @property
+    def user_id(self):
+        """
+        Gets the user ID from the authenticated user's information.
+
+        Returns:
+            str: The user ID extracted from the authenticated user information.
+        """
+        return self.getAuthUser().split("/")[-1]
 
     @staticmethod
     def check_string_for_dot_or_slash(s):
@@ -143,6 +161,7 @@ class DataFed(API):
                 return item.id
 
         # If no matching title is found, raise an error with a custom message
+        
         raise ValueError(
             f"Project '{title_to_find}' does not exist. "
             "Please create the project and provide an allocation."
@@ -258,74 +277,9 @@ class DataFed(API):
         notebook_ID = ls_resp_2[0].item[np.where([record.title == notebook_filename.rsplit("/",1)[-1] for record in ls_resp_2[0].item])[0].item()].id
         
         return notebook_ID 
-    
-    # def zip_files_create(self,local_model_path=".",record_title = "demo_record",weights_file_path=None,embedding_file_path=None, reconstruction_file_path=None):
-    #     """
-    #     DataFed only allows one data file per record, so zip the relevant model files into one. 
-    #     Assume the relevant model files are the model weights pickle file and the visualizations of the model 
-    #     embeddings and reconstructions
-        
-    #     Args: 
-    #         local_model_path (str): Local directory to store model files
-    #         record_title (str): The zip file's filename. Also the title of the DataFed record for the zip file 
-    #         weights_file_path (str): Local file path to the saved model weights
-    #         embedding_file_path (str): Local file path to the visualization of the model embeddings
-    #         reconstruction_file_path (str): Local file path to the visualization of the model reconstructions
-            
-            
-    #     Returns: 
-    #         pathlib.PosixPath: the file path to the zip file
-    #     """
-    #     # construct the local path to the folder containing the zip files
-    #     zip_file_folder = Path(f"{local_model_path.rsplit('/',1)[0]}/zip_files/{local_model_path.rsplit('/',1)[1]}")
-        
-    #     # if the user includes the *.zip in the record title, ignore it for flexibility 
-    #     if record_title.endswith(".zip"):
-    #         zip_file = record_title
-    #     else:
-    #         zip_file = f"{record_title}.zip"
-            
-    #     # construct the local path to the zip file 
-    #     zip_file_path = zip_file_folder / zip_file
-    #     # ensure the local folder path exists 
-    #     zip_file_folder.mkdir(parents=True,exist_ok=True) 
-        
-    #     # create the zip files.  I assume that the weights file is always specified because it should always exist and be saved. I also assume that 
-    #     # the weights file is not the only file specified because if there is only 1 file, there is no need to zip. 
-    #     # Therefore, either the model embeddings or reconstructions (or both) must be specified. 
-    #     # These are the 3 cases handled by the if..elif..else clause below. 
-        
-    #     # if there is no model reconstruction file given, just zip the weights and model embedding files 
-    #     if reconstruction_file_path == None:
-    #         filenames = [weights_file_path,embedding_file_path]
+          
 
-    #         with zipfile.ZipFile(zip_file_path,mode='w') as archive:
-    #             for filename in filenames:
-    #                 archive.write(filename, basename(filename))
-        
-    #     # if there is no model embedding file given, just zip the weights and model reconstruction files    
-    #     elif embedding_file_path == None:
-    #         filenames = [weights_file_path,reconstruction_file_path]
-
-    #         with zipfile.ZipFile(zip_file_path,mode='w') as archive:
-    #             for filename in filenames:
-    #                 archive.write(filename, basename(filename))          
-
-    #     # if both the model embeddings and reconstruction files are specified, zip them both along with the weights
-    #     else:
-    #         filenames = [weights_file_path,embedding_file_path,reconstruction_file_path]
-
-            
-    #         with zipfile.ZipFile(zip_file_path,mode='w') as archive:
-    #             for filename in filenames:
-    #                 archive.write(filename, basename(filename))
-    #     # return the local file path of the zip file
-    #     return zip_file_path         
-
-    def data_record_create(self, metadata=None, record_title=None, deps=None, 
-                           #weights_file_path = None, embedding_file_path = None,
-                           #reconstruction_file_path=None, 
-                            **kwargs):
+    def data_record_create(self, metadata=None, record_title=None, deps=None, **kwargs):
         """
         Creates the DataFed record for the saved checkpoint and uploads the relevant metadata
         
@@ -333,9 +287,6 @@ class DataFed(API):
             metadata (dict): The relevant model and system metadata for the checkpoint. 
             record_title (str): The title of the DataFed record. 
             deps (list or str, optional): A list of dependencies or a single dependency to add. Defaults to None.
-            weights_file_path (str, optional): Local file path to the saved model weights. Defaults to None.
-            embedding_file_path (str, optional): Local file path to the visualization of the model embeddings. Defaults to None.
-            reconstruction_file_path (str, optional): Local file path to the visualization of the model reconstructions. Defaults to None.
         Raises: 
             Exception: If user is not authenticated or must re-authenticate 
         
@@ -351,26 +302,10 @@ class DataFed(API):
         if len(record_title) > 80:
             record_title = record_title[:80] #.replace(".", "_")[:80]
             if self.verbose:
-                print("Record title is too long. Truncating to 80 characters.")
-        
-        # initialize the local file path of the record to the record title. 
-        # It will be modified if there are multiple associated files during the creation of the zip file, but 
-        # is initialized in case there are only one or no associated files and therefore no need to create a zip file
-        # for example for the Jupyter notebooks. 
-        #file_path = record_title 
-        
-        
-            
-        
-        # if there are multiple associated files, assume one of them is either the model embedding or reconstruction visualizations
-        # and create the zip file
-        # if embedding_file_path != None or reconstruction_file_path != None:     
-       
-     
-        
-        #     file_path = self.zip_files_create(local_model_path = self.local_model_path,record_title=record_title, 
-        #                       weights_file_path=weights_file_path, embedding_file_path=embedding_file_path,reconstruction_file_path=reconstruction_file_path)
-             
+                with open(self.log_file_path, "a") as f:
+                    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    f.write(f"\n {timestamp} - Record title is too long. Truncating to 80 characters.")
+                    
         # try creating the Data record and uploading the relevant metadata. 
         # This will fail when DataFed decides the user must reauthenticate.
         try:
@@ -518,7 +453,7 @@ class DataFed(API):
             import pandas as pd
             return pd.DataFrame(metadata_)
         else:
-            return ValueError("Invalid format. Please use 'pandas'.")
+            return ValueError("Invalid format in get_metadata. Please use 'pandas'.")
 
     def _get_metadata_list(self, record_ids, exclude=None):
         metadata = []
@@ -531,8 +466,16 @@ class DataFed(API):
                 elif isinstance(exclude, list):
                     metadata_ = self._exclude_metadata_fields(metadata_, exclude)
                 else:
+                    
+                    
+                    with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                        f.write(f"\n {timestamp} - Invalid value for exclude parameter in _get_metadata_list.") 
+                        f.write("Must be either 'computing' or a list of fields to exclude.")
+
                     raise ValueError(
-                        "Invalid value for exclude parameter. Must be either 'computing' or a list of fields to exclude."
+                        "Invalid value for exclude parameter in _get_metadata_list. Must be either 'computing' or a list of fields to exclude."
                     )
 
             metadata.append(metadata_)
@@ -540,7 +483,7 @@ class DataFed(API):
         return metadata
 
     @staticmethod
-    def required_keys(dict_list, required_keys):
+    def required_keys(self, dict_list, required_keys):
         """
         Filters a list of dictionaries to include only those that contain all specified required keys.
 
@@ -559,6 +502,12 @@ class DataFed(API):
         if isinstance(required_keys, str):
             required_keys = [required_keys]
         elif not isinstance(required_keys, (list, set)):
+            
+            with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                        f.write(f"\n {timestamp} - Invalid value for required_keys parameter. Must be either a string, list of strings, or set of strings.")
+            
             raise ValueError(
                 "Invalid value for required_keys parameter. Must be either a string, list of strings, or set of strings."
             )
@@ -567,7 +516,7 @@ class DataFed(API):
         return [d for d in dict_list if all(key in d for key in required_keys)]
 
     @staticmethod
-    def exclude_keys(dict_list, excluded_keys):
+    def exclude_keys(self,dict_list, excluded_keys):
         """
         Filters a list of dictionaries to exclude those that contain any of the specified excluded keys.
 
@@ -590,6 +539,11 @@ class DataFed(API):
         if isinstance(excluded_keys, str):
             excluded_keys = [excluded_keys]
         elif not isinstance(excluded_keys, (list, set)):
+            with open(self.log_file_path, "a") as f:
+                        timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                        f.write(f"\n {timestamp} - Invalid value for excluded_keys parameter. Must be either a string, list of strings, or set of strings.")
+            
             raise ValueError(
                 "Invalid value for excluded_keys parameter. Must be either a string, list of strings, or set of strings."
             )
