@@ -6,7 +6,7 @@ import json
 from m3util.globus.globus import check_globus_endpoint
 from datafed_torchflow.JSON import UniversalEncoder
 from tqdm import tqdm
-
+import os
 
 class DataFed(API):
     """
@@ -58,7 +58,8 @@ class DataFed(API):
         self.check_if_logged_in()
         self.check_if_endpoint_set()
 
-        
+        # gets the collection and project ID
+        self.identify_collection_id()
 
         # Set the dataset ID
         self.dataset_id = dataset_id
@@ -72,31 +73,49 @@ class DataFed(API):
         # sets the kwargs for downloads
         self.download_kwargs = download_kwargs
         
+    def getCollectionProjectID(self):
+        """
+        Retrieves the project ID associated with a specific collection.
+
+        This method fetches the parent collection of the given collection ID and extracts the project ID from it.
+
+        Returns:
+            str: The project ID associated with the specified collection.
+        """
+        
+        # Fetch the parent collection of the specified collection ID
+        parent_collection = self.collectionGetParents(self.collection_id)[0]
+
+        # Extract and return the project ID from the parent collection path
+        return parent_collection.path[0].item[0].id
+        
     def identify_collection_id(self):
         
         # if a collection ID is provided, set the collection ID to the provided collection ID
         if self.datafed_collection.startswith("/c"):
+            
             self.collection_id = self.datafed_collection
-
-            # TODO need to get the project ID from the collection ID
+            self.project_id = self.getCollectionProjectID()
         
         # if provided as a path to a collection, set the collection ID to the collection ID of the last subfolder
         else:
-            
-            # Checks if the datafed_collection is a valid path.
-            self.check_string_for_dot_or_slash(self.datafed_collection)
+            try:
+                # Checks if the datafed_collection is a valid path.
+                self.check_string_for_dot_or_slash(self.datafed_collection)
 
-            # Checks if user is saving in the root collection.
-            if self._parse_datafed_collection[0] == self.user_id:
-                self.project_id = self.user_id
-            else:
-                # Gets all the projects in DataFed.
-                items, response = self.get_projects
+                # Checks if user is saving in the root collection.
+                if self._parse_datafed_collection[0] == self.user_id:
+                    self.project_id = self.user_id
+                else:
+                    # Gets all the projects in DataFed.
+                    items, response = self.get_projects
 
-                # Checks if the project exists in DataFed.
-                self.project_id = self.find_id_by_title(items, self._parse_datafed_collection[0])
+                    # Checks if the project exists in DataFed.
+                    self.project_id = self.find_id_by_title(items, self._parse_datafed_collection[0])
 
-                self.create_subfolder_if_not_exists()
+                    self.create_subfolder_if_not_exists()
+            except ValueError:
+                raise ValueError("Invalid DataFed collection path provided.")
 
     def check_if_logged_in(self):
         """
