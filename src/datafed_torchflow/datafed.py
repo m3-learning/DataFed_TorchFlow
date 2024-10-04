@@ -608,7 +608,6 @@ class DataFed(API):
         # Filter the list of dictionaries to include only those that contain all required keys
         return [d for d in dict_list if all(key in d for key in required_keys)]
 
-    @staticmethod
     def exclude_keys(self, dict_list, excluded_keys):
         """
         Filters a list of dictionaries to exclude those that contain any of the specified excluded keys.
