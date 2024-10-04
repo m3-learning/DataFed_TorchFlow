@@ -92,7 +92,7 @@ class DataFed(API):
     def identify_collection_id(self):
         
         # if a collection ID is provided, set the collection ID to the provided collection ID
-        if self.datafed_collection.startswith("/c"):
+        if self.datafed_collection.startswith("c/"):
             
             self.collection_id = self.datafed_collection
             self.project_id = self.getCollectionProjectID()
