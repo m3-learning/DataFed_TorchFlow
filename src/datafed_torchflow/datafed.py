@@ -16,19 +16,29 @@ class DataFed(API):
         API: The base class for interacting with the DataFed API.
 
     Attributes:
-        cwd (str): The current working directory.
+        datafed_collection (str): The current working directory.
         local_model_path (str): Local directory to store model files.
         log_file_path (str): Local file to store a log of the code evaluation.
         logging (bool): Flag to enable logging.
         project_id (str): The ID of the project.
+        dataset_id (str): The ID of the dataset.
     """
 
-    def __init__(self, cwd, local_model_path, log_file_path="log.txt", logging=False):
+    def __init__(
+        self,
+        datafed_collection,
+        local_model_path,
+        log_file_path="log.txt",
+        dataset_id=None,
+        data_path=None,
+        download_kwargs={},
+        logging=False,
+    ):
         """
         Initializes the DataFed instance.
 
         Args:
-            cwd (str): The current working directory.
+            datafed_collection (str): The current DataFed collection could be provided as either a collection ID or a directory path.
             local_model_path (str): Local directory to store model files.
             log_file_path (str, optional): Local file to store a log of the code evaluation. Default is 'log.txt'
             logging (bool, optional): Flag to enable logging. Defaults to False.
@@ -37,7 +47,7 @@ class DataFed(API):
             Exception: If the user is not authenticated with DataFed.
         """
         super().__init__()
-        self.cwd = cwd
+        self.datafed_collection = datafed_collection
         self.local_model_path = local_model_path
 
         self.logging = logging
@@ -48,22 +58,45 @@ class DataFed(API):
         self.check_if_logged_in()
         self.check_if_endpoint_set()
 
-        # Checks if the cwd is a valid path.
-        self.check_string_for_dot_or_slash(self.cwd)
+        
 
-        # Set the log file path
+        # Set the dataset ID
+        self.dataset_id = dataset_id
 
-        # Checks if user is saving in the root collection.
-        if self._parse_cwd[0] == self.user_id:
-            self.project_id = self.user_id
+        # Set the data path
+        self.data_path = data_path
+
+        if self.dataset_id is not None:
+            self.getData()
+
+        # sets the kwargs for downloads
+        self.download_kwargs = download_kwargs
+        
+    def identify_collection_id(self):
+        
+        # if a collection ID is provided, set the collection ID to the provided collection ID
+        if self.datafed_collection.startswith("/c"):
+            self.collection_id = self.datafed_collection
+
+            # TODO need to get the project ID from the collection ID
+        
+        # if provided as a path to a collection, set the collection ID to the collection ID of the last subfolder
         else:
-            # Gets all the projects in DataFed.
-            items, response = self.get_projects
+            
+            # Checks if the datafed_collection is a valid path.
+            self.check_string_for_dot_or_slash(self.datafed_collection)
 
-            # Checks if the project exists in DataFed.
-            self.project_id = self.find_id_by_title(items, self._parse_cwd[0])
+            # Checks if user is saving in the root collection.
+            if self._parse_datafed_collection[0] == self.user_id:
+                self.project_id = self.user_id
+            else:
+                # Gets all the projects in DataFed.
+                items, response = self.get_projects
 
-            self.create_subfolder_if_not_exists()
+                # Checks if the project exists in DataFed.
+                self.project_id = self.find_id_by_title(items, self._parse_datafed_collection[0])
+
+                self.create_subfolder_if_not_exists()
 
     def check_if_logged_in(self):
         """
@@ -212,14 +245,14 @@ class DataFed(API):
         return f"c/{new_str}_root"
 
     @property
-    def _parse_cwd(self):
+    def _parse_datafed_collection(self):
         """
         Parses the current working directory into components.
 
         Returns:
             list: A list of directory components split by '/'.
         """
-        return self.cwd.split("/")
+        return self.datafed_collection.split("/")
 
     def getCollList(self, collection_id):
         """
@@ -244,15 +277,15 @@ class DataFed(API):
         """
         Creates sub-folders (collections) if they do not already exist.
 
-        Iterates through the sub-collections specified in `cwd`, creating any that are missing.
+        Iterates through the sub-collections specified in `datafed_collection`, creating any that are missing.
         Updates `collection_id` with the ID of the last created or found sub-collection.
         """
         # Gets the root context from the parent collection
         collections, ls_resp = self.getCollList(self.getRootColl)
         current_collection = self.getRootColl
 
-        # Iterate through the sub-collections specified in `cwd`
-        for collection in self._parse_cwd[1:]:
+        # Iterate through the sub-collections specified in `datafed_collection`
+        for collection in self._parse_datafed_collection[1:]:
             # Check if the collection exists in DataFed
             if collection in collections:
                 # Navigate to the sub-collection if it exists
@@ -766,3 +799,23 @@ class DataFed(API):
             str: The title of the record.
         """
         return self.dataView(record_id)[0].data[0].title
+
+    def getData(self):
+        """
+        Downloads the data from the dataset
+        """
+        if self.data_path is None:
+            self.dataGet(self.dataset_id, self.datafed_collection, **self.download_kwargs)
+        elif os.path.exists(self.data_path):
+           self.dataGet(self.dataset_id, self.datafed_collection, **self.download_kwargs)
+        else:
+            raise ValueError("Data path does not exist.")
+
+    def extract_filename(self, record_id):
+        raise NotImplementedError("Not implemented")
+
+    def check_if_file_exists(self, file_path):
+        raise NotImplementedError("Not implemented")
+
+    def download(self, id, path):
+        raise NotImplementedError("Not implemented")

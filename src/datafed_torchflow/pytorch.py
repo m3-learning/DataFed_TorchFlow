@@ -115,7 +115,7 @@ class TorchLogger:
 
     def reset(self):
         self.current_checkpoint_id = None
-
+    
     @property
     def optimizer(self):
         """
