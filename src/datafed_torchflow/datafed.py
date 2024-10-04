@@ -67,12 +67,16 @@ class DataFed(API):
 
         # Set the dataset ID
         self.dataset_id = dataset_id
+        
+        
 
         # Set the data path
         self.data_path = data_path
 
         if self.dataset_id is not None:
             self.getData()
+            
+            self.original_file_path = self.file_path
 
     def getCollectionProjectID(self):
         """
