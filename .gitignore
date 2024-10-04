@@ -64,4 +64,4 @@ examples/.log.txt
 *.log
 *.pth
 *.pkl
-scratch/scratch.ipynb
+scratch/*

@@ -50,6 +50,10 @@ class DataFed(API):
         self.datafed_collection = datafed_collection
         self.local_model_path = local_model_path
 
+
+        # sets the kwargs for downloads
+        self.download_kwargs = download_kwargs
+        
         self.logging = logging
         self.log_file_path = log_file_path
 
@@ -70,8 +74,7 @@ class DataFed(API):
         if self.dataset_id is not None:
             self.getData()
 
-        # sets the kwargs for downloads
-        self.download_kwargs = download_kwargs
+        
         
     def getCollectionProjectID(self):
         """
@@ -819,6 +822,16 @@ class DataFed(API):
             str: The title of the record.
         """
         return self.dataView(record_id)[0].data[0].title
+    
+    def getFileExtension(self):
+        """
+        Retrieves the file extension of the dataset file.
+
+        Returns:
+            str: The file extension of the dataset file, including the leading dot.
+        """
+        # Split the file name by '.' and return the last part as the extension
+        return "." + self.getFileName(self.dataset_id).split(".")[-1]
 
     def getData(self):
         """
@@ -835,9 +848,12 @@ class DataFed(API):
                 os.makedirs(self.data_path)
             
             if not self.check_if_file_data(file_name):
-                print(f'Downloading {self.dataset_id} data using datafed to {self.data_path}')
-                self.dataGet(self.dataset_id, self.data_path, **self.download_kwargs)
-
+                if os.path.exists(os.path.join(self.data_path, self.dataset_id[2:] + self.getFileExtension())):
+                    file_name = self.dataset_id[2:] + self.getFileExtension()
+                else:
+                    print(f'Downloading {self.dataset_id} data using datafed to {self.data_path}')
+                    self.dataGet(self.dataset_id, self.data_path, **self.download_kwargs)
+                    
             self.file_path = os.path.join(self.data_path, file_name)
 
     def check_if_file_data(self, file_name):
