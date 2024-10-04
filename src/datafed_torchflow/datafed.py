@@ -831,15 +831,19 @@ class DataFed(API):
         # Split the file name by '.' and return the last part as the extension
         return "." + self.getFileName(self.dataset_id).split(".")[-1]
 
-    def getData(self):
+    def getData(self, dataset_id=None):
         """
         Downloads the data from the dataset
         """
+        
+        if dataset_id is None: 
+            dataset_id = self.dataset_id
+            
         # if a data path is not provided, download the data to the current directory
         if self.data_path is None:
-            self.dataGet(self.dataset_id, "./", **self.download_kwargs)
+            self.dataGet(dataset_id, "./", **self.download_kwargs)
         else:
-            file_name = self.getFileName(self.dataset_id)
+            file_name = self.getFileName(dataset_id)
 
             # if the data path does not exist, create it
             if not os.path.exists(self.data_path):
@@ -848,16 +852,16 @@ class DataFed(API):
             if not self.check_if_file_data(file_name):
                 if os.path.exists(
                     os.path.join(
-                        self.data_path, self.dataset_id[2:] + self.getFileExtension()
+                        self.data_path, dataset_id[2:] + self.getFileExtension()
                     )
                 ):
-                    file_name = self.dataset_id[2:] + self.getFileExtension()
+                    file_name = dataset_id[2:] + self.getFileExtension()
                 else:
                     print(
-                        f"Downloading {self.dataset_id} data using datafed to {self.data_path}"
+                        f"Downloading {dataset_id} data using datafed to {self.data_path}"
                     )
                     self.dataGet(
-                        self.dataset_id, self.data_path, **self.download_kwargs
+                        dataset_id, self.data_path, **self.download_kwargs
                     )
 
             self.file_path = os.path.join(self.data_path, file_name)
