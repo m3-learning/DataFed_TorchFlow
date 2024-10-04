@@ -8,6 +8,7 @@ from datafed_torchflow.JSON import UniversalEncoder
 from tqdm import tqdm
 import os
 
+
 class DataFed(API):
     """
     A class to interact with DataFed API.
@@ -31,7 +32,7 @@ class DataFed(API):
         log_file_path="log.txt",
         dataset_id=None,
         data_path=None,
-        download_kwargs={},
+        download_kwargs={"wait": True, "orig_fname": True},
         logging=False,
     ):
         """
@@ -50,10 +51,9 @@ class DataFed(API):
         self.datafed_collection = datafed_collection
         self.local_model_path = local_model_path
 
-
         # sets the kwargs for downloads
         self.download_kwargs = download_kwargs
-        
+
         self.logging = logging
         self.log_file_path = log_file_path
 
@@ -74,8 +74,6 @@ class DataFed(API):
         if self.dataset_id is not None:
             self.getData()
 
-        
-        
     def getCollectionProjectID(self):
         """
         Retrieves the project ID associated with a specific collection.
@@ -85,21 +83,19 @@ class DataFed(API):
         Returns:
             str: The project ID associated with the specified collection.
         """
-        
+
         # Fetch the parent collection of the specified collection ID
         parent_collection = self.collectionGetParents(self.collection_id)[0]
 
         # Extract and return the project ID from the parent collection path
         return parent_collection.path[0].item[0].id
-        
+
     def identify_collection_id(self):
-        
         # if a collection ID is provided, set the collection ID to the provided collection ID
         if self.datafed_collection.startswith("c/"):
-            
             self.collection_id = self.datafed_collection
             self.project_id = self.getCollectionProjectID()
-        
+
         # if provided as a path to a collection, set the collection ID to the collection ID of the last subfolder
         else:
             try:
@@ -114,10 +110,12 @@ class DataFed(API):
                     items, response = self.get_projects
 
                     # Checks if the project exists in DataFed.
-                    self.project_id = self.find_id_by_title(items, self._parse_datafed_collection[0])
+                    self.project_id = self.find_id_by_title(
+                        items, self._parse_datafed_collection[0]
+                    )
 
                     self.create_subfolder_if_not_exists()
-                    
+
             except ValueError:
                 raise ValueError("Invalid DataFed collection path provided.")
 
@@ -295,7 +293,7 @@ class DataFed(API):
         collections = [record.title for record in ls_resp[0].item]
 
         return collections, ls_resp
-    
+
     def create_subfolder_if_not_exists(self):
         """
         Creates sub-folders (collections) if they do not already exist.
@@ -822,7 +820,7 @@ class DataFed(API):
             str: The title of the record.
         """
         return self.dataView(record_id)[0].data[0].title
-    
+
     def getFileExtension(self):
         """
         Retrieves the file extension of the dataset file.
@@ -842,18 +840,26 @@ class DataFed(API):
             self.dataGet(self.dataset_id, "./", **self.download_kwargs)
         else:
             file_name = self.getFileName(self.dataset_id)
-            
+
             # if the data path does not exist, create it
             if not os.path.exists(self.data_path):
                 os.makedirs(self.data_path)
-            
+
             if not self.check_if_file_data(file_name):
-                if os.path.exists(os.path.join(self.data_path, self.dataset_id[2:] + self.getFileExtension())):
+                if os.path.exists(
+                    os.path.join(
+                        self.data_path, self.dataset_id[2:] + self.getFileExtension()
+                    )
+                ):
                     file_name = self.dataset_id[2:] + self.getFileExtension()
                 else:
-                    print(f'Downloading {self.dataset_id} data using datafed to {self.data_path}')
-                    self.dataGet(self.dataset_id, self.data_path, **self.download_kwargs)
-                    
+                    print(
+                        f"Downloading {self.dataset_id} data using datafed to {self.data_path}"
+                    )
+                    self.dataGet(
+                        self.dataset_id, self.data_path, **self.download_kwargs
+                    )
+
             self.file_path = os.path.join(self.data_path, file_name)
 
     def check_if_file_data(self, file_name):
