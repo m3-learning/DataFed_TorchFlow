@@ -28,7 +28,6 @@ class DataFed(API):
     def __init__(
         self,
         datafed_collection,
-        local_model_path,
         log_file_path="log.txt",
         dataset_id=None,
         data_path=None,
@@ -49,7 +48,6 @@ class DataFed(API):
         """
         super().__init__()
         self.datafed_collection = datafed_collection
-        self.local_model_path = local_model_path
 
         # sets the kwargs for downloads
         self.download_kwargs = download_kwargs
