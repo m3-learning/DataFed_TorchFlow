@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>datafed_torchflow package &#8212; DataFed_TorchFlow 0.1.0 documentation</title>
+    <title>datafed_torchflow package &#8212; DataFed_TorchFlow 0.0.post1.dev1+g924e020 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../_static/documentation_options.js?v=0b97cbe7"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -47,7 +47,7 @@
     <link rel="prev" title="datafed_torchflow" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 03, 2024"/>
+    <meta name="docbuild:last-update" content="Oct 04, 2024"/>
   </head>
   
   
@@ -125,8 +125,8 @@
       
     
     
-    <img src="../_static/Drexel_blue_Logo_square_Light.png" class="logo__image only-light" alt="DataFed_TorchFlow 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/Drexel_blue_Logo_square_Dark.png" class="logo__image only-dark" alt="DataFed_TorchFlow 0.1.0 documentation - Home"/>`);</script>
+    <img src="../_static/Drexel_blue_Logo_square_Light.png" class="logo__image only-light" alt="DataFed_TorchFlow 0.0.post1.dev1+g924e020 documentation - Home"/>
+    <script>document.write(`<img src="../_static/Drexel_blue_Logo_square_Dark.png" class="logo__image only-dark" alt="DataFed_TorchFlow 0.0.post1.dev1+g924e020 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -567,7 +567,7 @@ any: The serialized form of the object.</p>
 <span id="datafed-torchflow-datafed-module"></span><h2>datafed_torchflow.datafed module<a class="headerlink" href="#module-datafed_torchflow.datafed" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datafed_torchflow.datafed.</span></span><span class="sig-name descname"><span class="pre">DataFed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_model_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log.txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datafed_torchflow.datafed.</span></span><span class="sig-name descname"><span class="pre">DataFed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datafed_collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_model_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log.txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'orig_fname':</span> <span class="pre">True,</span> <span class="pre">'wait':</span> <span class="pre">True}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">API</span></code></p>
 <p>A class to interact with DataFed API.</p>
 <dl class="simple">
@@ -575,8 +575,8 @@ any: The serialized form of the object.</p>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.cwd">
-<span class="sig-name descname"><span class="pre">cwd</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.cwd" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.datafed_collection">
+<span class="sig-name descname"><span class="pre">datafed_collection</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.datafed_collection" title="Link to this definition">#</a></dt>
 <dd><p>The current working directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -629,6 +629,17 @@ any: The serialized form of the object.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.dataset_id">
+<span class="sig-name descname"><span class="pre">dataset_id</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.dataset_id" title="Link to this definition">#</a></dt>
+<dd><p>The ID of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.addDerivedFrom">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">addDerivedFrom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.addDerivedFrom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.addDerivedFrom" title="Link to this definition">#</a></dt>
@@ -657,6 +668,11 @@ dependency to add. Defaults to None.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.check_if_file_data">
+<span class="sig-name descname"><span class="pre">check_if_file_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.check_if_file_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.check_if_file_data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.check_if_logged_in">
@@ -704,7 +720,7 @@ dependency to add. Defaults to None.</p>
 <dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.create_subfolder_if_not_exists">
 <span class="sig-name descname"><span class="pre">create_subfolder_if_not_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.create_subfolder_if_not_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.create_subfolder_if_not_exists" title="Link to this definition">#</a></dt>
 <dd><p>Creates sub-folders (collections) if they do not already exist.</p>
-<p>Iterates through the sub-collections specified in <cite>cwd</cite>, creating any that are missing.
+<p>Iterates through the sub-collections specified in <cite>datafed_collection</cite>, creating any that are missing.
 Updates <cite>collection_id</cite> with the ID of the last created or found sub-collection.</p>
 </dd></dl>
 
@@ -793,6 +809,41 @@ Can be a single string, a list of strings, or a set of strings.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getCollectionProjectID">
+<span class="sig-name descname"><span class="pre">getCollectionProjectID</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getCollectionProjectID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getCollectionProjectID" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the project ID associated with a specific collection.</p>
+<p>This method fetches the parent collection of the given collection ID and extracts the project ID from it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The project ID associated with the specified collection.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getData">
+<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getData" title="Link to this definition">#</a></dt>
+<dd><p>Downloads the data from the dataset</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getFileExtension">
+<span class="sig-name descname"><span class="pre">getFileExtension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getFileExtension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getFileExtension" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the file extension of the dataset file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The file extension of the dataset file, including the leading dot.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -949,6 +1000,11 @@ Can be a single string, a list of strings, or a set of strings.</p></li>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.identify_collection_id">
+<span class="sig-name descname"><span class="pre">identify_collection_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.identify_collection_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.identify_collection_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.required_keys">
@@ -1415,13 +1471,15 @@ The function will recursively call itself to extract attributes from nested obje
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-datafed_torchflow.datafed">datafed_torchflow.datafed module</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed"><code class="docutils literal notranslate"><span class="pre">DataFed</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.cwd"><code class="docutils literal notranslate"><span class="pre">DataFed.cwd</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.datafed_collection"><code class="docutils literal notranslate"><span class="pre">DataFed.datafed_collection</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.local_model_path"><code class="docutils literal notranslate"><span class="pre">DataFed.local_model_path</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.log_file_path"><code class="docutils literal notranslate"><span class="pre">DataFed.log_file_path</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.logging"><code class="docutils literal notranslate"><span class="pre">DataFed.logging</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.project_id"><code class="docutils literal notranslate"><span class="pre">DataFed.project_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.dataset_id"><code class="docutils literal notranslate"><span class="pre">DataFed.dataset_id</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.addDerivedFrom"><code class="docutils literal notranslate"><span class="pre">DataFed.addDerivedFrom()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_if_endpoint_set"><code class="docutils literal notranslate"><span class="pre">DataFed.check_if_endpoint_set()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_if_file_data"><code class="docutils literal notranslate"><span class="pre">DataFed.check_if_file_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_if_logged_in"><code class="docutils literal notranslate"><span class="pre">DataFed.check_if_logged_in()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_no_files"><code class="docutils literal notranslate"><span class="pre">DataFed.check_no_files()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_string_for_dot_or_slash"><code class="docutils literal notranslate"><span class="pre">DataFed.check_string_for_dot_or_slash()</span></code></a></li>
@@ -1430,6 +1488,9 @@ The function will recursively call itself to extract attributes from nested obje
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.exclude_keys"><code class="docutils literal notranslate"><span class="pre">DataFed.exclude_keys()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.find_id_by_title"><code class="docutils literal notranslate"><span class="pre">DataFed.find_id_by_title()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getCollList"><code class="docutils literal notranslate"><span class="pre">DataFed.getCollList()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getCollectionProjectID"><code class="docutils literal notranslate"><span class="pre">DataFed.getCollectionProjectID()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getData"><code class="docutils literal notranslate"><span class="pre">DataFed.getData()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getFileExtension"><code class="docutils literal notranslate"><span class="pre">DataFed.getFileExtension()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getFileName"><code class="docutils literal notranslate"><span class="pre">DataFed.getFileName()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getIDs"><code class="docutils literal notranslate"><span class="pre">DataFed.getIDs()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getRecordTitle"><code class="docutils literal notranslate"><span class="pre">DataFed.getRecordTitle()</span></code></a></li>
@@ -1438,6 +1499,7 @@ The function will recursively call itself to extract attributes from nested obje
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.get_notebook_DataFed_ID_from_path_and_title"><code class="docutils literal notranslate"><span class="pre">DataFed.get_notebook_DataFed_ID_from_path_and_title()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.get_projects"><code class="docutils literal notranslate"><span class="pre">DataFed.get_projects</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.get_unique_dicts"><code class="docutils literal notranslate"><span class="pre">DataFed.get_unique_dicts()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.identify_collection_id"><code class="docutils literal notranslate"><span class="pre">DataFed.identify_collection_id()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.required_keys"><code class="docutils literal notranslate"><span class="pre">DataFed.required_keys()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.upload_file"><code class="docutils literal notranslate"><span class="pre">DataFed.upload_file()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.user_id"><code class="docutils literal notranslate"><span class="pre">DataFed.user_id</span></code></a></li>

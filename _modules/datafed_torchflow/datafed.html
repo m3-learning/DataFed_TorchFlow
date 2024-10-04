@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>datafed_torchflow.datafed &#8212; DataFed_TorchFlow 0.1.0 documentation</title>
+    <title>datafed_torchflow.datafed &#8212; DataFed_TorchFlow 0.0.post1.dev1+g924e020 documentation</title>
   
   
   
@@ -36,7 +36,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../../_static/documentation_options.js?v=0b97cbe7"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 03, 2024"/>
+    <meta name="docbuild:last-update" content="Oct 04, 2024"/>
   </head>
   
   
@@ -123,8 +123,8 @@
       
     
     
-    <img src="../../_static/Drexel_blue_Logo_square_Light.png" class="logo__image only-light" alt="DataFed_TorchFlow 0.1.0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/Drexel_blue_Logo_square_Dark.png" class="logo__image only-dark" alt="DataFed_TorchFlow 0.1.0 documentation - Home"/>`);</script>
+    <img src="../../_static/Drexel_blue_Logo_square_Light.png" class="logo__image only-light" alt="DataFed_TorchFlow 0.0.post1.dev1+g924e020 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/Drexel_blue_Logo_square_Dark.png" class="logo__image only-dark" alt="DataFed_TorchFlow 0.0.post1.dev1+g924e020 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -444,6 +444,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">m3util.globus.globus</span> <span class="kn">import</span> <span class="n">check_globus_endpoint</span>
 <span class="kn">from</span> <span class="nn">datafed_torchflow.JSON</span> <span class="kn">import</span> <span class="n">UniversalEncoder</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 
 <div class="viewcode-block" id="DataFed">
@@ -456,19 +457,29 @@ document.write(`
 <span class="sd">        API: The base class for interacting with the DataFed API.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        cwd (str): The current working directory.</span>
+<span class="sd">        datafed_collection (str): The current working directory.</span>
 <span class="sd">        local_model_path (str): Local directory to store model files.</span>
 <span class="sd">        log_file_path (str): Local file to store a log of the code evaluation.</span>
 <span class="sd">        logging (bool): Flag to enable logging.</span>
 <span class="sd">        project_id (str): The ID of the project.</span>
+<span class="sd">        dataset_id (str): The ID of the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cwd</span><span class="p">,</span> <span class="n">local_model_path</span><span class="p">,</span> <span class="n">log_file_path</span><span class="o">=</span><span class="s2">&quot;log.txt&quot;</span><span class="p">,</span> <span class="n">logging</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">datafed_collection</span><span class="p">,</span>
+        <span class="n">local_model_path</span><span class="p">,</span>
+        <span class="n">log_file_path</span><span class="o">=</span><span class="s2">&quot;log.txt&quot;</span><span class="p">,</span>
+        <span class="n">dataset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">data_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">download_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;wait&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;orig_fname&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+        <span class="n">logging</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes the DataFed instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            cwd (str): The current working directory.</span>
+<span class="sd">            datafed_collection (str): The current DataFed collection could be provided as either a collection ID or a directory path.</span>
 <span class="sd">            local_model_path (str): Local directory to store model files.</span>
 <span class="sd">            log_file_path (str, optional): Local file to store a log of the code evaluation. Default is &#39;log.txt&#39;</span>
 <span class="sd">            logging (bool, optional): Flag to enable logging. Defaults to False.</span>
@@ -477,8 +488,11 @@ document.write(`
 <span class="sd">            Exception: If the user is not authenticated with DataFed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cwd</span> <span class="o">=</span> <span class="n">cwd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datafed_collection</span> <span class="o">=</span> <span class="n">datafed_collection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">local_model_path</span> <span class="o">=</span> <span class="n">local_model_path</span>
+
+        <span class="c1"># sets the kwargs for downloads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_kwargs</span> <span class="o">=</span> <span class="n">download_kwargs</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logging</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span> <span class="o">=</span> <span class="n">log_file_path</span>
@@ -488,22 +502,72 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">check_if_logged_in</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_if_endpoint_set</span><span class="p">()</span>
 
-        <span class="c1"># Checks if the cwd is a valid path.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_string_for_dot_or_slash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cwd</span><span class="p">)</span>
+        <span class="c1"># gets the collection and project ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identify_collection_id</span><span class="p">()</span>
 
-        <span class="c1"># Set the log file path</span>
+        <span class="c1"># Set the dataset ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="o">=</span> <span class="n">dataset_id</span>
+        
+        
 
-        <span class="c1"># Checks if user is saving in the root collection.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_cwd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span>
+        <span class="c1"># Set the data path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_path</span> <span class="o">=</span> <span class="n">data_path</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">original_file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span>
+
+<div class="viewcode-block" id="DataFed.getCollectionProjectID">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getCollectionProjectID">[docs]</a>
+    <span class="k">def</span> <span class="nf">getCollectionProjectID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the project ID associated with a specific collection.</span>
+
+<span class="sd">        This method fetches the parent collection of the given collection ID and extracts the project ID from it.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The project ID associated with the specified collection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Fetch the parent collection of the specified collection ID</span>
+        <span class="n">parent_collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collectionGetParents</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Extract and return the project ID from the parent collection path</span>
+        <span class="k">return</span> <span class="n">parent_collection</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span></div>
+
+
+<div class="viewcode-block" id="DataFed.identify_collection_id">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.identify_collection_id">[docs]</a>
+    <span class="k">def</span> <span class="nf">identify_collection_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># if a collection ID is provided, set the collection ID to the provided collection ID</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafed_collection</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;c/&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collection_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafed_collection</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCollectionProjectID</span><span class="p">()</span>
+
+        <span class="c1"># if provided as a path to a collection, set the collection ID to the collection ID of the last subfolder</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Gets all the projects in DataFed.</span>
-            <span class="n">items</span><span class="p">,</span> <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_projects</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Checks if the datafed_collection is a valid path.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">check_string_for_dot_or_slash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datafed_collection</span><span class="p">)</span>
 
-            <span class="c1"># Checks if the project exists in DataFed.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_id_by_title</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_cwd</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="c1"># Checks if user is saving in the root collection.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_datafed_collection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Gets all the projects in DataFed.</span>
+                    <span class="n">items</span><span class="p">,</span> <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_projects</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">create_subfolder_if_not_exists</span><span class="p">()</span>
+                    <span class="c1"># Checks if the project exists in DataFed.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_id_by_title</span><span class="p">(</span>
+                        <span class="n">items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_datafed_collection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">create_subfolder_if_not_exists</span><span class="p">()</span>
+
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid DataFed collection path provided.&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="DataFed.check_if_logged_in">
 <a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.check_if_logged_in">[docs]</a>
@@ -664,14 +728,14 @@ document.write(`
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;c/</span><span class="si">{</span><span class="n">new_str</span><span class="si">}</span><span class="s2">_root&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_parse_cwd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_parse_datafed_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parses the current working directory into components.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list: A list of directory components split by &#39;/&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cwd</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafed_collection</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataFed.getCollList">
 <a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getCollList">[docs]</a>
@@ -701,15 +765,15 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates sub-folders (collections) if they do not already exist.</span>
 
-<span class="sd">        Iterates through the sub-collections specified in `cwd`, creating any that are missing.</span>
+<span class="sd">        Iterates through the sub-collections specified in `datafed_collection`, creating any that are missing.</span>
 <span class="sd">        Updates `collection_id` with the ID of the last created or found sub-collection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Gets the root context from the parent collection</span>
         <span class="n">collections</span><span class="p">,</span> <span class="n">ls_resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCollList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRootColl</span><span class="p">)</span>
         <span class="n">current_collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRootColl</span>
 
-        <span class="c1"># Iterate through the sub-collections specified in `cwd`</span>
-        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_cwd</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="c1"># Iterate through the sub-collections specified in `datafed_collection`</span>
+        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_datafed_collection</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="c1"># Check if the collection exists in DataFed</span>
             <span class="k">if</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">collections</span><span class="p">:</span>
                 <span class="c1"># Navigate to the sub-collection if it exists</span>
@@ -1259,6 +1323,66 @@ document.write(`
 <span class="sd">            str: The title of the record.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataView</span><span class="p">(</span><span class="n">record_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span></div>
+
+
+<div class="viewcode-block" id="DataFed.getFileExtension">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getFileExtension">[docs]</a>
+    <span class="k">def</span> <span class="nf">getFileExtension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the file extension of the dataset file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The file extension of the dataset file, including the leading dot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Split the file name by &#39;.&#39; and return the last part as the extension</span>
+        <span class="k">return</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="DataFed.getData">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getData">[docs]</a>
+    <span class="k">def</span> <span class="nf">getData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads the data from the dataset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">dataset_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span>
+            
+        <span class="c1"># if a data path is not provided, download the data to the current directory</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataGet</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">download_kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+
+            <span class="c1"># if the data path does not exist, create it</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_if_file_data</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileExtension</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="n">file_name</span> <span class="o">=</span> <span class="n">dataset_id</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileExtension</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Downloading </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> data using datafed to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dataGet</span><span class="p">(</span>
+                        <span class="n">dataset_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">download_kwargs</span>
+                    <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataFed.check_if_file_data">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.check_if_file_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_if_file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 </div>
 
 </pre></div>
