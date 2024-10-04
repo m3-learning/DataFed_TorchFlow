@@ -114,6 +114,7 @@ class DataFed(API):
                     self.project_id = self.find_id_by_title(items, self._parse_datafed_collection[0])
 
                     self.create_subfolder_if_not_exists()
+                    
             except ValueError:
                 raise ValueError("Invalid DataFed collection path provided.")
 
@@ -291,7 +292,7 @@ class DataFed(API):
         collections = [record.title for record in ls_resp[0].item]
 
         return collections, ls_resp
-
+    
     def create_subfolder_if_not_exists(self):
         """
         Creates sub-folders (collections) if they do not already exist.
@@ -823,18 +824,24 @@ class DataFed(API):
         """
         Downloads the data from the dataset
         """
+        # if a data path is not provided, download the data to the current directory
         if self.data_path is None:
-            self.dataGet(self.dataset_id, self.datafed_collection, **self.download_kwargs)
-        elif os.path.exists(self.data_path):
-           self.dataGet(self.dataset_id, self.datafed_collection, **self.download_kwargs)
+            self.dataGet(self.dataset_id, "./", **self.download_kwargs)
         else:
-            raise ValueError("Data path does not exist.")
+            file_name = self.getFileName(self.dataset_id)
+            
+            # if the data path does not exist, create it
+            if not os.path.exists(self.data_path):
+                os.makedirs(self.data_path)
+            
+            if not self.check_if_file_data(file_name):
+                print(f'Downloading {self.dataset_id} data using datafed to {self.data_path}')
+                self.dataGet(self.dataset_id, self.data_path, **self.download_kwargs)
 
-    def extract_filename(self, record_id):
-        raise NotImplementedError("Not implemented")
+            self.file_path = os.path.join(self.data_path, file_name)
 
-    def check_if_file_exists(self, file_path):
-        raise NotImplementedError("Not implemented")
-
-    def download(self, id, path):
-        raise NotImplementedError("Not implemented")
+    def check_if_file_data(self, file_name):
+        if os.path.exists(os.path.join(self.data_path, file_name)):
+            return True
+        else:
+            return False
