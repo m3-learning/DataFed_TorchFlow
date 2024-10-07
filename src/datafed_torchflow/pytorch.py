@@ -68,6 +68,7 @@ class TorchLogger:
         input_data_shape=None,
         dataset_id=None,
         logging=False,
+        download_kwargs={"wait": True, "orig_fname": True},
     ):
         """
         Initializes the TorchLogger class.
@@ -93,6 +94,8 @@ class TorchLogger:
         self.DataFed_path = DataFed_path
         self.local_model_path = local_model_path
         self.log_file_path = log_file_path
+        self.dataset_id = dataset_id
+        self.download_kwargs = download_kwargs
 
         self.logging = logging
         self.input_data_shape = input_data_shape
@@ -104,8 +107,9 @@ class TorchLogger:
             self.local_model_path,
             log_file_path=self.log_file_path,
             logging=True,
+            dataset_id=self.dataset_id,
+            download_kwargs=self.download_kwargs,
         )
-        self.dataset_id = dataset_id
 
         # Check if Globus has access to the local path
         check_globus_file_access(self.df_api.endpointDefaultGet, self.local_model_path)
@@ -654,9 +658,9 @@ class InferenceEvaluation:
 
 
 class TorchViewer(nn.Module):
-    def __init__(self, DataFed_path):
+    def __init__(self, DataFed_path, **kwargs):
         self.DataFed_path = DataFed_path
-        self.df_api = DataFed(self.DataFed_path)
+        self.df_api = DataFed(self.DataFed_path, **kwargs)
 
     def getModelCheckpoints(
         self,
