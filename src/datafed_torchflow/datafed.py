@@ -32,6 +32,7 @@ class DataFed(API):
         dataset_id=None,
         data_path=None,
         download_kwargs={"wait": True, "orig_fname": True},
+        upload_kwargs = {"wait": True},
         logging=False,
     ):
         """
@@ -51,6 +52,9 @@ class DataFed(API):
 
         # sets the kwargs for downloads
         self.download_kwargs = download_kwargs
+        
+        # sets the kwargs for uploads
+        self.upload_kwargs = upload_kwargs
 
         self.logging = logging
         self.log_file_path = log_file_path
@@ -65,8 +69,6 @@ class DataFed(API):
 
         # Set the dataset ID
         self.dataset_id = dataset_id
-        
-        
 
         # Set the data path
         self.data_path = data_path
@@ -498,9 +500,28 @@ class DataFed(API):
             list: A list of item IDs.
         """
         return [record.id for record in listing_reply.item]
+    
+    def getIDsInCollection(self, collection_id = None):
+        """
+        Gets the IDs of items in a collection.
+        Args:
+            collection_id (str): The ID of the collection to query.
+        Returns:
+            list: A list of item IDs in the collection.
+        """
+        if collection_id is None:
+            collection_id = self.collection_id
+
+        # TODO: make it so it can return more than 10000 records -- not hardcoded
+        # Get the list of items in the collection
+        collection_list = self.collectionItemsList(collection_id, count=10000)[0]
+
+        # Return the IDs of the items in the collection
+        return self.getIDs(collection_list)
 
     def get_metadata(
         self,
+        collection_id = None,
         exclude_metadata=None,
         excluded_keys=None,
         non_unique=None,
@@ -510,7 +531,7 @@ class DataFed(API):
         Retrieves the metadata record for a specified record ID.
 
         Args:
-            record_id (str): The ID of the record to retrieve.
+            collection_id (str): The ID of the collection to retrieve metadata from.
             exclude_metadata (str, list, or None, optional): Metadata fields to exclude from the extraction record.
             excluded_keys (str, list, or None, optional): Keys if the metadata record contains to exclude.
             non_unique (str, list, or None, optional): Keys which are expected to be unique independent of record uniqueness - these are not considered when finding unique records.
@@ -519,13 +540,16 @@ class DataFed(API):
         Returns:
             dict: The metadata record.
         """
-
+        #default condition to get the metadata of the current collection
+        if collection_id is None:
+            collection_id = self.collection_id
+            
         # Retrieve the data view response for the given record ID
         # TODO: make it so it can return more than 10000 records -- not hardcoded
         collection_list = self.collectionItemsList(self.collection_id, count=10000)[0]
 
         # Get the record IDs from the collection list
-        record_ids_ = self.getIDs(collection_list)
+        record_ids_ = self.getIDsInCollection(collection_id=self.collection_id)
 
         # Gets a list of Metadata excluding specific metadata terms
         metadata_ = self._get_metadata_list(record_ids_, exclude=exclude_metadata)
@@ -538,6 +562,8 @@ class DataFed(API):
 
         if format == "pandas":
             import pandas as pd
+            
+            self.pd_df = pd.DataFrame(metadata_)
 
             return pd.DataFrame(metadata_)
         else:
@@ -791,6 +817,43 @@ class DataFed(API):
             return None
         else:
             return no_files
+        
+        
+    def replace_missing_records(self, collection_id=None, record_id=None, file_path=None, upload_kwargs=None, logging=True):
+
+        if upload_kwargs is not None:
+            kwargs = self.upload_kwargs.copy()
+            kwargs.update(upload_kwargs)
+        else:
+            kwargs = self.upload_kwargs
+
+        if collection_id is None:
+            collection_id = self.collection_id
+
+
+        if logging:
+            print(f"checking collection {collection_id} for missing records")
+
+        missing_record_ids = self.check_no_files(self.getIDsInCollection())
+
+
+        if missing_record_ids is not None:
+
+            if logging:
+                print(f"founnd {len(missing_record_ids)} missing records")
+
+            if logging:
+                print("retrieving metadata for missing records")
+
+            metadata = self._get_metadata_list(missing_record_ids)
+
+            for i, (record_id, metadata) in enumerate(zip(missing_record_ids, metadata)):
+                if logging:
+                    print(f"trying to reupload {metadata['file_name']} for record {record_id}")
+
+                    if self.check_if_file_data(metadata['file_name']):
+                        self.upload_file(record_id, self.joinPath(metadata['file_name']), wait = kwargs.get("wait", False))
+
 
     def getFileName(self, record_id):
         """
@@ -865,10 +928,28 @@ class DataFed(API):
                         dataset_id, self.data_path, **self.download_kwargs
                     )
 
-            self.file_path = os.path.join(self.data_path, file_name)
+            self.file_path = self.joinPath(file_name)
+
+    def joinPath(self, file_name):
+        """
+        Joins the data path and the file name to create a full file path.
+        
+        Args:
+            file_name (str): The name of the file.
+        Returns:
+            str: The full file path.
+        """
+        return os.path.join(self.data_path, file_name)
 
     def check_if_file_data(self, file_name):
-        if os.path.exists(os.path.join(self.data_path, file_name)):
+        """
+        Check if a file exists in the specified data path.
+        Args:
+            file_name (str): The name of the file to check.
+        Returns:
+            bool: True if the file exists in the data path, False otherwise.
+        """
+        if os.path.exists(self.joinPath(file_name)):
             return True
         else:
             return False

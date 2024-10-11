@@ -5,7 +5,7 @@ import os
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-import datetime
+from datetime import datetime
 
 sys.path.append(os.path.abspath("/home/jg3837/DataFed_TorchFlow/DataFed_TorchFlow/src"))
 
@@ -68,6 +68,7 @@ class TorchLogger:
         input_data_shape=None,
         dataset_id=None,
         logging=False,
+        download_kwargs={"wait": True, "orig_fname": True},
     ):
         """
         Initializes the TorchLogger class.
@@ -93,7 +94,8 @@ class TorchLogger:
         self.DataFed_path = DataFed_path
         self.local_model_path = local_model_path
         self.log_file_path = log_file_path
-
+        self.dataset_id = dataset_id
+        self.download_kwargs = download_kwargs
         self.logging = logging
         self.input_data_shape = input_data_shape
 
@@ -104,8 +106,9 @@ class TorchLogger:
             self.local_model_path,
             log_file_path=self.log_file_path,
             logging=True,
+            dataset_id=self.dataset_id,
+            download_kwargs=self.download_kwargs,
         )
-        self.dataset_id = dataset_id
 
         # Check if Globus has access to the local path
         check_globus_file_access(self.df_api.endpointDefaultGet, self.local_model_path)
@@ -177,6 +180,9 @@ class TorchLogger:
                     "self",
                     "local_vars",
                     "model_dict",
+                    "model_hyperparameters",
+                    "i",
+                    "image",
                     "key",
                     "value",
                 ]
@@ -232,9 +238,10 @@ class TorchLogger:
                 # put the model hyperparameters in the Model Hyperparameters sub-dictionary (the hyperparameters might be 1-value torch tensors or just floats)
                 elif key in model_hyperparameters.keys():
                     if type(value) in [np.ndarray, torch.Tensor]:
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Hyperparameters"
-                        ][key] = value.tolist()
+                        if value.shape < self.input_data_shape:
+                            DataFed_record_metadata["Model Parameters"][
+                                "Model Hyperparameters"
+                            ][key] = value.tolist()
                     else:
                         DataFed_record_metadata["Model Parameters"][
                             "Model Hyperparameters"
@@ -352,34 +359,71 @@ class TorchLogger:
         """
         Saves the Jupyter notebook that runs the code training the model
         """
-        # don't upload the notebook to DataFed if it is already there. NOTE: The below method to check is a temporary solution and will be replaced with a comparison of the checksums
+        # don't upload the notebook to DataFed if it is already there. 
+        # NOTE: The below method to check is a temporary solution and will be replaced with a comparison of the checksums
         # first, check if the notebook filename is actually its DataFed ID, in which case it already exists in DataFed
-        if self.__file__.startswith("d/"):
-            self.notebook_record_id = self.__file__
+    
+        
+        
+        #------------------------#
+        #### checksum solution
+        
+        # first, make sure the notebook file is given (not None), otherwise there is no notebook specified to upload
+        # so just don't upload a notebook but proceed to saving the checkpoints as usual 
+        if self.__file__ is not None:
+            
+            # check whether the notebook file name is a DataFed ID 
+            if self.__file__.startswith("d/"):
+                self.notebook_record_id = self.__file__
 
-        # if the notebook filename is not a DataFed ID, check if a notebook of the same name exists at the DataFed file path
-        elif self.__file__ is not None:
-            try:
-                # this will fail if it doesn't find a match, meaning that the notebook does not already exists on DataFed
-                self.notebook_record_id = (
-                    self.df_api.get_notebook_DataFed_ID_from_path_and_title(
-                        self.__file__
+            # if the notebook filename is not a DataFed ID, check if a notebook of the same name exists at the DataFed file path
+            else:
+                try:
+                    # this will fail if it doesn't find a match, meaning that the notebook does not already exists on DataFed
+                    self.notebook_record_id = (
+                        self.df_api.get_notebook_DataFed_ID_from_path_and_title(
+                            self.__file__
+                        )
                     )
-                )
+            
+                except Exception as e:
+                    # the notebook is not already in DataFed, so upload it
+                    # output to user
+                    print("triggered except. error", e)
+                    old_checksum = ''
+                    
+                    if self.logging:
+                        with open(self.log_file_path, "a") as f:
+                            timestamp = (
+                                datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                            )
+                            f.write(f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed...")
+                    
+                    
 
-            except Exception as e:
-                # the notebook is not already in DataFed, so upload it
-                # output to user
+            
+            # generate a checksum (and scipt path) for the notebook 
+            notebook_metadata = getNotebookMetadata(self.__file__)
+            
+            # extract the checksum
+            new_checksum = notebook_metadata["script"]["checksum"]
+            
+            
+            
+            # if the notebook has a DataFed record ID, extract the checksum and compare to the new checksum  
+            if self.notebook_record_id is not None:
+                notebook_DataFed_metadata = json.loads(self.df_api.dataView(self.notebook_record_id)[0].data[0].metadata)
+                old_checksum = notebook_DataFed_metadata["script"]["checksum"]
+                
+            if new_checksum != old_checksum:
+                # do the uploading 
                 if self.logging:
                     with open(self.log_file_path, "a") as f:
                         timestamp = (
                             datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
                         )
-                        f.write(
-                            f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed..."
-                        )
-
-                notebook_metadata = getNotebookMetadata(self.__file__)
+                        f.write(f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed...")
+                        
 
                 current_user, current_time = self.getUserClock()
 
@@ -398,8 +442,7 @@ class TorchLogger:
                     self.notebook_record_resp[0].data[0].id, self.__file__
                 )
 
-                self.notebook_record_id = self.notebook_record_resp[0].data[0].id
-
+                self.notebook_record_id = self.notebook_record_resp[0].data[0].id      
     def save(
         self,
         record_file_name,
@@ -654,9 +697,9 @@ class InferenceEvaluation:
 
 
 class TorchViewer(nn.Module):
-    def __init__(self, DataFed_path):
+    def __init__(self, DataFed_path,**kwargs):
         self.DataFed_path = DataFed_path
-        self.df_api = DataFed(self.DataFed_path)
+        self.df_api = DataFed(self.DataFed_path,**kwargs)
 
     def getModelCheckpoints(
         self,

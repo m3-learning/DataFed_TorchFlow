@@ -65,3 +65,5 @@ examples/.log.txt
 *.pth
 *.pkl
 scratch/*
+/examples/examples
+/example/model/*
