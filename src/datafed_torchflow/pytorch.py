@@ -36,8 +36,8 @@ import ast
 import traceback
 
 
-# TODO: Make it so it does not upload a notebook on each reinstantiation. Compare the notebook checksum to determine whether the file has changed.
 # TODO: Add data and dataloader derivative.
+# TODO: Add number of FLOPS to metadata
 
 
 class TorchLogger:
@@ -389,7 +389,6 @@ class TorchLogger:
                 except Exception as e:
                     # the notebook is not already in DataFed, so upload it
                     # output to user
-                    print("triggered except. error", e)
                     old_checksum = ''
                     
                     if self.logging:
