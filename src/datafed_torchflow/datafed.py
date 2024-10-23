@@ -17,7 +17,7 @@ class DataFed(API):
         API: The base class for interacting with the DataFed API.
 
     Attributes:
-        datafed_collection (str): The current working directory.
+        datafed_path (str): DataFed path to store model script and checkpoints.
         local_model_path (str): Local directory to store model files.
         log_file_path (str): Local file to store a log of the code evaluation.
         logging (bool): Flag to enable logging.
@@ -27,10 +27,10 @@ class DataFed(API):
 
     def __init__(
         self,
-        datafed_collection,
+        datafed_path,
+        local_model_path = './Trained Models',
         log_file_path="log.txt",
-        dataset_id=None,
-        data_path=None,
+        dataset_id_or_path=None,
         download_kwargs={"wait": True, "orig_fname": True},
         upload_kwargs = {"wait": True},
         logging=False,
@@ -48,7 +48,9 @@ class DataFed(API):
             Exception: If the user is not authenticated with DataFed.
         """
         super().__init__()
-        self.datafed_collection = datafed_collection
+        self.datafed_path = datafed_path
+        
+        self.local_model_path = local_model_path
 
         # sets the kwargs for downloads
         self.download_kwargs = download_kwargs
@@ -67,16 +69,97 @@ class DataFed(API):
         # gets the collection and project ID
         self.identify_collection_id()
 
-        # Set the dataset ID
-        self.dataset_id = dataset_id
+        # Set the dataset ID or path 
+        self.dataset_id_or_path = dataset_id_or_path
 
         # Set the data path
-        self.data_path = data_path
-
-        if self.dataset_id is not None:
-            self.getData()
+        #self.data_path = data_path
+    def upload_dataset_to_DataFed(self):
+        if self.dataset_id_or_path is not None:
             
-            self.original_file_path = self.file_path
+            
+            if type(self.dataset_id_or_path) == list: # to specify multiple dataset files
+                dataset_ids = [] 
+                ls_resp = self.collectionItemsList(self.collection_id)
+                for dataset in self.dataset_id_or_path:
+                    if dataset.startswith("d/"):
+                        dataset_ids.append(dataset)
+                    else:
+                        try: 
+                            path_id = ls_resp[0].item[np.where([record.title.casefold() == "Dataset".casefold() for record in ls_resp[0].item])[0].item()].id
+                            # update record (dependencies have been added) 
+                            record_id = self.get_notebook_DataFed_ID_from_path_and_title(dataset, path_id=path_id)
+                            
+                            self.data_record_update(record_id=record_id, record_title= dataset, parent_collection = path_id)
+                            
+                            dataset_ids.append(record_id)
+
+                            #dataset_ids.append(self.get_notebook_DataFed_ID_from_path_and_title(dataset, path_id=path_id))
+                            
+                        except:
+                            if "Dataset" not in self.getCollList(self.collection_id)[0]:
+                                coll_resp = self.collectionCreate("Dataset", parent_id = self.collection_id)
+                                # try: 
+                                #     # if get_notebook_DataFed_ID_from_path_and_title fails, the record doesn't already exist and should be created. 
+                                #     # Otherwise, update it. This should maybe be replaced with a checksum comparison eventually, 
+                                #     # although it probably won't change like the notebooks do. 
+                                #     record_id = self.get_notebook_DataFed_ID_from_path_and_title(dataset, coll_resp[0].coll[0].id )
+                                #     self.data_record_update(record_id=record_id, record_title= dataset, parent_collection = coll_resp[0].coll[0].id)
+                                # except:
+                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = coll_resp[0].coll[0].id)
+
+                            else: 
+                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = self.get_notebook_DataFed_ID_from_path_and_title("Dataset"))
+                            dataset_id = dataset_id_resp[0].data[0].id
+                            self.upload_file(dataset_id, dataset)
+                            dataset_ids.append(dataset_id)
+
+            else: # type(dataset_id) is str, so only 1 dataset file specified
+                if self.dataset_id_or_path.startswith("d/"): 
+                    dataset_ids = self.dataset_id_or_path
+                else:
+                    
+                    try: 
+                            path_id = ls_resp[0].item[np.where([record.title.casefold() == "Dataset".casefold() for record in ls_resp[0].item])[0].item()].id
+                            # update record (dependencies have been added) 
+                            record_id = self.get_notebook_DataFed_ID_from_path_and_title(dataset, path_id=path_id)
+                            
+                            self.data_record_update(record_id=record_id, record_title= dataset, parent_collection = path_id)
+                            
+                            dataset_ids = record_id
+                            
+                    except:
+                            if "Dataset" not in self.getCollList(self.collection_id)[0]:
+                                coll_resp = self.collectionCreate("Dataset", parent_id = self.collection_id)
+                                
+                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = coll_resp[0].coll[0].id)
+
+                            else: 
+                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = self.get_notebook_DataFed_ID_from_path_and_title("Dataset"))
+                            dataset_id = dataset_id_resp[0].data[0].id
+                            self.upload_file(dataset_id, dataset)
+                            dataset_ids = dataset_id 
+                    # try:
+                    #     ls_resp = self.collectionItemsList(self.collection_id, count=100000)
+                    #     path_id = ls_resp[0].item[np.where([record.title.casefold() == "Dataset".casefold() for record in ls_resp[0].item])[0].item()].id
+                    #     dataset_ids = self.get_notebook_DataFed_ID_from_path_and_title(self.dataset_id_or_path, path_id = path_id)
+                    # except:
+                    #     dataset_id_resp = self.data_record_create(record_title = dataset)
+                    #     dataset_ids = dataset_id_resp[0].data[0].id
+                    #     self.upload_file(dataset_id, dataset)
+                        
+            self.dataset_id = dataset_ids 
+             
+            
+        else:
+            self.dataset_id = None
+            
+        return self.dataset_id
+            
+            
+            #self.getData()
+            
+          # self.original_file_path = self.file_path
 
     def getCollectionProjectID(self):
         """
@@ -96,15 +179,15 @@ class DataFed(API):
 
     def identify_collection_id(self):
         # if a collection ID is provided, set the collection ID to the provided collection ID
-        if self.datafed_collection.startswith("c/"):
-            self.collection_id = self.datafed_collection
+        if self.datafed_path.startswith("c/"):
+            self.collection_id = self.datafed_path
             self.project_id = self.getCollectionProjectID()
 
         # if provided as a path to a collection, set the collection ID to the collection ID of the last subfolder
         else:
             try:
                 # Checks if the datafed_collection is a valid path.
-                self.check_string_for_dot_or_slash(self.datafed_collection)
+                self.check_string_for_dot_or_slash(self.datafed_path)
 
                 # Checks if user is saving in the root collection.
                 if self._parse_datafed_collection[0] == self.user_id:
@@ -277,7 +360,7 @@ class DataFed(API):
         Returns:
             list: A list of directory components split by '/'.
         """
-        return self.datafed_collection.split("/")
+        return self.datafed_path.split("/")
 
     def getCollList(self, collection_id):
         """
@@ -335,7 +418,7 @@ class DataFed(API):
 
         self.collection_id = current_collection
 
-    def get_notebook_DataFed_ID_from_path_and_title(self, notebook_filename):
+    def get_notebook_DataFed_ID_from_path_and_title(self, notebook_filename, path_id = None):
         """
         Gets the DataFed ID for the Jupyter notebook from the file name and DataFed path
 
@@ -348,7 +431,8 @@ class DataFed(API):
         Raises
             ValueError: If no item with the specified title is found
         """
-        ls_resp_2 = self.collectionItemsList(self.collection_id, count=10000000)
+        
+        ls_resp_2 = self.collectionItemsList(path_id if path_id is not None else self.collection_id, count=10000000)
         notebook_ID = (
             ls_resp_2[0]
             .item[
@@ -364,7 +448,7 @@ class DataFed(API):
 
         return notebook_ID
 
-    def data_record_create(self, metadata=None, record_title=None, deps=None, **kwargs):
+    def data_record_create(self, metadata=None, record_title=None, parent_collection = None, deps=None, **kwargs):
         """
         Creates the DataFed record for the saved checkpoint and uploads the relevant metadata
 
@@ -401,7 +485,7 @@ class DataFed(API):
             dc_resp = self.dataCreate(
                 str(record_title).rsplit("/", 1)[-1],
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
-                parent_id=self.collection_id,
+                parent_id=parent_collection if parent_collection is not None else self.collection_id,
                 deps=deps,
                 # **kwargs,
             )
@@ -423,6 +507,71 @@ class DataFed(API):
                 f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
 
             raise e
+
+
+    def data_record_update(self, record_id = None, record_title=None, metadata=None, parent_collection = None, deps=None, overwrite_metadata = False,  **kwargs):
+        """
+        updates the DataFed record for the saved checkpoint including the relevant metadata if it changed
+
+        Args:
+            metadata (dict): The relevant model and system metadata for the checkpoint.
+            record_title (str): The title of the DataFed record.
+            deps (list or str, optional): A list of dependencies or a single dependency to add. Defaults to None.
+        Raises:
+            Exception: If user is not authenticated or must re-authenticate
+
+        """
+        # make sure the Globus endpoint is set
+        self.check_if_endpoint_set()
+        # make sure the user is logged into DataFed
+        self.check_if_logged_in()
+
+        # If the record title is longer than the maximum allowed by DataFed (80 characters)
+        # truncate the record title to 80 characters. If logging is true, print out a statement letting the user
+        # know the record_title has been truncated.
+        if len(record_title) > 80:
+            record_title = record_title[:80]  # .replace(".", "_")[:80]
+            if self.logging:
+                with open(self.log_file_path, "a") as f:
+                    timestamp = (
+                        datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    )
+                    f.write(
+                        f"\n {timestamp} - Record title is too long. Truncating to 80 characters."
+                    )
+
+        # try creating the Data record and uploading the relevant metadata.
+        # This will fail when DataFed decides the user must reauthenticate.
+        try:
+            dc_resp = self.dataUpdate(
+                record_id, 
+                title = str(record_title).rsplit("/", 1)[-1],
+                metadata=json.dumps(metadata, cls=UniversalEncoder),
+                deps_add=deps,
+                metadata_set = overwrite_metadata,
+                # **kwargs,
+            )
+            # log that the DataFed data record has been successfully created.
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"\n {timestamp} - Data creation successful")
+
+            # return the DataFed listing reply and zip file path
+            return dc_resp
+
+        # if the DataFed record creating fails, log the error.
+        except Exception as e:
+            tb = traceback.format_exc()
+
+            with open(self.log_file_path, "a") as f:
+                timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+
+                f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
+
+            raise e
+
+
+
 
     @staticmethod
     def addDerivedFrom(deps=None):
@@ -893,7 +1042,7 @@ class DataFed(API):
             str: The file extension of the dataset file, including the leading dot.
         """
         # Split the file name by '.' and return the last part as the extension
-        return "." + self.getFileName(self.dataset_id).split(".")[-1]
+        return "." + self.getFileName(self.dataset_id_or_path).split(".")[-1]
 
     def getData(self, dataset_id=None):
         """
@@ -901,7 +1050,7 @@ class DataFed(API):
         """
         
         if dataset_id is None: 
-            dataset_id = self.dataset_id
+            dataset_id = self.dataset_id_or_path
             
         # if a data path is not provided, download the data to the current directory
         if self.data_path is None:

@@ -34,6 +34,8 @@ import pathlib
 import types
 import ast
 import traceback
+import functools
+import operator
 
 
 # TODO: Add data and dataloader derivative.
@@ -66,7 +68,7 @@ class TorchLogger:
         local_model_path="/.",
         log_file_path="log.txt",
         input_data_shape=None,
-        dataset_id=None,
+        dataset_id_or_path=None,
         logging=False,
         download_kwargs={"wait": True, "orig_fname": True},
     ):
@@ -90,28 +92,29 @@ class TorchLogger:
         self.notebook_record_id = None
         self.__file__ = script_path
         self.model_dict = model_dict
-        self.optimizer = self.model_dict["optimizer"]
+        if "optimizer" in model_dict.keys():
+            self.optimizer = self.model_dict["optimizer"]
         self.DataFed_path = DataFed_path
         self.local_model_path = local_model_path
         self.log_file_path = log_file_path
-        self.dataset_id = dataset_id
+        self.dataset_id_or_path = dataset_id_or_path
         self.download_kwargs = download_kwargs
         self.logging = logging
         self.input_data_shape = input_data_shape
 
-        make_folder(self.local_model_path)
-
+        make_folder(self.local_model_path)                   
+            
         self.df_api = DataFed(
             self.DataFed_path,
             self.local_model_path,
             log_file_path=self.log_file_path,
-            logging=True,
-            dataset_id=self.dataset_id,
+            dataset_id_or_path=self.dataset_id_or_path,
             download_kwargs=self.download_kwargs,
+            logging=True,
         )
 
         # Check if Globus has access to the local path
-        check_globus_file_access(self.df_api.endpointDefaultGet, self.local_model_path)
+        check_globus_file_access(self.df_api.endpointDefaultGet(), self.local_model_path)
 
         # Save the notebook to DataFed
         self.save_notebook()
@@ -360,13 +363,7 @@ class TorchLogger:
         Saves the Jupyter notebook that runs the code training the model
         """
         # don't upload the notebook to DataFed if it is already there. 
-        # NOTE: The below method to check is a temporary solution and will be replaced with a comparison of the checksums
         # first, check if the notebook filename is actually its DataFed ID, in which case it already exists in DataFed
-    
-        
-        
-        #------------------------#
-        #### checksum solution
         
         # first, make sure the notebook file is given (not None), otherwise there is no notebook specified to upload
         # so just don't upload a notebook but proceed to saving the checkpoints as usual 
@@ -398,8 +395,6 @@ class TorchLogger:
                             )
                             f.write(f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed...")
                     
-                    
-
             
             # generate a checksum (and scipt path) for the notebook 
             notebook_metadata = getNotebookMetadata(self.__file__)
@@ -431,6 +426,9 @@ class TorchLogger:
                     "timestamp": current_time,
                 }
 
+                # store the dataset Datafed ID in self.dataset_id. Upload the dataset to DataFed if necessary
+                self.dataset_id = self.df_api.upload_dataset_to_DataFed()
+                                
                 self.notebook_record_resp = self.df_api.data_record_create(
                     metadata=notebook_metadata,
                     record_title=self.__file__.split("/")[-1],  # .split(".")[0],
@@ -468,7 +466,8 @@ class TorchLogger:
             model_hyperparameters (dict): a dictionary where the keys are the model hyperparameters names and the values are the model hyperparameter names. Used in the saved checkpoint.
             **kwargs: Additional metadata or attributes to include in the record.
         """
-
+        
+        
         # include the model architecture state dictionary and model hyperparameters in the checkpoint
         if not str(local_file_path).endswith(".zip") and not os.path.exists(
             str(local_file_path)
@@ -495,12 +494,25 @@ class TorchLogger:
                 else None
             )
 
+            self.dataset_id = self.df_api.upload_dataset_to_DataFed()
             # Create a list of IDs, excluding any that are None
-            ids_to_add = [
-                id
-                for id in [notebook_record_id, current_checkpoint_id, self.dataset_id]
-                if id is not None
-            ]
+            
+            if isinstance(self.dataset_id, str): 
+                ids_to_add = [
+                    id
+                    for id in [notebook_record_id, current_checkpoint_id, self.dataset_id]
+                    if id is not None
+                ]
+            else: #isisntance(self.dataset_id, list)
+                ids_to_add = [id
+                    for id in [notebook_record_id, current_checkpoint_id]
+                    if id is not None
+                ]
+                for id in self.dataset_id:
+                    if self.dataset_id is not None:
+                        ids_to_add.append(id)
+                
+                
 
             # Call the API method with the valid IDs (if any)
             if ids_to_add:
@@ -508,6 +520,9 @@ class TorchLogger:
             else:
                 deps = None  # If no valid IDs are present, set deps to None
 
+            # if isinstance(deps, list):
+            #     deps = functools.reduce(operator.iconcat, deps, []) #[item for sublist in deps for item in sublist] 
+            
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(
                 local_vars=local_vars,
@@ -698,7 +713,8 @@ class InferenceEvaluation:
 class TorchViewer(nn.Module):
     def __init__(self, DataFed_path,**kwargs):
         self.DataFed_path = DataFed_path
-        self.df_api = DataFed(self.DataFed_path,**kwargs)
+        self.df_api = DataFed(self.DataFed_path,
+                              **kwargs)
 
     def getModelCheckpoints(
         self,
