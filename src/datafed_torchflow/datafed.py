@@ -75,6 +75,18 @@ class DataFed(API):
         # Set the data path
         #self.data_path = data_path
     def upload_dataset_to_DataFed(self):
+        """
+        Checks whether the dataset record already exists on DataFed and uploads it to a collection called ``dataset" (which it will create if necessary)
+        whose parent collection is self.collection_id (where the checkpoints are stored). Works with any number of dataset files, specified by 
+        torchlogger.dataset_id_or_path in the instantiation of the torchlogger. The dataset files can be specified as either their file names or
+        DataFed IDs (specified as a string for a single dataset file and a list of strings for multiple dataset files) 
+        
+        Args: 
+            None (self)
+        
+        Returns: 
+            The DataFed record ID for the dataset files, as a string for a single dataset file and a list of strings for multiple dataset files.
+        """
         if self.dataset_id_or_path is not None:
             
             
@@ -509,7 +521,7 @@ class DataFed(API):
             raise e
 
 
-    def data_record_update(self, record_id = None, record_title=None, metadata=None, parent_collection = None, deps=None, overwrite_metadata = False,  **kwargs):
+    def data_record_update(self, record_id = None, record_title=None, metadata=None, deps=None, overwrite_metadata = False,  **kwargs):
         """
         updates the DataFed record for the saved checkpoint including the relevant metadata if it changed
 
@@ -517,6 +529,8 @@ class DataFed(API):
             metadata (dict): The relevant model and system metadata for the checkpoint.
             record_title (str): The title of the DataFed record.
             deps (list or str, optional): A list of dependencies or a single dependency to add. Defaults to None.
+            overwrite_metadata (bool, default=False): Whether to overwrite the record metadata. 
+                Merges with existing metadata if false; overwrites if true. 
         Raises:
             Exception: If user is not authenticated or must re-authenticate
 

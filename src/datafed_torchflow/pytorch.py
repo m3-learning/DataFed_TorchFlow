@@ -205,12 +205,15 @@ class TorchLogger:
                     types.MethodType,
                 ]
             ):
+                    
                 # put the model architecture into the Model Architecture sub-dictionary
                 if key in model_architecture_names:
                     # serialize the optimizer
-                    if key.casefold() in [
+                    if not isinstance(value, str) and key.casefold() in [
                         "optimizer",
                         "optim",
+                        "optim_",
+                        "optimizer_"
                     ]:  # accept "optimizer" or "optim" for flexibility
                         DataFed_record_metadata["Model Parameters"][
                             "Model Architecture"
@@ -255,9 +258,15 @@ class TorchLogger:
                 elif type(value) in [np.ndarray, torch.Tensor]:
                     if value.shape < self.input_data_shape:
                         # put other lists into the Model Parameters dictionary
-                        DataFed_record_metadata["Model Parameters"][key] = (
-                            value.tolist()
-                        )
+                        try: 
+                            json.dumps(value.tolist())
+                            DataFed_record_metadata["Model Parameters"][key] = (
+                                value.tolist()
+                            )
+                        except: 
+                                DataFed_record_metadata["Model Parameters"][key] = (
+                                str(value.tolist())
+                            )
                 # convert PosixPaths and pytorch devices into strings so they can be serialized into JSON
                 elif type(value) in [pathlib.PosixPath, torch.device]:
                     DataFed_record_metadata["Model Parameters"][key] = str(value)
@@ -268,7 +277,7 @@ class TorchLogger:
                             extract_instance_attributes(obj=value)
                         )
 
-                elif isinstance(value, dict):
+                elif isinstance(value, dict) and len(value) > 0:
                     if "_" not in str(type(value[list(value.keys())[0]])):
                         try:
                             json.dumps(value)
@@ -310,8 +319,6 @@ class TorchLogger:
                                     f.write(f"Python error message {tb}")
                                     f.write("skipping this variable.")
 
-                #  except:
-                #      pass
         # add the notebook checksum and file path to the Model Parameters dictionary
         DataFed_record_metadata["Model Parameters"].update(
             getNotebookMetadata(self.__file__)
@@ -397,10 +404,10 @@ class TorchLogger:
                     
             
             # generate a checksum (and scipt path) for the notebook 
-            notebook_metadata = getNotebookMetadata(self.__file__)
+            self.notebook_metadata = getNotebookMetadata(self.__file__)
             
             # extract the checksum
-            new_checksum = notebook_metadata["script"]["checksum"]
+            new_checksum = self.notebook_metadata["script"]["checksum"]
             
             
             
@@ -421,7 +428,7 @@ class TorchLogger:
 
                 current_user, current_time = self.getUserClock()
 
-                notebook_metadata = notebook_metadata | {
+                self.notebook_metadata = self.notebook_metadata | {
                     "user": current_user,
                     "timestamp": current_time,
                 }
@@ -430,7 +437,7 @@ class TorchLogger:
                 self.dataset_id = self.df_api.upload_dataset_to_DataFed()
                                 
                 self.notebook_record_resp = self.df_api.data_record_create(
-                    metadata=notebook_metadata,
+                    metadata=self.notebook_metadata,
                     record_title=self.__file__.split("/")[-1],  # .split(".")[0],
                     deps=self.df_api.addDerivedFrom(self.dataset_id),
                 )
