@@ -503,14 +503,13 @@ class TorchLogger:
 
             self.dataset_id = self.df_api.upload_dataset_to_DataFed()
             # Create a list of IDs, excluding any that are None
-            
             if isinstance(self.dataset_id, str): 
                 ids_to_add = [
                     id
                     for id in [notebook_record_id, current_checkpoint_id, self.dataset_id]
                     if id is not None
                 ]
-            else: #isisntance(self.dataset_id, list)
+            elif isinstance(self.dataset_id, list):
                 ids_to_add = [id
                     for id in [notebook_record_id, current_checkpoint_id]
                     if id is not None
@@ -518,9 +517,14 @@ class TorchLogger:
                 for id in self.dataset_id:
                     if self.dataset_id is not None:
                         ids_to_add.append(id)
+            else: # self.dataset_id is None:
+                ids_to_add = [id
+                    for id in [notebook_record_id, current_checkpoint_id]
+                    if id is not None
+                ]
                 
                 
-
+            
             # Call the API method with the valid IDs (if any)
             if ids_to_add:
                 deps = self.df_api.addDerivedFrom(ids_to_add)

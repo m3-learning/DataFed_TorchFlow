@@ -997,13 +997,13 @@ class DataFed(API):
         if logging:
             print(f"checking collection {collection_id} for missing records")
 
-        missing_record_ids = self.check_no_files(self.getIDsInCollection())
+        missing_record_ids = self.check_no_files(self.getIDsInCollection(collection_id=collection_id))
 
 
         if missing_record_ids is not None:
 
             if logging:
-                print(f"founnd {len(missing_record_ids)} missing records")
+                print(f"found {len(missing_record_ids)} missing records")
 
             if logging:
                 print("retrieving metadata for missing records")
@@ -1012,10 +1012,19 @@ class DataFed(API):
 
             for i, (record_id, metadata) in enumerate(zip(missing_record_ids, metadata)):
                 if logging:
-                    print(f"trying to reupload {metadata['file_name']} for record {record_id}")
+                    if "Model Parameters" in metadata.keys(): #record is a checkpoint
+                        print(f"trying to reupload {metadata['Model Parameters']['filename']} for record {record_id}")
 
-                    if self.check_if_file_data(metadata['file_name']):
-                        self.upload_file(record_id, self.joinPath(metadata['file_name']), wait = kwargs.get("wait", False))
+                        if self.check_if_file_data(metadata["Model Parameters"]['filename'],file_path):
+                            self.upload_file(record_id, self.joinPath(metadata["Model Parameters"]['filename'],metadata["Model Parameters"]["path"]),
+                                         wait = kwargs.get("wait", False))
+                    elif "script" in metadata.keys(): # record is notebook
+                        print(f"trying to reupload {metadata['script']['path']} for record {record_id}")
+                        if self.check_if_file_data(metadata["script"]['path'],file_path):
+                            self.upload_file(record_id, metadata["script"]['path'],
+                                         wait = kwargs.get("wait", False))
+
+                         
 
 
     def getFileName(self, record_id):
@@ -1093,26 +1102,41 @@ class DataFed(API):
 
             self.file_path = self.joinPath(file_name)
 
-    def joinPath(self, file_name):
+    def joinPath(self, file_name,path_name = None):
         """
         Joins the data path and the file name to create a full file path.
         
         Args:
             file_name (str): The name of the file.
+            path_name (str,default=None): The name of the file path. Defaults to self.data_path
+
         Returns:
             str: The full file path.
         """
-        return os.path.join(self.data_path, file_name)
+        if path_name == None:
+            return os.path.join(self.data_path, file_name)
+        else:
+            return os.path.join(path_name, file_name)
 
-    def check_if_file_data(self, file_name):
+
+    def check_if_file_data(self, file_name,path_name=None):
         """
         Check if a file exists in the specified data path.
         Args:
             file_name (str): The name of the file to check.
         Returns:
             bool: True if the file exists in the data path, False otherwise.
+            
         """
-        if os.path.exists(self.joinPath(file_name)):
-            return True
+        if path_name == None:   
+            if os.path.exists(self.joinPath(file_name)):
+                return True
+            else:
+                return False
         else:
-            return False
+            if os.path.exists(self.joinPath(file_name,path_name)):
+                return True
+            else:
+                return False
+            
+            
