@@ -633,11 +633,9 @@ class DataFed(API):
 
             # log that the DataFed data record has been successfully created.
             with open(self.log_file_path, "a") as f:
-                current_task_status = put_resp[0].task.msg
 
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
 
-                f.write(f"\n {timestamp} - Data put status: {current_task_status}")
                 f.write(
                     "\n This just means that the Data put command ran without errors. \n If the status is not complete, check the DataFed and Globus websites \n to ensure the Globus Endpoint is connected and the file transfer completes."
                 )
@@ -982,7 +980,7 @@ class DataFed(API):
             return no_files
         
         
-    def replace_missing_records(self, collection_id=None, record_id=None, file_path=None, upload_kwargs=None, logging=True):
+    def replace_missing_records(self, collection_id=None, file_path=None, upload_kwargs=None, logging=True):
 
         if upload_kwargs is not None:
             kwargs = self.upload_kwargs.copy()
