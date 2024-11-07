@@ -194,6 +194,7 @@ class TorchLogger:
                 and "data".casefold() not in str(type(value)).casefold()
                 and "dataloader".casefold() not in str(type(value)).casefold()
                 and not (callable(value) and key not in model_architecture_names)
+                and not (callable(value) and key not in ["optimizer","optim","optim_","optimizer_"])
                 and type(value)
                 not in [
                     type,
@@ -208,24 +209,28 @@ class TorchLogger:
                     
                 # put the model architecture into the Model Architecture sub-dictionary
                 if key in model_architecture_names:
-                    # serialize the optimizer
-                    if not isinstance(value, str) and key.casefold() in [
-                        "optimizer",
-                        "optim",
-                        "optim_",
-                        "optimizer_"
-                    ]:  # accept "optimizer" or "optim" for flexibility
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Architecture"
-                        ][key] = serialize_pytorch_optimizer(value)
-                    # serialize the model architecture blocks (encoder, decoder, etc. )
-                    else:
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Architecture"
-                        ][key] = serialize_model(value)
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Architecture"
-                        ][key].update(extract_instance_attributes(obj=value))
+                    
+                # serialize the model architecture blocks (encoder, decoder, etc. )
+                    DataFed_record_metadata["Model Parameters"][
+                        "Model Architecture"
+                    ][key] = serialize_model(value)
+                    DataFed_record_metadata["Model Parameters"][
+                        "Model Architecture"
+                    ][key].update(extract_instance_attributes(obj=value))
+                
+            # serialize the optimizer
+                elif not isinstance(value, str) and key.casefold() in [
+                    "optimizer",
+                    "optim",
+                    "optim_",
+                    "optimizer_"
+                ]:  # accept "optimizer" or "optim" for flexibility
+                    DataFed_record_metadata["Model Parameters"][
+                        "Model Architecture"
+                    ][key] = serialize_pytorch_optimizer(value)
+                
+                
+                
                 # extract lists if they are not too long (arbitrarily chose to be less than 1000 characters)
                 elif isinstance(value, list):
                     # ignore long lists

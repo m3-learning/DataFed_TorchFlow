@@ -1015,7 +1015,7 @@ class DataFed(API):
                     if "Model Parameters" in metadata.keys(): #record is a checkpoint
                         print(f"trying to reupload {metadata['Model Parameters']['filename']} for record {record_id}")
 
-                        if self.check_if_file_data(metadata["Model Parameters"]['filename'],file_path):
+                        if self.check_if_file_data(metadata["Model Parameters"]["filename"],metadata["Model Parameters"]["path"]): 
                             self.upload_file(record_id, self.joinPath(metadata["Model Parameters"]['filename'],metadata["Model Parameters"]["path"]),
                                          wait = kwargs.get("wait", False))
                     elif "script" in metadata.keys(): # record is notebook
@@ -1108,13 +1108,13 @@ class DataFed(API):
         
         Args:
             file_name (str): The name of the file.
-            path_name (str,default=None): The name of the file path. Defaults to self.data_path
+            path_name (str,default=None): The name of the file path. Defaults to self.local_model_path
 
         Returns:
             str: The full file path.
         """
         if path_name == None:
-            return os.path.join(self.data_path, file_name)
+            return os.path.join(self.local_model_path, file_name)
         else:
             return os.path.join(path_name, file_name)
 
