@@ -32,7 +32,7 @@ class DataFed(API):
         dataset_id=None,
         data_path=None,
         download_kwargs={"wait": True, "orig_fname": True},
-        upload_kwargs={"wait": True},
+        upload_kwargs = {"wait": True},
         logging=False,
     ):
         """
@@ -69,7 +69,6 @@ class DataFed(API):
 
         # Set the dataset ID
         self.dataset_id = dataset_id
-        
 
         # Set the data path
         self.data_path = data_path
@@ -505,16 +504,14 @@ class DataFed(API):
     def getIDsInCollection(self, collection_id = None):
         """
         Gets the IDs of items in a collection.
-
         Args:
             collection_id (str): The ID of the collection to query.
-
         Returns:
             list: A list of item IDs in the collection.
         """
         if collection_id is None:
             collection_id = self.collection_id
-        
+
         # TODO: make it so it can return more than 10000 records -- not hardcoded
         # Get the list of items in the collection
         collection_list = self.collectionItemsList(collection_id, count=10000)[0]
@@ -524,7 +521,7 @@ class DataFed(API):
 
     def get_metadata(
         self,
-        collection_id=None,
+        collection_id = None,
         exclude_metadata=None,
         excluded_keys=None,
         non_unique=None,
@@ -543,11 +540,16 @@ class DataFed(API):
         Returns:
             dict: The metadata record.
         """
-        # default condition to get the metadata of the current collection
+
+        #default condition to get the metadata of the current collection
         if collection_id is None:
             collection_id = self.collection_id
-
+            
         # Retrieve the data view response for the given record ID
+        # TODO: make it so it can return more than 10000 records -- not hardcoded
+        collection_list = self.collectionItemsList(self.collection_id, count=10000)[0]
+
+        # Get the record IDs from the collection list
         record_ids_ = self.getIDsInCollection(collection_id=self.collection_id)
 
         # Gets a list of Metadata excluding specific metadata terms
@@ -817,41 +819,42 @@ class DataFed(API):
         else:
             return no_files
         
-    def replace_missing_records(self, collection_id=None, record_id=None, file_path=None, upload_kwargs=None, verbose=True):
         
+    def replace_missing_records(self, collection_id=None, record_id=None, file_path=None, upload_kwargs=None, logging=True):
+
+
         if upload_kwargs is not None:
             kwargs = self.upload_kwargs.copy()
             kwargs.update(upload_kwargs)
         else:
             kwargs = self.upload_kwargs
-            
+
         if collection_id is None:
             collection_id = self.collection_id
-            
-        
-        if verbose:
+
+
+        if logging:
             print(f"checking collection {collection_id} for missing records")
-        
+
         missing_record_ids = self.check_no_files(self.getIDsInCollection())
-        
-            
+
+
         if missing_record_ids is not None:
-            
-            if verbose:
+
+            if logging:
                 print(f"founnd {len(missing_record_ids)} missing records")
-            
-            if verbose:
+
+            if logging:
                 print("retrieving metadata for missing records")
-            
+
             metadata = self._get_metadata_list(missing_record_ids)
-            
+
             for i, (record_id, metadata) in enumerate(zip(missing_record_ids, metadata)):
-                if verbose:
+                if logging:
                     print(f"trying to reupload {metadata['file_name']} for record {record_id}")
-                
+
                     if self.check_if_file_data(metadata['file_name']):
                         self.upload_file(record_id, self.joinPath(metadata['file_name']), wait = kwargs.get("wait", False))
-                    
 
     def getFileName(self, record_id):
         """
@@ -927,7 +930,7 @@ class DataFed(API):
                     )
 
             self.file_path = self.joinPath(file_name)
-            
+
     def joinPath(self, file_name):
         """
         Joins the data path and the file name to create a full file path.
