@@ -701,6 +701,7 @@ class DataFed(API):
         Returns:
             dict: The metadata record.
         """
+
         #default condition to get the metadata of the current collection
         if collection_id is None:
             collection_id = self.collection_id
@@ -982,6 +983,7 @@ class DataFed(API):
         
     def replace_missing_records(self, collection_id=None, file_path=None, upload_kwargs=None, logging=True):
 
+
         if upload_kwargs is not None:
             kwargs = self.upload_kwargs.copy()
             kwargs.update(upload_kwargs)
@@ -1023,7 +1025,6 @@ class DataFed(API):
                                          wait = kwargs.get("wait", False))
 
                          
-
 
     def getFileName(self, record_id):
         """
@@ -1120,8 +1121,10 @@ class DataFed(API):
     def check_if_file_data(self, file_name,path_name=None):
         """
         Check if a file exists in the specified data path.
+
         Args:
             file_name (str): The name of the file to check.
+
         Returns:
             bool: True if the file exists in the data path, False otherwise.
             

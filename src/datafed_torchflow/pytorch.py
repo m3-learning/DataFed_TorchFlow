@@ -86,6 +86,7 @@ class TorchLogger:
             input_data (numpy.ndarray, default=None): Input data for training the model.
             dataset_id (str, default=None): DataFed ID for the input dataset for the model
             logging (bool, optional): Flag for logging output. Default is False.
+            optimizer (torch.optim.Optimizer, optional): The optimizer used for training. Default is None.
         """
 
         self.current_checkpoint_id = None
@@ -94,11 +95,13 @@ class TorchLogger:
         self.model_dict = model_dict
         if "optimizer" in model_dict.keys():
             self.optimizer = self.model_dict["optimizer"]
+
         self.DataFed_path = DataFed_path
         self.local_model_path = local_model_path
         self.log_file_path = log_file_path
         self.dataset_id_or_path = dataset_id_or_path
         self.download_kwargs = download_kwargs
+
         self.logging = logging
         self.input_data_shape = input_data_shape
 
@@ -738,7 +741,8 @@ class InferenceEvaluation:
 
 
 class TorchViewer(nn.Module):
-    def __init__(self, DataFed_path,**kwargs):
+
+    def __init__(self, DataFed_path, **kwargs):
         self.DataFed_path = DataFed_path
         self.df_api = DataFed(self.DataFed_path,
                               **kwargs)
