@@ -571,30 +571,7 @@ class TorchLogger:
 
             self.current_checkpoint_id = dc_resp[0].data[0].id
 
-    def get_return_variables(func):
-        # Get the source code of the function
-        source = inspect.getsource(func)
-
-        # Parse the source code into an AST
-        tree = ast.parse(source)
-
-        # Navigate to the function definition in the AST
-        function_node = next(
-            node for node in tree.body if isinstance(node, ast.FunctionDef)
-        )
-
-        # Extract the return statement
-        return_vars = []
-        for node in ast.walk(function_node):
-            if isinstance(node, ast.Return):
-                # Check if the return value is a tuple or a single value
-                if isinstance(node.value, ast.Tuple):
-                    return_vars = [
-                        elt.id for elt in node.value.elts if isinstance(elt, ast.Name)
-                    ]
-                elif isinstance(node.value, ast.Name):
-                    pass
-                break
+    
 
 
 class InferenceEvaluation:

@@ -2,6 +2,8 @@ from m3util.notebooks.checksum import calculate_notebook_checksum
 import torch
 import numpy as np
 import json 
+import ast
+import inspect
 
 def is_jsonable(x):
     try:
@@ -43,7 +45,28 @@ def extract_instance_attributes(obj=dict()):
     else:
         return obj
 
-
+def get_return_variables(func):
+    # Get the source code of the function
+    source = inspect.getsource(func)
+    
+    # Parse the source code into an AST
+    tree = ast.parse(source)
+    
+    # Navigate to the function definition in the AST
+    function_node = next(node for node in tree.body if isinstance(node, ast.FunctionDef))
+    
+    # Extract the return statement
+    return_vars = []
+    for node in ast.walk(function_node):
+        if isinstance(node, ast.Return):
+            # Check if the return value is a tuple or a single value
+            if isinstance(node.value, ast.Tuple):
+                return_vars = [elt.id for elt in node.value.elts if isinstance(elt, ast.Name)]
+            elif isinstance(node.value, ast.Name):
+                return_vars = [node.value.id]
+            break
+            
+    return return_vars
 
 def getNotebookMetadata(file):
     """
