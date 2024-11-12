@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -45,12 +43,10 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     env:
-      HOME: "${{ github.workspace }}/../"
+      HOME: "${{ github.workspace }}/../" # Because self-hosted runner is root
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Download docs artifact
         uses: actions/download-artifact@v4
@@ -68,8 +64,8 @@ jobs:
     runs-on: shenron
     needs: build
     if: |
-      contains(github.event.head_commit.message, '#minor') ||
       contains(github.event.head_commit.message, '#patch') ||
+      contains(github.event.head_commit.message, '#minor') ||
       contains(github.event.head_commit.message, '#major')
     steps:
       - name: Check out code
