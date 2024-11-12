@@ -38,6 +38,7 @@ jobs:
 
       - name: Deploy docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: ./docs/_build/html
