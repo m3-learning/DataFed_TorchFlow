@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: shenron
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
