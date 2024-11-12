@@ -1,0 +1,1319 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>datafed_torchflow.pytorch &#8212; DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=77234041" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../_static/documentation_options.js?v=340711c8"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/datafed_torchflow/pytorch';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.2.5.post1.dev21+gcefdefe" />
+    <meta name="docbuild:last-update" content="Nov 12, 2024"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/Drexel_blue_Logo_square_Light.png" class="logo__image only-light" alt="DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation - Home"/>
+    <img src="../../_static/Drexel_blue_Logo_square_Dark.png" class="logo__image only-dark pst-js-only" alt="DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../readme.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributions & Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../example.html">
+    Example
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../authors.html">
+    Authors
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/modules.html">
+    Module Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="m3-learning/DataFed_TorchFlow" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../readme.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributions & Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../example.html">
+    Example
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../authors.html">
+    Authors
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/modules.html">
+    Module Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="m3-learning/DataFed_TorchFlow" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">datafed_torchflow.pytorch</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for datafed_torchflow.pytorch</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;/home/jg3837/DataFed_TorchFlow/DataFed_TorchFlow/src&quot;</span><span class="p">))</span>
+
+
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">types</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">datafed.CommandLib</span> <span class="kn">import</span> <span class="n">API</span>
+<span class="kn">from</span> <span class="nn">m3util.globus.globus</span> <span class="kn">import</span> <span class="n">check_globus_file_access</span>
+<span class="kn">from</span> <span class="nn">m3util.util.IO</span> <span class="kn">import</span> <span class="n">find_files_recursive</span><span class="p">,</span> <span class="n">make_folder</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">datafed_torchflow.computer</span> <span class="kn">import</span> <span class="n">get_system_info</span>
+<span class="kn">from</span> <span class="nn">datafed_torchflow.datafed</span> <span class="kn">import</span> <span class="n">DataFed</span>
+<span class="kn">from</span> <span class="nn">datafed_torchflow.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">extract_instance_attributes</span><span class="p">,</span>
+    <span class="n">getNotebookMetadata</span><span class="p">,</span>
+    <span class="n">serialize_model</span><span class="p">,</span>
+    <span class="n">serialize_pytorch_optimizer</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># TODO: Add data and dataloader derivative.</span>
+<span class="c1"># TODO: Add number of FLOPS to metadata</span>
+
+
+<div class="viewcode-block" id="TorchLogger">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger">[docs]</a>
+<span class="k">class</span> <span class="nc">TorchLogger</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TorchLogger is a class designed to log PyTorch model training details,</span>
+<span class="sd">    including model architecture, optimizer state, and system information.</span>
+<span class="sd">    It also integrates with the DataFed API for file and metadata management.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        model_dict (dict): a dictionary containing the Pytorch model architecture to be logged,</span>
+<span class="sd">            with the name of the block as the key and the block as the value.</span>
+<span class="sd">            For example: {&quot;vae&quot;:vae, &quot;encoder: encoder, &quot;decoder&quot;:decoder,&quot;optimizer&quot;:optimizer}</span>
+<span class="sd">        DataFed_path (str): The path to the DataFed configuration or API.</span>
+<span class="sd">        script_path (str): Path to the script or notebook for checksum calculation.</span>
+<span class="sd">        local_model_path (str): Local directory to store model files.</span>
+<span class="sd">        input_data_shape (tuple): Shape of the input training data for the model.</span>
+<span class="sd">        logging (bool): Whether to display logging output.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_dict</span><span class="p">,</span>
+        <span class="n">DataFed_path</span><span class="p">,</span>
+        <span class="n">script_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">local_model_path</span><span class="o">=</span><span class="s2">&quot;/.&quot;</span><span class="p">,</span>
+        <span class="n">log_file_path</span><span class="o">=</span><span class="s2">&quot;log.txt&quot;</span><span class="p">,</span>
+        <span class="n">input_data_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dataset_id_or_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">download_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;wait&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;orig_fname&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the TorchLogger class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_dict (dict): a dictionary containing the Pytorch model architecture to be logged,</span>
+<span class="sd">                with the name of the block as the key and the block as the value.</span>
+<span class="sd">                For example: {&quot;vae&quot;:vae, &quot;encoder: encoder, &quot;decoder&quot;:decoder,&quot;optimizer&quot;:optimizer}</span>
+<span class="sd">            DataFed_path (str): Path to the DataFed configuration or API.</span>
+<span class="sd">            script_path (str, optional): Path to the script or notebook. Default is None.</span>
+<span class="sd">            local_model_path (str, optional): Local directory to store model files. Default is &#39;./&#39;.</span>
+<span class="sd">            log_file_path (str, optional): Local file to store a log of the code evaluation. Default is &#39;log.txt&#39;</span>
+<span class="sd">            input_data (numpy.ndarray, default=None): Input data for training the model.</span>
+<span class="sd">            dataset_id (str, default=None): DataFed ID for the input dataset for the model</span>
+<span class="sd">            logging (bool, optional): Flag for logging output. Default is False.</span>
+<span class="sd">            optimizer (torch.optim.Optimizer, optional): The optimizer used for training. Default is None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_checkpoint_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span> <span class="o">=</span> <span class="n">script_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_dict</span> <span class="o">=</span> <span class="n">model_dict</span>
+        <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">model_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dict</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">DataFed_path</span> <span class="o">=</span> <span class="n">DataFed_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_model_path</span> <span class="o">=</span> <span class="n">local_model_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span> <span class="o">=</span> <span class="n">log_file_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id_or_path</span> <span class="o">=</span> <span class="n">dataset_id_or_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_kwargs</span> <span class="o">=</span> <span class="n">download_kwargs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data_shape</span> <span class="o">=</span> <span class="n">input_data_shape</span>
+
+        <span class="n">make_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_model_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span> <span class="o">=</span> <span class="n">DataFed</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DataFed_path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_model_path</span><span class="p">,</span>
+            <span class="n">log_file_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span><span class="p">,</span>
+            <span class="n">dataset_id_or_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_id_or_path</span><span class="p">,</span>
+            <span class="n">download_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">download_kwargs</span><span class="p">,</span>
+            <span class="n">logging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Check if Globus has access to the local path</span>
+        <span class="n">check_globus_file_access</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">endpointDefaultGet</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_model_path</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Save the notebook to DataFed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_notebook</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TorchLogger.reset">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_checkpoint_id</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the optimizer used for training.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.optim.Optimizer: The optimizer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span>
+
+    <span class="nd">@optimizer</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the optimizer used for training.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            optimizer (torch.optim.Optimizer): The optimizer to be set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+
+<div class="viewcode-block" id="TorchLogger.getMetadata">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.getMetadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">getMetadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_hyperparameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gathers metadata including the serialized model, optimizer, system info, and user details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            local_vars (list): a list containing the local variables for the model training code, from list(locals().items()). Used to determine the metadata</span>
+<span class="sd">            **kwargs: Additional key-value pairs to be added to the metadata.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dictionary containing the metadata including model, optimizer,</span>
+<span class="sd">                  system information, user, timestamp, and optional script checksum.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># get the model architecture names</span>
+        <span class="n">model_architecture_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="c1"># get the user information and timestamp</span>
+        <span class="n">current_user</span><span class="p">,</span> <span class="n">current_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserClock</span><span class="p">()</span>
+
+        <span class="c1"># get the computer information</span>
+        <span class="n">computer_info</span> <span class="o">=</span> <span class="n">get_system_info</span><span class="p">()</span>
+
+        <span class="c1"># combine metadata with user and timestamp</span>
+
+        <span class="c1"># define the empty metadata dictionary to set the structure</span>
+        <span class="n">DataFed_record_metadata</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Model Parameters&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;Model Hyperparameters&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;Model Architecture&quot;</span><span class="p">:</span> <span class="p">{}},</span>
+            <span class="s2">&quot;System Information&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="p">}</span>
+
+        <span class="c1"># loop through the local variables to add to the metadata dictionary</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">local_vars</span><span class="p">:</span>
+            <span class="c1"># exclude modules and other undesired local variables. Use casefold string matching for flexibility</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+                <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="s2">&quot;checkpoint&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;self&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;local_vars&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;model_dict&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;model_hyperparameters&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;i&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;image&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;key&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="ow">and</span> <span class="s2">&quot;datafed&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="s2">&quot;globus&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="s2">&quot;data&quot;</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="s2">&quot;dataloader&quot;</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="p">(</span>
+                    <span class="ow">not</span> <span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_architecture_names</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span>
+                        <span class="nb">callable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="s2">&quot;optim_&quot;</span><span class="p">,</span> <span class="s2">&quot;optimizer_&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="nb">type</span><span class="p">,</span>
+                    <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">,</span>
+                    <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">,</span>
+                    <span class="n">API</span><span class="p">,</span>
+                    <span class="n">DataLoader</span><span class="p">,</span>
+                    <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">,</span>
+                    <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">):</span>
+                <span class="c1"># put the model architecture into the Model Architecture sub-dictionary</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">model_architecture_names</span><span class="p">:</span>
+                    <span class="c1"># serialize the optimizer</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span>
+                        <span class="s2">&quot;optimizer&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;optim&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;optim_&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;optimizer_&quot;</span><span class="p">,</span>
+                    <span class="p">]:</span>  <span class="c1"># accept &quot;optimizer&quot; or &quot;optim&quot; for flexibility</span>
+                        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span>
+                            <span class="s2">&quot;Model Architecture&quot;</span>
+                        <span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">serialize_pytorch_optimizer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># serialize the model architecture blocks (encoder, decoder, etc. )</span>
+                        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span>
+                            <span class="s2">&quot;Model Architecture&quot;</span>
+                        <span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">serialize_model</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span>
+                            <span class="s2">&quot;Model Architecture&quot;</span>
+                        <span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_instance_attributes</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">value</span><span class="p">))</span>
+
+                <span class="c1"># serialize the optimizer if not in model_dict</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="s2">&quot;optimizer&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;optim&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;optim_&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;optimizer_&quot;</span><span class="p">,</span>
+                <span class="p">]:</span>  <span class="c1"># accept &quot;optimizer&quot; or &quot;optim&quot; for flexibility</span>
+                    <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="s2">&quot;Model Architecture&quot;</span><span class="p">][</span>
+                        <span class="n">key</span>
+                    <span class="p">]</span> <span class="o">=</span> <span class="n">serialize_pytorch_optimizer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="c1"># extract lists if they are not too long (arbitrarily chose to be less than 1000 characters)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="c1"># ignore long lists</span>
+                    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+                        <span class="c1"># extract the value for 1 item lists</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># if the list has many (but not too many values) extract the whole list</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">warning_message</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;List in key &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is too long to be extracted&#39;</span>
+                        <span class="p">)</span>
+                        <span class="ne">Warning</span><span class="p">(</span><span class="n">warning_message</span><span class="p">)</span>
+                <span class="c1"># put the model hyperparameters in the Model Hyperparameters sub-dictionary (the hyperparameters might be 1-value torch tensors or just floats)</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">model_hyperparameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_shape</span><span class="p">:</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span>
+                                <span class="s2">&quot;Model Hyperparameters&quot;</span>
+                            <span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span>
+                            <span class="s2">&quot;Model Hyperparameters&quot;</span>
+                        <span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+                <span class="c1"># convert numpy arrays and torch tensors that are small enough (arbitrarily chosen to be smaller than the input data dimensions)</span>
+                <span class="c1"># into lists so they can be serialized into JSON</span>
+                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_shape</span><span class="p">:</span>
+                        <span class="c1"># put other lists into the Model Parameters dictionary</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                            <span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                                <span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                            <span class="p">)</span>
+                <span class="c1"># convert PosixPaths and pytorch devices into strings so they can be serialized into JSON</span>
+                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">PosixPath</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]:</span>
+                    <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="c1"># convert class instances into dictionaries of their attributes so they can be serialized into JSON</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extract_instance_attributes</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">value</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">extract_instance_attributes</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;_&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                                <span class="n">value</span>
+                            <span class="p">)</span>
+
+                <span class="c1"># all other cases, everything should be serializable (string, float, etc.)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># everything should be JSON serializable at this point, but try to convert to string and then skip if not</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                                <span class="n">value</span>
+                            <span class="p">)</span>
+
+                        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logging</span><span class="p">:</span>
+                                <span class="n">tb</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                                    <span class="n">timestamp</span> <span class="o">=</span> <span class="p">(</span>
+                                        <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                                        <span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+                                        <span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+                                    <span class="p">)</span>
+
+                                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                                        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2"> - Could not convert </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> to JSON. </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="p">)</span>
+                                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                                        <span class="sa">f</span><span class="s2">&quot;the corresponding value has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> and value </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="p">)</span>
+                                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Python error message </span><span class="si">{</span><span class="n">tb</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;skipping this variable.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># add the notebook checksum and file path to the Model Parameters dictionary</span>
+        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">getNotebookMetadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># add the user and timestamp to the Model Parameters dictionary</span>
+        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;Model Parameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">current_user</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">current_time</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="c1"># add the computer information to the System Information section</span>
+        <span class="n">DataFed_record_metadata</span><span class="p">[</span><span class="s2">&quot;System Information&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">computer_info</span>
+
+        <span class="c1"># return the metadata</span>
+        <span class="k">return</span> <span class="n">DataFed_record_metadata</span></div>
+
+
+<div class="viewcode-block" id="TorchLogger.getModelArchitectureStateDict">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.getModelArchitectureStateDict">[docs]</a>
+    <span class="k">def</span> <span class="nf">getModelArchitectureStateDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        generates a dictionary where the key is the model architecture block</span>
+<span class="sd">        and the value is the corresponding state dictionary to go in the saved checkpoint,</span>
+<span class="sd">        for example</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dictionary containing the model architecture state dictionaries</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model_architecture</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">model_architecture</span><span class="p">[</span><span class="n">block</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dict</span><span class="p">[</span><span class="n">block</span><span class="p">]</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">model_architecture</span></div>
+
+
+<div class="viewcode-block" id="TorchLogger.getUserClock">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.getUserClock">[docs]</a>
+    <span class="k">def</span> <span class="nf">getUserClock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gathers system information including CPU, memory, and GPU details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dictionary containing system information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the current user</span>
+        <span class="n">current_user</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()</span>
+
+        <span class="c1"># Get the current time</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">current_time</span></div>
+
+
+<div class="viewcode-block" id="TorchLogger.save_notebook">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.save_notebook">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_notebook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the Jupyter notebook that runs the code training the model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># don&#39;t upload the notebook to DataFed if it is already there.</span>
+        <span class="c1"># first, check if the notebook filename is actually its DataFed ID, in which case it already exists in DataFed</span>
+
+        <span class="c1"># first, make sure the notebook file is given (not None), otherwise there is no notebook specified to upload</span>
+        <span class="c1"># so just don&#39;t upload a notebook but proceed to saving the checkpoints as usual</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># check whether the notebook file name is a DataFed ID</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;d/&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span>
+
+            <span class="c1"># if the notebook filename is not a DataFed ID, check if a notebook of the same name exists at the DataFed file path</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># this will fail if it doesn&#39;t find a match, meaning that the notebook does not already exists on DataFed</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">get_notebook_DataFed_ID_from_path_and_title</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="c1"># the notebook is not already in DataFed, so upload it</span>
+                    <span class="c1"># output to user</span>
+                    <span class="n">old_checksum</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logging</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                            <span class="n">timestamp</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                                <span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+                                <span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2"> - Uploading notebook </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span><span class="si">}</span><span class="s2"> to DataFed...&quot;</span>
+                            <span class="p">)</span>
+
+            <span class="c1"># generate a checksum (and scipt path) for the notebook</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notebook_metadata</span> <span class="o">=</span> <span class="n">getNotebookMetadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+
+            <span class="c1"># extract the checksum</span>
+            <span class="n">new_checksum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">notebook_metadata</span><span class="p">[</span><span class="s2">&quot;script&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span>
+
+            <span class="c1"># if the notebook has a DataFed record ID, extract the checksum and compare to the new checksum</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">notebook_DataFed_metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">dataView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span>
+                <span class="p">)</span>
+                <span class="n">old_checksum</span> <span class="o">=</span> <span class="n">notebook_DataFed_metadata</span><span class="p">[</span><span class="s2">&quot;script&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">new_checksum</span> <span class="o">!=</span> <span class="n">old_checksum</span><span class="p">:</span>
+                <span class="c1"># do the uploading</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logging</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">timestamp</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2"> - Uploading notebook </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span><span class="si">}</span><span class="s2"> to DataFed...&quot;</span>
+                        <span class="p">)</span>
+
+                <span class="n">current_user</span><span class="p">,</span> <span class="n">current_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getUserClock</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">notebook_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">notebook_metadata</span> <span class="o">|</span> <span class="p">{</span>
+                    <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">current_user</span><span class="p">,</span>
+                    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">current_time</span><span class="p">,</span>
+                <span class="p">}</span>
+
+                <span class="c1"># store the dataset Datafed ID in self.dataset_id. Upload the dataset to DataFed if necessary</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">upload_dataset_to_DataFed</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">data_record_create</span><span class="p">(</span>
+                    <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">notebook_metadata</span><span class="p">,</span>
+                    <span class="n">record_title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>  <span class="c1"># .split(&quot;.&quot;)[0],</span>
+                    <span class="n">deps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">addDerivedFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">),</span>
+                <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_resp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__file__</span>
+                <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_resp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span></div>
+
+
+<div class="viewcode-block" id="TorchLogger.save">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record_file_name</span><span class="p">,</span>
+        <span class="n">datafed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">local_file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">local_vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">model_hyperparameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Saves the model&#39;s state dictionary locally unless one has already been saved</span>
+<span class="sd">        and optionally uploads it to DataFed along with the model&#39;s metadata.</span>
+<span class="sd">        If you want to upload multiple files to the same DataFed data record you can zip them</span>
+<span class="sd">        together and pass in the local path to the zip file as &quot;local_file_path&quot;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            record_file_name (str): The name of the file to save the model locally.</span>
+<span class="sd">            datafed (bool, optional): If True, the record is uploaded to DataFed. Default is True.</span>
+<span class="sd">            local_file_path (str or Path.PosixPath, optional): The local file path to the directory to save the weights</span>
+<span class="sd">                    or to the presaved file to upload to DataFed.</span>
+<span class="sd">            local_vars (list): a list containing the local variables for the model training code, from list(locals().items()). Used to determine the metadata</span>
+<span class="sd">            model_hyperparameters (dict): a dictionary where the keys are the model hyperparameters names and the values are the model hyperparameter names. Used in the saved checkpoint.</span>
+<span class="sd">            **kwargs: Additional metadata or attributes to include in the record.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># include the model architecture state dictionary and model hyperparameters in the checkpoint</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">local_file_path</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.zip&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">local_file_path</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">checkpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getModelArchitectureStateDict</span><span class="p">()</span> <span class="o">|</span> <span class="n">model_hyperparameters</span>
+
+            <span class="c1"># Save the model state dict locally</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">,</span> <span class="n">local_file_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">datafed</span><span class="p">:</span>
+            <span class="c1"># Safely retrieve values and replace with None if undefined or not present</span>
+            <span class="n">notebook_record_id</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Saves the record id to the object</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notebook_record_id</span> <span class="o">=</span> <span class="n">notebook_record_id</span>
+
+            <span class="n">current_checkpoint_id</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_checkpoint_id</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_checkpoint_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">upload_dataset_to_DataFed</span><span class="p">()</span>
+            <span class="c1"># Create a list of IDs, excluding any that are None</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">ids_to_add</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="nb">id</span>
+                    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="p">[</span>
+                        <span class="n">notebook_record_id</span><span class="p">,</span>
+                        <span class="n">current_checkpoint_id</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">,</span>
+                    <span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">ids_to_add</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="nb">id</span>
+                    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="p">[</span><span class="n">notebook_record_id</span><span class="p">,</span> <span class="n">current_checkpoint_id</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">]</span>
+                <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">ids_to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># self.dataset_id is None:</span>
+                <span class="n">ids_to_add</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="nb">id</span>
+                    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="p">[</span><span class="n">notebook_record_id</span><span class="p">,</span> <span class="n">current_checkpoint_id</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">]</span>
+
+            <span class="c1"># Call the API method with the valid IDs (if any)</span>
+            <span class="k">if</span> <span class="n">ids_to_add</span><span class="p">:</span>
+                <span class="n">deps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">addDerivedFrom</span><span class="p">(</span><span class="n">ids_to_add</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">deps</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># If no valid IDs are present, set deps to None</span>
+
+            <span class="c1"># if isinstance(deps, list):</span>
+            <span class="c1">#     deps = functools.reduce(operator.iconcat, deps, []) #[item for sublist in deps for item in sublist]</span>
+
+            <span class="c1"># Generate metadata and create a data record in DataFed</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMetadata</span><span class="p">(</span>
+                <span class="n">local_vars</span><span class="o">=</span><span class="n">local_vars</span><span class="p">,</span>
+                <span class="n">model_hyperparameters</span><span class="o">=</span><span class="n">model_hyperparameters</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">dc_resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">data_record_create</span><span class="p">(</span>
+                <span class="n">metadata</span><span class="p">,</span>
+                <span class="n">record_title</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">record_file_name</span><span class="p">),</span>
+                <span class="n">local_model_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_model_path</span><span class="p">,</span>
+                <span class="c1"># weights_file_path = weights_file_path,</span>
+                <span class="c1"># embedding_file_path = embedding_file_path,</span>
+                <span class="c1"># reconstruction_file_path = reconstruction_file_path,</span>
+                <span class="n">deps</span><span class="o">=</span><span class="n">deps</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># Upload the saved model to DataFed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span><span class="n">dc_resp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">local_file_path</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_checkpoint_id</span> <span class="o">=</span> <span class="n">dc_resp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span></div>
+
+
+<div class="viewcode-block" id="TorchLogger.get_return_variables">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.get_return_variables">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_return_variables</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="c1"># Get the source code of the function</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+        <span class="c1"># Parse the source code into an AST</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="c1"># Navigate to the function definition in the AST</span>
+        <span class="n">function_node</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+            <span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">body</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">FunctionDef</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Extract the return statement</span>
+        <span class="n">return_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">function_node</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Return</span><span class="p">):</span>
+                <span class="c1"># Check if the return value is a tuple or a single value</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Tuple</span><span class="p">):</span>
+                    <span class="n">return_vars</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">elt</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">elts</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elt</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">return_vars</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="InferenceEvaluation">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation">[docs]</a>
+<span class="k">class</span> <span class="nc">InferenceEvaluation</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dataframe</span><span class="p">,</span>
+        <span class="n">dataset</span><span class="p">,</span>
+        <span class="n">df_api</span><span class="p">,</span>
+        <span class="n">root_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">save_directory</span><span class="o">=</span><span class="s2">&quot;./tmp/&quot;</span><span class="p">,</span>
+        <span class="n">skip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">Kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">dataframe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_directory</span> <span class="o">=</span> <span class="n">root_directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_directory</span> <span class="o">=</span> <span class="n">save_directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span> <span class="o">=</span> <span class="n">df_api</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_model</span><span class="p">(</span><span class="o">**</span><span class="n">Kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Create a logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InferenceEvaluation.file_not_found">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.file_not_found">[docs]</a>
+    <span class="k">def</span> <span class="nf">file_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{filename}</span><span class="s2"> was not found from DataFed using record id </span><span class="si">{row.id}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Attempting to download </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> from DataFed using record id </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">ds_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">dataGet</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_directory</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ds_rep</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">task</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1"># Download was successful</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> was downloaded successfully&quot;</span><span class="p">)</span>
+
+            <span class="c1"># finds the downloaded file recursively</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">find_files_recursive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">file_path</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Download was not successful</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> could not be downloaded&quot;</span><span class="p">)</span>
+
+            <span class="c1"># returns a None object</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">ds_rep</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_getFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InferenceEvaluation.get_first_entry_if_list">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.get_first_entry_if_list">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_first_entry_if_list</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Return the first entry if it&#39;s a non-empty list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="InferenceEvaluation.run_inference">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.run_inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="c1"># retrive the filename from the API datarecords</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getFileName</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="c1"># checks if the file can be found in the root directory</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">find_files_recursive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># if the file is not found, attempt to download it from DataFed</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_not_found</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+
+            <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_first_entry_if_list</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">file_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> could not be downloaded, skipping inference.&quot;</span>
+                <span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> could not be downloaded, skipping inference.&quot;</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># load the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InferenceEvaluation.build_model">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.build_model">[docs]</a>
+    <span class="k">def</span> <span class="nf">build_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds and returns the model to be used for inference.</span>
+
+<span class="sd">        This method should be implemented by the child class to define the specific model architecture</span>
+<span class="sd">        and any necessary configurations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.nn.Module: The model object to be used for inference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;Child class must implement this method. This method should return a model object.&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InferenceEvaluation.evaluate">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.evaluate">[docs]</a>
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates the model on the given data. This method should be implemented by the child class.</span>
+<span class="sd">        The parent class does not implement this method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row (pd.Series): A row from the dataframe containing metadata and other information.</span>
+<span class="sd">            file_path (str): The path to the file to be used for evaluation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The evaluation results as a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;Child class must implement this method. This method should return evaluation results as a dictionary.&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InferenceEvaluation.run">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="c1"># set to restart and skip</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># runs the inference</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_inference</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+            <span class="c1"># if file cannot be found, skip inference</span>
+            <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># updates the metadata of the record</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">dataUpdate</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+            <span class="c1"># logs the success of the inference</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inference for </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> record </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> was successful&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TorchViewer">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchViewer">[docs]</a>
+<span class="k">class</span> <span class="nc">TorchViewer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataFed_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DataFed_path</span> <span class="o">=</span> <span class="n">DataFed_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span> <span class="o">=</span> <span class="n">DataFed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DataFed_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TorchViewer.getModelCheckpoints">
+<a class="viewcode-back" href="../../api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchViewer.getModelCheckpoints">[docs]</a>
+    <span class="k">def</span> <span class="nf">getModelCheckpoints</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">exclude_metadata</span><span class="o">=</span><span class="s2">&quot;computing&quot;</span><span class="p">,</span>
+        <span class="n">excluded_keys</span><span class="o">=</span><span class="s2">&quot;script&quot;</span><span class="p">,</span>
+        <span class="n">non_unique</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;total_time&quot;</span><span class="p">],</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the metadata record for a specified record ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            record_id (str): The ID of the record to retrieve.</span>
+<span class="sd">            exclude_metadata (str, list, or None, optional): Metadata fields to exclude from the extraction record.</span>
+<span class="sd">            excluded_keys (str, list, or None, optional): Keys if the metadata record contains to exclude.</span>
+<span class="sd">            non_unique (str, list, or None, optional): Keys which are expected to be unique independent of record uniqueness - these are not considered when finding unique records.</span>
+<span class="sd">            format (str, optional): The format to return the metadata in. Defaults to &quot;pandas&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The metadata record.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_api</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span>
+            <span class="n">exclude_metadata</span><span class="o">=</span><span class="n">exclude_metadata</span><span class="p">,</span>
+            <span class="n">excluded_keys</span><span class="o">=</span><span class="n">excluded_keys</span><span class="p">,</span>
+            <span class="n">non_unique</span><span class="o">=</span><span class="n">non_unique</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, jagar2.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

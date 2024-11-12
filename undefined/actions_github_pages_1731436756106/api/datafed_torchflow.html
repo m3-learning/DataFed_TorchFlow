@@ -1,0 +1,1698 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>datafed_torchflow package &#8212; DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=77234041" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=340711c8"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/datafed_torchflow';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="datafed_torchflow" href="modules.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.2.5.post1.dev21+gcefdefe" />
+    <meta name="docbuild:last-update" content="Nov 12, 2024"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/Drexel_blue_Logo_square_Light.png" class="logo__image only-light" alt="DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation - Home"/>
+    <img src="../_static/Drexel_blue_Logo_square_Dark.png" class="logo__image only-dark pst-js-only" alt="DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../readme.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../contributing.html">
+    Contributions & Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../example.html">
+    Example
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../authors.html">
+    Authors
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="modules.html">
+    Module Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="m3-learning/DataFed_TorchFlow" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../readme.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../contributing.html">
+    Contributions & Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../example.html">
+    Example
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../authors.html">
+    Authors
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="modules.html">
+    Module Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="m3-learning/DataFed_TorchFlow" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">datafed_torchflow package</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="modules.html" class="nav-link">datafed_torchflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">datafed_torchflow package</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="datafed-torchflow-package">
+<h1>datafed_torchflow package<a class="headerlink" href="#datafed-torchflow-package" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-datafed_torchflow.JSON">
+<span id="datafed-torchflow-json-module"></span><h2>datafed_torchflow.JSON module<a class="headerlink" href="#module-datafed_torchflow.JSON" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="datafed_torchflow.JSON.UniversalEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datafed_torchflow.JSON.</span></span><span class="sig-name descname"><span class="pre">UniversalEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/JSON.html#UniversalEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.JSON.UniversalEncoder" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncoder</span></code></p>
+<p>A custom JSON encoder that can handle numpy data types, sets, and objects with __dict__ attributes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.JSON.UniversalEncoder.default">
+<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/JSON.html#UniversalEncoder.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.JSON.UniversalEncoder.default" title="Link to this definition">#</a></dt>
+<dd><p>Override the default method to provide custom serialization for unsupported data types.</p>
+<p>Parameters:
+obj (any): The object to serialize.</p>
+<p>Returns:
+any: The serialized form of the object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-datafed_torchflow.computer">
+<span id="datafed-torchflow-computer-module"></span><h2>datafed_torchflow.computer module<a class="headerlink" href="#module-datafed_torchflow.computer" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.computer.get_cpu_info">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.computer.</span></span><span class="sig-name descname"><span class="pre">get_cpu_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/computer.html#get_cpu_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.computer.get_cpu_info" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves CPU information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CPU details including physical cores, total cores, frequency, and usage.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.computer.get_gpu_info">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.computer.</span></span><span class="sig-name descname"><span class="pre">get_gpu_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/computer.html#get_gpu_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.computer.get_gpu_info" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves GPU information using GPUtil.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GPU details such as model, memory, and load.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.computer.get_memory_info">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.computer.</span></span><span class="sig-name descname"><span class="pre">get_memory_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/computer.html#get_memory_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.computer.get_memory_info" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves memory information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Memory details including total, available, used, and percentage used.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.computer.get_python_info">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.computer.</span></span><span class="sig-name descname"><span class="pre">get_python_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/computer.html#get_python_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.computer.get_python_info" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves Python environment details, including version and installed packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python details including version, implementation, and installed packages.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.computer.get_system_info">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.computer.</span></span><span class="sig-name descname"><span class="pre">get_system_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/computer.html#get_system_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.computer.get_system_info" title="Link to this definition">#</a></dt>
+<dd><p>Extracts CPU, memory, GPU, and Python environment details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing CPU, memory, GPU, and Python details.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.computer.save_to_json">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.computer.</span></span><span class="sig-name descname"><span class="pre">save_to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'system_info.json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/computer.html#save_to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.computer.save_to_json" title="Link to this definition">#</a></dt>
+<dd><p>Saves the given data to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – The data to be saved.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename for the JSON file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-datafed_torchflow.datafed">
+<span id="datafed-torchflow-datafed-module"></span><h2>datafed_torchflow.datafed module<a class="headerlink" href="#module-datafed_torchflow.datafed" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datafed_torchflow.datafed.</span></span><span class="sig-name descname"><span class="pre">DataFed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datafed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./Trained</span> <span class="pre">Models'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log.txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_id_or_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'orig_fname':</span> <span class="pre">True,</span> <span class="pre">'wait':</span> <span class="pre">True}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upload_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'wait':</span> <span class="pre">True}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">API</span></code></p>
+<p>A class to interact with DataFed API.</p>
+<dl class="simple">
+<dt>Inherits from:</dt><dd><p>API: The base class for interacting with the DataFed API.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.datafed_path">
+<span class="sig-name descname"><span class="pre">datafed_path</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.datafed_path" title="Link to this definition">#</a></dt>
+<dd><p>DataFed path to store model script and checkpoints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.local_model_path">
+<span class="sig-name descname"><span class="pre">local_model_path</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.local_model_path" title="Link to this definition">#</a></dt>
+<dd><p>Local directory to store model files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.log_file_path">
+<span class="sig-name descname"><span class="pre">log_file_path</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.log_file_path" title="Link to this definition">#</a></dt>
+<dd><p>Local file to store a log of the code evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.logging">
+<span class="sig-name descname"><span class="pre">logging</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.logging" title="Link to this definition">#</a></dt>
+<dd><p>Flag to enable logging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.project_id">
+<span class="sig-name descname"><span class="pre">project_id</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.project_id" title="Link to this definition">#</a></dt>
+<dd><p>The ID of the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.dataset_id">
+<span class="sig-name descname"><span class="pre">dataset_id</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.dataset_id" title="Link to this definition">#</a></dt>
+<dd><p>The ID of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.addDerivedFrom">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">addDerivedFrom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.addDerivedFrom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.addDerivedFrom" title="Link to this definition">#</a></dt>
+<dd><p>Adds derived from information to the data record, skipping any None values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>deps</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – A list of dependencies or a single
+dependency to add. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of lists containing the “derived from” information, excluding None entries.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.check_if_endpoint_set">
+<span class="sig-name descname"><span class="pre">check_if_endpoint_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.check_if_endpoint_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.check_if_endpoint_set" title="Link to this definition">#</a></dt>
+<dd><p>Checks if the Globus endpoint is set up.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#Exception" title="(in Python v3.12)"><strong>Exception</strong></a> – If the Globus endpoint is not set up.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.check_if_file_data">
+<span class="sig-name descname"><span class="pre">check_if_file_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.check_if_file_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.check_if_file_data" title="Link to this definition">#</a></dt>
+<dd><p>Check if a file exists in the specified data path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the file to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the file exists in the data path, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.check_if_logged_in">
+<span class="sig-name descname"><span class="pre">check_if_logged_in</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.check_if_logged_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.check_if_logged_in" title="Link to this definition">#</a></dt>
+<dd><p>Checks if the user is authenticated with DataFed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#Exception" title="(in Python v3.12)"><strong>Exception</strong></a> – If the user is not authenticated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.check_no_files">
+<span class="sig-name descname"><span class="pre">check_no_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.check_no_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.check_no_files" title="Link to this definition">#</a></dt>
+<dd><p>Checks if any of the specified DataFed records have no associated files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record_ids</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – A list of DataFed record IDs to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of record IDs that have no associated files, or None if all records have files.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.check_string_for_dot_or_slash">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_string_for_dot_or_slash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.check_string_for_dot_or_slash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.check_string_for_dot_or_slash" title="Link to this definition">#</a></dt>
+<dd><p>Checks if a string starts with a ‘.’ or ‘/’ and raises an exception if it does.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The string to check.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the string starts with either ‘.’ or ‘/’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.create_subfolder_if_not_exists">
+<span class="sig-name descname"><span class="pre">create_subfolder_if_not_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.create_subfolder_if_not_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.create_subfolder_if_not_exists" title="Link to this definition">#</a></dt>
+<dd><p>Creates sub-folders (collections) if they do not already exist.</p>
+<p>Iterates through the sub-collections specified in <cite>datafed_collection</cite>, creating any that are missing.
+Updates <cite>collection_id</cite> with the ID of the last created or found sub-collection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.data_record_create">
+<span class="sig-name descname"><span class="pre">data_record_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_collection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.data_record_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.data_record_create" title="Link to this definition">#</a></dt>
+<dd><p>Creates the DataFed record for the saved checkpoint and uploads the relevant metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – The relevant model and system metadata for the checkpoint.</p></li>
+<li><p><strong>record_title</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The title of the DataFed record.</p></li>
+<li><p><strong>deps</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – A list of dependencies or a single dependency to add. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#Exception" title="(in Python v3.12)"><strong>Exception</strong></a> – If user is not authenticated or must re-authenticate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.data_record_update">
+<span class="sig-name descname"><span class="pre">data_record_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.data_record_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.data_record_update" title="Link to this definition">#</a></dt>
+<dd><p>updates the DataFed record for the saved checkpoint including the relevant metadata if it changed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – The relevant model and system metadata for the checkpoint.</p></li>
+<li><p><strong>record_title</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The title of the DataFed record.</p></li>
+<li><p><strong>deps</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – A list of dependencies or a single dependency to add. Defaults to None.</p></li>
+<li><p><strong>overwrite_metadata</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>default=False</em>) – Whether to overwrite the record metadata.
+Merges with existing metadata if false; overwrites if true.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#Exception" title="(in Python v3.12)"><strong>Exception</strong></a> – If user is not authenticated or must re-authenticate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.exclude_keys">
+<span class="sig-name descname"><span class="pre">exclude_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.exclude_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.exclude_keys" title="Link to this definition">#</a></dt>
+<dd><p>Filters a list of dictionaries to exclude those that contain any of the specified excluded keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict_list</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – A list of dictionaries to filter.</p></li>
+<li><p><strong>excluded_keys</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#set" title="(in Python v3.12)"><em>set</em></a>) – The keys that, if present in a dictionary, will exclude it from the result.
+Can be a single string, a list of strings, or a set of strings.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of dictionaries that do not contain any of the specified excluded keys.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the excluded_keys parameter is not a string, list of strings, or set of strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.find_id_by_title">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_id_by_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listing_reply</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title_to_find</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.find_id_by_title"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.find_id_by_title" title="Link to this definition">#</a></dt>
+<dd><p>Finds the ID of an item with a specific title from a listing response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listing_reply</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><em>object</em></a>) – The response object containing a list of items.</p></li>
+<li><p><strong>title_to_find</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The title of the item to find.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DataFed ID of the item with the specified title.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If no item with the specified title is found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getCollList">
+<span class="sig-name descname"><span class="pre">getCollList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getCollList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getCollList" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves a list of sub-collections within a specified collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>collection_id</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The ID of the collection to query.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing:</dt><dd><ul class="simple">
+<li><p>list: The list of sub-collection titles.</p></li>
+<li><p>ls_resp: The full response object from the API call.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getCollectionProjectID">
+<span class="sig-name descname"><span class="pre">getCollectionProjectID</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getCollectionProjectID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getCollectionProjectID" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the project ID associated with a specific collection.</p>
+<p>This method fetches the parent collection of the given collection ID and extracts the project ID from it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The project ID associated with the specified collection.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getData">
+<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getData" title="Link to this definition">#</a></dt>
+<dd><p>Downloads the data from the dataset</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getFileExtension">
+<span class="sig-name descname"><span class="pre">getFileExtension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getFileExtension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getFileExtension" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the file extension of the dataset file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The file extension of the dataset file, including the leading dot.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getFileName">
+<span class="sig-name descname"><span class="pre">getFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getFileName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getFileName" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the file name (without extension) associated with a record ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record_id</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The ID of the record to retrieve the file name for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The file name without the extension.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getIDs">
+<span class="sig-name descname"><span class="pre">getIDs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listing_reply</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getIDs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getIDs" title="Link to this definition">#</a></dt>
+<dd><p>Gets the IDs of items from a listing response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>listing_reply</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><em>object</em></a>) – The response object containing a list of items.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of item IDs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getIDsInCollection">
+<span class="sig-name descname"><span class="pre">getIDsInCollection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getIDsInCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getIDsInCollection" title="Link to this definition">#</a></dt>
+<dd><p>Gets the IDs of items in a collection.
+:param collection_id: The ID of the collection to query.
+:type collection_id: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of item IDs in the collection.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getRecordTitle">
+<span class="sig-name descname"><span class="pre">getRecordTitle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.getRecordTitle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getRecordTitle" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the title of a record from its ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>record_id</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The ID of the record to retrieve the title for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The title of the record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.getRootColl">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getRootColl</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.getRootColl" title="Link to this definition">#</a></dt>
+<dd><p>Gets the root collection identifier for the current project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The root collection identifier formatted with the project ID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pandas'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.get_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the metadata record for a specified record ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection_id</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The ID of the collection to retrieve metadata from.</p></li>
+<li><p><strong>exclude_metadata</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><em>None</em><em>, </em><em>optional</em>) – Metadata fields to exclude from the extraction record.</p></li>
+<li><p><strong>excluded_keys</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><em>None</em><em>, </em><em>optional</em>) – Keys if the metadata record contains to exclude.</p></li>
+<li><p><strong>non_unique</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><em>None</em><em>, </em><em>optional</em>) – Keys which are expected to be unique independent of record uniqueness - these are not considered when finding unique records.</p></li>
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The format to return the metadata in. Defaults to “pandas”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The metadata record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.get_notebook_DataFed_ID_from_path_and_title">
+<span class="sig-name descname"><span class="pre">get_notebook_DataFed_ID_from_path_and_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notebook_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.get_notebook_DataFed_ID_from_path_and_title"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.get_notebook_DataFed_ID_from_path_and_title" title="Link to this definition">#</a></dt>
+<dd><p>Gets the DataFed ID for the Jupyter notebook from the file name and DataFed path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>notebook_filename</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename of the notebook. Can be the local filepath or just the filename.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DataFed ID of the specified notebook</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Raises</dt><dd><p>ValueError: If no item with the specified title is found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.get_projects">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_projects</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.get_projects" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves a list of projects from DataFed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The number of projects to retrieve. Defaults to 500.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing:</dt><dd><ul class="simple">
+<li><p>list: The list of projects.</p></li>
+<li><p>response: The full response object from the API call.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.get_unique_dicts">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_unique_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.get_unique_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.get_unique_dicts" title="Link to this definition">#</a></dt>
+<dd><p>Filters a list of dictionaries to include only unique dictionaries, excluding specified keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict_list</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – A list of dictionaries to filter for uniqueness.</p></li>
+<li><p><strong>exclude_keys</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Keys to exclude when determining uniqueness. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of unique dictionaries, excluding specified keys from the uniqueness check.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.identify_collection_id">
+<span class="sig-name descname"><span class="pre">identify_collection_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.identify_collection_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.identify_collection_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.joinPath">
+<span class="sig-name descname"><span class="pre">joinPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.joinPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.joinPath" title="Link to this definition">#</a></dt>
+<dd><p>Joins the data path and the file name to create a full file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the file.</p></li>
+<li><p><strong>path_name</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>,</em><em>default=None</em>) – The name of the file path. Defaults to self.local_model_path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The full file path.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.replace_missing_records">
+<span class="sig-name descname"><span class="pre">replace_missing_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upload_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.replace_missing_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.replace_missing_records" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.required_keys">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">required_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.required_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.required_keys" title="Link to this definition">#</a></dt>
+<dd><p>Filters a list of dictionaries to include only those that contain all specified required keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict_list</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – A list of dictionaries to filter.</p></li>
+<li><p><strong>required_keys</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#set" title="(in Python v3.12)"><em>set</em></a>) – The keys that each dictionary must contain.
+Can be a single string, a list of strings, or a set of strings.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of dictionaries that contain all the specified required keys.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the required_keys parameter is not a string, list of strings, or set of strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.upload_dataset_to_DataFed">
+<span class="sig-name descname"><span class="pre">upload_dataset_to_DataFed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.upload_dataset_to_DataFed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.upload_dataset_to_DataFed" title="Link to this definition">#</a></dt>
+<dd><p>Checks whether the dataset record already exists on DataFed and uploads it to a collection called <a href="#id1"><span class="problematic" id="id2">``</span></a>dataset” (which it will create if necessary)
+whose parent collection is self.collection_id (where the checkpoints are stored). Works with any number of dataset files, specified by
+torchlogger.dataset_id_or_path in the instantiation of the torchlogger. The dataset files can be specified as either their file names or
+DataFed IDs (specified as a string for a single dataset file and a list of strings for multiple dataset files)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong> (<em>self</em>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DataFed record ID for the dataset files, as a string for a single dataset file and a list of strings for multiple dataset files.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.upload_file">
+<span class="sig-name descname"><span class="pre">upload_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DataFed_ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/datafed.html#DataFed.upload_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.upload_file" title="Link to this definition">#</a></dt>
+<dd><p>Uploads the file to the DataFed record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>DataFed_ID</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The DataFed ID the data record to upload the file</p></li>
+<li><p><strong>file_path</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The local filepath of the file to upload to DataFed</p></li>
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether or not to pause the script until the file has been uploaded. Defaults to False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datafed_torchflow.datafed.DataFed.user_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">user_id</span></span><a class="headerlink" href="#datafed_torchflow.datafed.DataFed.user_id" title="Link to this definition">#</a></dt>
+<dd><p>Gets the user ID from the authenticated user’s information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The user ID extracted from the authenticated user information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-datafed_torchflow.pytorch">
+<span id="datafed-torchflow-pytorch-module"></span><h2>datafed_torchflow.pytorch module<a class="headerlink" href="#module-datafed_torchflow.pytorch" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.InferenceEvaluation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datafed_torchflow.pytorch.</span></span><span class="sig-name descname"><span class="pre">InferenceEvaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_api</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./tmp/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">Kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#InferenceEvaluation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.InferenceEvaluation" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.InferenceEvaluation.build_model">
+<span class="sig-name descname"><span class="pre">build_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#InferenceEvaluation.build_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.InferenceEvaluation.build_model" title="Link to this definition">#</a></dt>
+<dd><p>Builds and returns the model to be used for inference.</p>
+<p>This method should be implemented by the child class to define the specific model architecture
+and any necessary configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model object to be used for inference.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.nn.Module</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.InferenceEvaluation.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#InferenceEvaluation.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.InferenceEvaluation.evaluate" title="Link to this definition">#</a></dt>
+<dd><p>Evaluates the model on the given data. This method should be implemented by the child class.
+The parent class does not implement this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>pd.Series</em>) – A row from the dataframe containing metadata and other information.</p></li>
+<li><p><strong>file_path</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The path to the file to be used for evaluation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The evaluation results as a dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.InferenceEvaluation.file_not_found">
+<span class="sig-name descname"><span class="pre">file_not_found</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#InferenceEvaluation.file_not_found"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.InferenceEvaluation.file_not_found" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.InferenceEvaluation.get_first_entry_if_list">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_first_entry_if_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#InferenceEvaluation.get_first_entry_if_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.InferenceEvaluation.get_first_entry_if_list" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.InferenceEvaluation.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#InferenceEvaluation.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.InferenceEvaluation.run" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.InferenceEvaluation.run_inference">
+<span class="sig-name descname"><span class="pre">run_inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#InferenceEvaluation.run_inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.InferenceEvaluation.run_inference" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datafed_torchflow.pytorch.</span></span><span class="sig-name descname"><span class="pre">TorchLogger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DataFed_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log.txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_id_or_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'orig_fname':</span> <span class="pre">True,</span> <span class="pre">'wait':</span> <span class="pre">True}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>TorchLogger is a class designed to log PyTorch model training details,
+including model architecture, optimizer state, and system information.
+It also integrates with the DataFed API for file and metadata management.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.model_dict">
+<span class="sig-name descname"><span class="pre">model_dict</span></span><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.model_dict" title="Link to this definition">#</a></dt>
+<dd><p>a dictionary containing the Pytorch model architecture to be logged,
+with the name of the block as the key and the block as the value.
+For example: {“vae”:vae, “encoder: encoder, “decoder”:decoder,”optimizer”:optimizer}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.DataFed_path">
+<span class="sig-name descname"><span class="pre">DataFed_path</span></span><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.DataFed_path" title="Link to this definition">#</a></dt>
+<dd><p>The path to the DataFed configuration or API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.script_path">
+<span class="sig-name descname"><span class="pre">script_path</span></span><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.script_path" title="Link to this definition">#</a></dt>
+<dd><p>Path to the script or notebook for checksum calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.local_model_path">
+<span class="sig-name descname"><span class="pre">local_model_path</span></span><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.local_model_path" title="Link to this definition">#</a></dt>
+<dd><p>Local directory to store model files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.input_data_shape">
+<span class="sig-name descname"><span class="pre">input_data_shape</span></span><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.input_data_shape" title="Link to this definition">#</a></dt>
+<dd><p>Shape of the input training data for the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.logging">
+<span class="sig-name descname"><span class="pre">logging</span></span><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.logging" title="Link to this definition">#</a></dt>
+<dd><p>Whether to display logging output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.getMetadata">
+<span class="sig-name descname"><span class="pre">getMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_hyperparameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger.getMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.getMetadata" title="Link to this definition">#</a></dt>
+<dd><p>Gathers metadata including the serialized model, optimizer, system info, and user details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_vars</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – a list containing the local variables for the model training code, from list(locals().items()). Used to determine the metadata</p></li>
+<li><p><strong>**kwargs</strong> – Additional key-value pairs to be added to the metadata.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A dictionary containing the metadata including model, optimizer,</dt><dd><p>system information, user, timestamp, and optional script checksum.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.getModelArchitectureStateDict">
+<span class="sig-name descname"><span class="pre">getModelArchitectureStateDict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger.getModelArchitectureStateDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.getModelArchitectureStateDict" title="Link to this definition">#</a></dt>
+<dd><p>generates a dictionary where the key is the model architecture block
+and the value is the corresponding state dictionary to go in the saved checkpoint,
+for example</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the model architecture state dictionaries</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.getUserClock">
+<span class="sig-name descname"><span class="pre">getUserClock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger.getUserClock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.getUserClock" title="Link to this definition">#</a></dt>
+<dd><p>Gathers system information including CPU, memory, and GPU details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing system information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.get_return_variables">
+<span class="sig-name descname"><span class="pre">get_return_variables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger.get_return_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.get_return_variables" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.optimizer">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.optimizer" title="Link to this definition">#</a></dt>
+<dd><p>Returns the optimizer used for training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The optimizer instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>torch.optim.Optimizer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.reset" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datafed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_hyperparameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.save" title="Link to this definition">#</a></dt>
+<dd><p>Saves the model’s state dictionary locally unless one has already been saved
+and optionally uploads it to DataFed along with the model’s metadata.
+If you want to upload multiple files to the same DataFed data record you can zip them
+together and pass in the local path to the zip file as “local_file_path”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>record_file_name</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the file to save the model locally.</p></li>
+<li><p><strong>datafed</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, the record is uploaded to DataFed. Default is True.</p></li>
+<li><p><strong>local_file_path</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><em>Path.PosixPath</em><em>, </em><em>optional</em>) – The local file path to the directory to save the weights
+or to the presaved file to upload to DataFed.</p></li>
+<li><p><strong>local_vars</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – a list containing the local variables for the model training code, from list(locals().items()). Used to determine the metadata</p></li>
+<li><p><strong>model_hyperparameters</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – a dictionary where the keys are the model hyperparameters names and the values are the model hyperparameter names. Used in the saved checkpoint.</p></li>
+<li><p><strong>**kwargs</strong> – Additional metadata or attributes to include in the record.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchLogger.save_notebook">
+<span class="sig-name descname"><span class="pre">save_notebook</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchLogger.save_notebook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchLogger.save_notebook" title="Link to this definition">#</a></dt>
+<dd><p>Saves the Jupyter notebook that runs the code training the model</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchViewer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datafed_torchflow.pytorch.</span></span><span class="sig-name descname"><span class="pre">TorchViewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DataFed_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchViewer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchViewer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="datafed_torchflow.pytorch.TorchViewer.getModelCheckpoints">
+<span class="sig-name descname"><span class="pre">getModelCheckpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclude_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'computing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'script'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['id',</span> <span class="pre">'timestamp',</span> <span class="pre">'total_time']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pandas'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/pytorch.html#TorchViewer.getModelCheckpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.pytorch.TorchViewer.getModelCheckpoints" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the metadata record for a specified record ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>record_id</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The ID of the record to retrieve.</p></li>
+<li><p><strong>exclude_metadata</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><em>None</em><em>, </em><em>optional</em>) – Metadata fields to exclude from the extraction record.</p></li>
+<li><p><strong>excluded_keys</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><em>None</em><em>, </em><em>optional</em>) – Keys if the metadata record contains to exclude.</p></li>
+<li><p><strong>non_unique</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, or </em><em>None</em><em>, </em><em>optional</em>) – Keys which are expected to be unique independent of record uniqueness - these are not considered when finding unique records.</p></li>
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The format to return the metadata in. Defaults to “pandas”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The metadata record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-datafed_torchflow.utils">
+<span id="datafed-torchflow-utils-module"></span><h2>datafed_torchflow.utils module<a class="headerlink" href="#module-datafed_torchflow.utils" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.utils.extract_instance_attributes">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.utils.</span></span><span class="sig-name descname"><span class="pre">extract_instance_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/utils.html#extract_instance_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.utils.extract_instance_attributes" title="Link to this definition">#</a></dt>
+<dd><p>Recursively extracts attributes from class instances, converting NumPy integers to Python int,
+NumPy arrays and Torch tensors to lists, while ignoring keys that start with ‘_’.</p>
+<p>This helper function traverses the attributes of a given object and returns a dictionary
+representation of those attributes. If the object has a <cite>__dict__</cite> attribute, it means
+the object is likely an instance of a class, and its attributes are stored in <cite>__dict__</cite>.
+The function will recursively call itself to extract attributes from nested objects,
+convert any NumPy integers to Python int, and convert NumPy arrays and Torch tensors to lists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><em>object</em></a>) – The object from which to extract attributes. Defaults to an empty dictionary.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the extracted attributes, excluding those whose keys start with ‘_’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.utils.getNotebookMetadata">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.utils.</span></span><span class="sig-name descname"><span class="pre">getNotebookMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/utils.html#getNotebookMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.utils.getNotebookMetadata" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the checksum of the script or notebook file and includes it in the metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the path and checksum of the script or notebook file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.utils.is_jsonable">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.utils.</span></span><span class="sig-name descname"><span class="pre">is_jsonable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/utils.html#is_jsonable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.utils.is_jsonable" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.utils.serialize_model">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.utils.</span></span><span class="sig-name descname"><span class="pre">serialize_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_block</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/utils.html#serialize_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.utils.serialize_model" title="Link to this definition">#</a></dt>
+<dd><p>Serializes the model architecture into a dictionary format with detailed layer information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>A dictionary containing the model’s architecture with layer types,</dt><dd><p>names, and configurations.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="datafed_torchflow.utils.serialize_pytorch_optimizer">
+<span class="sig-prename descclassname"><span class="pre">datafed_torchflow.utils.</span></span><span class="sig-name descname"><span class="pre">serialize_pytorch_optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datafed_torchflow/utils.html#serialize_pytorch_optimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datafed_torchflow.utils.serialize_pytorch_optimizer" title="Link to this definition">#</a></dt>
+<dd><p>Serializes the optimizer’s state dictionary, converting tensors to lists for JSON compatibility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the optimizer’s serialized parameters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-datafed_torchflow">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-datafed_torchflow" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="modules.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">datafed_torchflow</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-datafed_torchflow.JSON">datafed_torchflow.JSON module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.JSON.UniversalEncoder"><code class="docutils literal notranslate"><span class="pre">UniversalEncoder</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.JSON.UniversalEncoder.default"><code class="docutils literal notranslate"><span class="pre">UniversalEncoder.default()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-datafed_torchflow.computer">datafed_torchflow.computer module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.computer.get_cpu_info"><code class="docutils literal notranslate"><span class="pre">get_cpu_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.computer.get_gpu_info"><code class="docutils literal notranslate"><span class="pre">get_gpu_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.computer.get_memory_info"><code class="docutils literal notranslate"><span class="pre">get_memory_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.computer.get_python_info"><code class="docutils literal notranslate"><span class="pre">get_python_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.computer.get_system_info"><code class="docutils literal notranslate"><span class="pre">get_system_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.computer.save_to_json"><code class="docutils literal notranslate"><span class="pre">save_to_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-datafed_torchflow.datafed">datafed_torchflow.datafed module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed"><code class="docutils literal notranslate"><span class="pre">DataFed</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.datafed_path"><code class="docutils literal notranslate"><span class="pre">DataFed.datafed_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.local_model_path"><code class="docutils literal notranslate"><span class="pre">DataFed.local_model_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.log_file_path"><code class="docutils literal notranslate"><span class="pre">DataFed.log_file_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.logging"><code class="docutils literal notranslate"><span class="pre">DataFed.logging</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.project_id"><code class="docutils literal notranslate"><span class="pre">DataFed.project_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.dataset_id"><code class="docutils literal notranslate"><span class="pre">DataFed.dataset_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.addDerivedFrom"><code class="docutils literal notranslate"><span class="pre">DataFed.addDerivedFrom()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_if_endpoint_set"><code class="docutils literal notranslate"><span class="pre">DataFed.check_if_endpoint_set()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_if_file_data"><code class="docutils literal notranslate"><span class="pre">DataFed.check_if_file_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_if_logged_in"><code class="docutils literal notranslate"><span class="pre">DataFed.check_if_logged_in()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_no_files"><code class="docutils literal notranslate"><span class="pre">DataFed.check_no_files()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.check_string_for_dot_or_slash"><code class="docutils literal notranslate"><span class="pre">DataFed.check_string_for_dot_or_slash()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.create_subfolder_if_not_exists"><code class="docutils literal notranslate"><span class="pre">DataFed.create_subfolder_if_not_exists()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.data_record_create"><code class="docutils literal notranslate"><span class="pre">DataFed.data_record_create()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.data_record_update"><code class="docutils literal notranslate"><span class="pre">DataFed.data_record_update()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.exclude_keys"><code class="docutils literal notranslate"><span class="pre">DataFed.exclude_keys()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.find_id_by_title"><code class="docutils literal notranslate"><span class="pre">DataFed.find_id_by_title()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getCollList"><code class="docutils literal notranslate"><span class="pre">DataFed.getCollList()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getCollectionProjectID"><code class="docutils literal notranslate"><span class="pre">DataFed.getCollectionProjectID()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getData"><code class="docutils literal notranslate"><span class="pre">DataFed.getData()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getFileExtension"><code class="docutils literal notranslate"><span class="pre">DataFed.getFileExtension()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getFileName"><code class="docutils literal notranslate"><span class="pre">DataFed.getFileName()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getIDs"><code class="docutils literal notranslate"><span class="pre">DataFed.getIDs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getIDsInCollection"><code class="docutils literal notranslate"><span class="pre">DataFed.getIDsInCollection()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getRecordTitle"><code class="docutils literal notranslate"><span class="pre">DataFed.getRecordTitle()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.getRootColl"><code class="docutils literal notranslate"><span class="pre">DataFed.getRootColl</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.get_metadata"><code class="docutils literal notranslate"><span class="pre">DataFed.get_metadata()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.get_notebook_DataFed_ID_from_path_and_title"><code class="docutils literal notranslate"><span class="pre">DataFed.get_notebook_DataFed_ID_from_path_and_title()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.get_projects"><code class="docutils literal notranslate"><span class="pre">DataFed.get_projects</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.get_unique_dicts"><code class="docutils literal notranslate"><span class="pre">DataFed.get_unique_dicts()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.identify_collection_id"><code class="docutils literal notranslate"><span class="pre">DataFed.identify_collection_id()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.joinPath"><code class="docutils literal notranslate"><span class="pre">DataFed.joinPath()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.replace_missing_records"><code class="docutils literal notranslate"><span class="pre">DataFed.replace_missing_records()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.required_keys"><code class="docutils literal notranslate"><span class="pre">DataFed.required_keys()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.upload_dataset_to_DataFed"><code class="docutils literal notranslate"><span class="pre">DataFed.upload_dataset_to_DataFed()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.upload_file"><code class="docutils literal notranslate"><span class="pre">DataFed.upload_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.datafed.DataFed.user_id"><code class="docutils literal notranslate"><span class="pre">DataFed.user_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-datafed_torchflow.pytorch">datafed_torchflow.pytorch module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.InferenceEvaluation"><code class="docutils literal notranslate"><span class="pre">InferenceEvaluation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.InferenceEvaluation.build_model"><code class="docutils literal notranslate"><span class="pre">InferenceEvaluation.build_model()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.InferenceEvaluation.evaluate"><code class="docutils literal notranslate"><span class="pre">InferenceEvaluation.evaluate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.InferenceEvaluation.file_not_found"><code class="docutils literal notranslate"><span class="pre">InferenceEvaluation.file_not_found()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.InferenceEvaluation.get_first_entry_if_list"><code class="docutils literal notranslate"><span class="pre">InferenceEvaluation.get_first_entry_if_list()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.InferenceEvaluation.run"><code class="docutils literal notranslate"><span class="pre">InferenceEvaluation.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.InferenceEvaluation.run_inference"><code class="docutils literal notranslate"><span class="pre">InferenceEvaluation.run_inference()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger"><code class="docutils literal notranslate"><span class="pre">TorchLogger</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.model_dict"><code class="docutils literal notranslate"><span class="pre">TorchLogger.model_dict</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.DataFed_path"><code class="docutils literal notranslate"><span class="pre">TorchLogger.DataFed_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.script_path"><code class="docutils literal notranslate"><span class="pre">TorchLogger.script_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.local_model_path"><code class="docutils literal notranslate"><span class="pre">TorchLogger.local_model_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.input_data_shape"><code class="docutils literal notranslate"><span class="pre">TorchLogger.input_data_shape</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.logging"><code class="docutils literal notranslate"><span class="pre">TorchLogger.logging</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.getMetadata"><code class="docutils literal notranslate"><span class="pre">TorchLogger.getMetadata()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.getModelArchitectureStateDict"><code class="docutils literal notranslate"><span class="pre">TorchLogger.getModelArchitectureStateDict()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.getUserClock"><code class="docutils literal notranslate"><span class="pre">TorchLogger.getUserClock()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.get_return_variables"><code class="docutils literal notranslate"><span class="pre">TorchLogger.get_return_variables()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.optimizer"><code class="docutils literal notranslate"><span class="pre">TorchLogger.optimizer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.reset"><code class="docutils literal notranslate"><span class="pre">TorchLogger.reset()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.save"><code class="docutils literal notranslate"><span class="pre">TorchLogger.save()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchLogger.save_notebook"><code class="docutils literal notranslate"><span class="pre">TorchLogger.save_notebook()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchViewer"><code class="docutils literal notranslate"><span class="pre">TorchViewer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.pytorch.TorchViewer.getModelCheckpoints"><code class="docutils literal notranslate"><span class="pre">TorchViewer.getModelCheckpoints()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-datafed_torchflow.utils">datafed_torchflow.utils module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.utils.extract_instance_attributes"><code class="docutils literal notranslate"><span class="pre">extract_instance_attributes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.utils.getNotebookMetadata"><code class="docutils literal notranslate"><span class="pre">getNotebookMetadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.utils.is_jsonable"><code class="docutils literal notranslate"><span class="pre">is_jsonable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.utils.serialize_model"><code class="docutils literal notranslate"><span class="pre">serialize_model()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#datafed_torchflow.utils.serialize_pytorch_optimizer"><code class="docutils literal notranslate"><span class="pre">serialize_pytorch_optimizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-datafed_torchflow">Module contents</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/api/datafed_torchflow.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, jagar2.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

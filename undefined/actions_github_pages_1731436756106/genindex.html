@@ -1,0 +1,818 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=77234041" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=340711c8"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.2.5.post1.dev21+gcefdefe" />
+    <meta name="docbuild:last-update" content="Nov 12, 2024"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/Drexel_blue_Logo_square_Light.png" class="logo__image only-light" alt="DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation - Home"/>
+    <img src="_static/Drexel_blue_Logo_square_Dark.png" class="logo__image only-dark pst-js-only" alt="DataFed_TorchFlow 0.2.5.post1.dev21+gcefdefe documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="readme.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contributing.html">
+    Contributions & Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="example.html">
+    Example
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="authors.html">
+    Authors
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/modules.html">
+    Module Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="m3-learning/DataFed_TorchFlow" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="readme.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contributing.html">
+    Contributions & Help
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="example.html">
+    Example
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="authors.html">
+    Authors
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/modules.html">
+    Module Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="m3-learning/DataFed_TorchFlow" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.addDerivedFrom">addDerivedFrom() (datafed_torchflow.datafed.DataFed static method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.build_model">build_model() (datafed_torchflow.pytorch.InferenceEvaluation method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.check_if_endpoint_set">check_if_endpoint_set() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.check_if_file_data">check_if_file_data() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.check_if_logged_in">check_if_logged_in() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.check_no_files">check_no_files() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.check_string_for_dot_or_slash">check_string_for_dot_or_slash() (datafed_torchflow.datafed.DataFed static method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.create_subfolder_if_not_exists">create_subfolder_if_not_exists() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.data_record_create">data_record_create() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.data_record_update">data_record_update() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed">DataFed (class in datafed_torchflow.datafed)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.datafed_path">datafed_path (datafed_torchflow.datafed.DataFed attribute)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.DataFed_path">DataFed_path (datafed_torchflow.pytorch.TorchLogger attribute)</a>
+</li>
+      <li>
+    datafed_torchflow
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow">module</a>
+</li>
+      </ul></li>
+      <li>
+    datafed_torchflow.computer
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.computer">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    datafed_torchflow.datafed
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.datafed">module</a>
+</li>
+      </ul></li>
+      <li>
+    datafed_torchflow.JSON
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.JSON">module</a>
+</li>
+      </ul></li>
+      <li>
+    datafed_torchflow.pytorch
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.pytorch">module</a>
+</li>
+      </ul></li>
+      <li>
+    datafed_torchflow.utils
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.utils">module</a>
+</li>
+      </ul></li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.dataset_id">dataset_id (datafed_torchflow.datafed.DataFed attribute)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.JSON.UniversalEncoder.default">default() (datafed_torchflow.JSON.UniversalEncoder method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.evaluate">evaluate() (datafed_torchflow.pytorch.InferenceEvaluation method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.exclude_keys">exclude_keys() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.utils.extract_instance_attributes">extract_instance_attributes() (in module datafed_torchflow.utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.file_not_found">file_not_found() (datafed_torchflow.pytorch.InferenceEvaluation method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.find_id_by_title">find_id_by_title() (datafed_torchflow.datafed.DataFed static method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.computer.get_cpu_info">get_cpu_info() (in module datafed_torchflow.computer)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.get_first_entry_if_list">get_first_entry_if_list() (datafed_torchflow.pytorch.InferenceEvaluation static method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.computer.get_gpu_info">get_gpu_info() (in module datafed_torchflow.computer)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.computer.get_memory_info">get_memory_info() (in module datafed_torchflow.computer)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.get_metadata">get_metadata() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.get_notebook_DataFed_ID_from_path_and_title">get_notebook_DataFed_ID_from_path_and_title() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.get_projects">get_projects (datafed_torchflow.datafed.DataFed property)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.computer.get_python_info">get_python_info() (in module datafed_torchflow.computer)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.get_return_variables">get_return_variables() (datafed_torchflow.pytorch.TorchLogger method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.computer.get_system_info">get_system_info() (in module datafed_torchflow.computer)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.get_unique_dicts">get_unique_dicts() (datafed_torchflow.datafed.DataFed static method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getCollectionProjectID">getCollectionProjectID() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getCollList">getCollList() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getData">getData() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getFileExtension">getFileExtension() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getFileName">getFileName() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getIDs">getIDs() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getIDsInCollection">getIDsInCollection() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.getMetadata">getMetadata() (datafed_torchflow.pytorch.TorchLogger method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.getModelArchitectureStateDict">getModelArchitectureStateDict() (datafed_torchflow.pytorch.TorchLogger method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchViewer.getModelCheckpoints">getModelCheckpoints() (datafed_torchflow.pytorch.TorchViewer method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.utils.getNotebookMetadata">getNotebookMetadata() (in module datafed_torchflow.utils)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getRecordTitle">getRecordTitle() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.getRootColl">getRootColl (datafed_torchflow.datafed.DataFed property)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.getUserClock">getUserClock() (datafed_torchflow.pytorch.TorchLogger method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.identify_collection_id">identify_collection_id() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation">InferenceEvaluation (class in datafed_torchflow.pytorch)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.input_data_shape">input_data_shape (datafed_torchflow.pytorch.TorchLogger attribute)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.utils.is_jsonable">is_jsonable() (in module datafed_torchflow.utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.joinPath">joinPath() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.local_model_path">local_model_path (datafed_torchflow.datafed.DataFed attribute)</a>
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.local_model_path">(datafed_torchflow.pytorch.TorchLogger attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.log_file_path">log_file_path (datafed_torchflow.datafed.DataFed attribute)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.logging">logging (datafed_torchflow.datafed.DataFed attribute)</a>
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.logging">(datafed_torchflow.pytorch.TorchLogger attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.model_dict">model_dict (datafed_torchflow.pytorch.TorchLogger attribute)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow">datafed_torchflow</a>
+</li>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.computer">datafed_torchflow.computer</a>
+</li>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.datafed">datafed_torchflow.datafed</a>
+</li>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.JSON">datafed_torchflow.JSON</a>
+</li>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.pytorch">datafed_torchflow.pytorch</a>
+</li>
+        <li><a href="api/datafed_torchflow.html#module-datafed_torchflow.utils">datafed_torchflow.utils</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.optimizer">optimizer (datafed_torchflow.pytorch.TorchLogger property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.project_id">project_id (datafed_torchflow.datafed.DataFed attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.replace_missing_records">replace_missing_records() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.required_keys">required_keys() (datafed_torchflow.datafed.DataFed static method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.reset">reset() (datafed_torchflow.pytorch.TorchLogger method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.run">run() (datafed_torchflow.pytorch.InferenceEvaluation method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.InferenceEvaluation.run_inference">run_inference() (datafed_torchflow.pytorch.InferenceEvaluation method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.save">save() (datafed_torchflow.pytorch.TorchLogger method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.save_notebook">save_notebook() (datafed_torchflow.pytorch.TorchLogger method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.computer.save_to_json">save_to_json() (in module datafed_torchflow.computer)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger.script_path">script_path (datafed_torchflow.pytorch.TorchLogger attribute)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.utils.serialize_model">serialize_model() (in module datafed_torchflow.utils)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.utils.serialize_pytorch_optimizer">serialize_pytorch_optimizer() (in module datafed_torchflow.utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchLogger">TorchLogger (class in datafed_torchflow.pytorch)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.pytorch.TorchViewer">TorchViewer (class in datafed_torchflow.pytorch)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.JSON.UniversalEncoder">UniversalEncoder (class in datafed_torchflow.JSON)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.upload_dataset_to_DataFed">upload_dataset_to_DataFed() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.upload_file">upload_file() (datafed_torchflow.datafed.DataFed method)</a>
+</li>
+      <li><a href="api/datafed_torchflow.html#datafed_torchflow.datafed.DataFed.user_id">user_id (datafed_torchflow.datafed.DataFed property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, jagar2.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

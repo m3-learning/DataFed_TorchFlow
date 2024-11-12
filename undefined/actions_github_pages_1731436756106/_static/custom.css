@@ -1,0 +1,171 @@
+/*******************************************************************************
+* light theme
+*
+* all the variables used for light theme coloring
+*/
+html[data-theme="light"] {
+  /*****************************************************************************
+  * main colors
+  */
+  --pst-color-primary: #002d72;
+  /* PMS 294C (Drexel Blue) */
+  --pst-color-secondary: #ffd100;
+  /* PMS 7548C (Drexel Yellow) */
+  --pst-color-success: #9dad33;
+  /* PMS 583C (Light Green) */
+  --pst-color-info: #006298;
+  /* PMS 7691C (Dark Blue) */
+  --pst-color-warning: #ff8f1c;
+  /* PMS 1495C (Light Orange) */
+  --pst-color-danger: #a50021;
+  /* PMS 7427C (Red) */
+  --pst-color-text-base: #002d72;
+  /* PMS 294C (Drexel Blue) */
+  --pst-color-text-muted: #a7a8aa;
+  /* Cool Gray 6C */
+  --pst-color-border: #d1d5d8;
+  /* PMS 427C (Very Light Gray) */
+  --pst-color-shadow: #a7a8aa;
+  /* Cool Gray 6C */
+
+  /*****************************************************************************
+  * depth colors
+  *
+  * background: the more in depth color
+  * on-background: the object directly set on the background, use of shadows in light theme
+  * surface: object set on the background (without shadows)
+  * on_surface: object set on surface object (without shadows)
+  */
+  --pst-color-background: #ffffff;
+  /* White */
+  --pst-color-on-background: #f5f5f5;
+  /* Light Gray */
+  --pst-color-surface: #f0f0f0;
+  /* Very Light Gray */
+  --pst-color-on-surface: #ededed;
+  /* Lighter Gray */
+
+  /*****************************************************************************
+  * extentions
+  */
+
+  --pst-color-panel-background: var(--pst-color-background);
+
+  /*****************************************************************************
+  * layout
+  */
+
+  /* links */
+  --pst-color-link: var(--pst-color-primary);
+  --pst-color-link-hover: var(--pst-color-secondary);
+
+  /* inline code */
+  --pst-color-inline-code: #d64309;
+  /* PMS 7597C (Light Red) */
+
+  /* targeted content */
+  --pst-color-target: #c4d600;
+  /* PMS 384C (Green) */
+
+  /* hide any content that should not be displayed in the light theme */
+  .only-dark {
+    display: none !important;
+  }
+}
+
+/*******************************************************************************
+* dark theme
+*
+* all the variables used for dark theme coloring
+*/
+html[data-theme="dark"] {
+  /*****************************************************************************
+  * main colors
+  */
+  --pst-color-primary: #ffd100;
+  /* PMS 7548C (Drexel Yellow) */
+  --pst-color-secondary: #002d72;
+  /* PMS 294C (Drexel Blue) */
+  --pst-color-success: #6cace4;
+  /* PMS 284C (Light Blue) */
+  --pst-color-info: #c7e1d2;
+  /* PMS 5665C (Very Light Green) */
+  --pst-color-warning: #d86018;
+  /* PMS 138C (Orange) */
+  --pst-color-danger: #a50021;
+  /* PMS 7427C (Red) */
+  --pst-color-text-base: #ffffff;
+  /* PMS 7548C (Drexel Yellow) */
+  --pst-color-text-muted: #bcb4a5;
+  /* Warm Gray 3C */
+  --pst-color-border: #a7a8aa;
+  /* Cool Gray 6C */
+  --pst-color-shadow: var(--pst-color-background);
+
+  /*****************************************************************************
+  * depth colors
+  *
+  * background: the more in depth color
+  * on-background: the object directly set on the background, use of a light grey in dark theme
+  * surface: object set on the background (without shadows)
+  * on_surface: object set on surface object (without shadows)
+  */
+  --pst-color-background: #001d48;
+  /* PMS 294C (Drexel Blue) */
+  --pst-color-on-background: #001d48;
+  /* PMS 294C (Drexel Blue) */
+  --pst-color-surface: #006298;
+  /* PMS 7691C (Dark Blue) */
+  --pst-color-on-surface: #006298;
+  /* PMS 7691C (Dark Blue) */
+
+  /*****************************************************************************
+  * extentions
+  */
+
+  --pst-color-panel-background: var(--pst-color-background);
+
+  /*****************************************************************************
+  * layout
+  */
+
+  /* links */
+  --pst-color-link: var(--pst-color-primary);
+  --pst-color-link-hover: var(--pst-color-secondary);
+
+  /* inline code */
+  --pst-color-inline-code: #d86018;
+  /* PMS 138C (Orange) */
+
+  /* targeted content */
+  --pst-color-target: #ff8f1c;
+  /* PMS 1495C (Light Orange) */
+
+  /* hide any content that should not be displayed in the dark theme */
+  .only-light {
+    display: none !important;
+  }
+
+  /* specific brightness applied on images */
+  img {
+    filter: brightness(0.8) contrast(1.2);
+  }
+}
+
+/* custom.css */
+
+.light-mode .logo-light {
+  display: block;
+}
+
+.light-mode .logo-dark {
+  display: none;
+}
+
+.dark-mode .logo-light {
+  display: none;
+}
+
+.dark-mode .logo-dark {
+  display: block;
+}
