@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: shenron
     steps:
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -32,6 +32,12 @@ jobs:
           tox
           tox -e docs
 
+      - name: Deploy docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./docs/_build/html
+
   version_bump:
     runs-on: shenron
     needs: build
@@ -40,17 +46,15 @@ jobs:
       contains(github.event.head_commit.message, '#patch') ||
       contains(github.event.head_commit.message, '#major')
     steps:
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v4
 
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@v1
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          release_branches: main
-          DEFAULT_BUMP: patch
         env:
+          DEFAULT_BUMP: patch
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          RELEASE_BRANCHES: main
 
   publish:
     runs-on: shenron
@@ -70,16 +74,3 @@ jobs:
         run: |
           python -m pip install --upgrade twine
           twine upload dist/*
-
-  deploy_docs:
-    runs-on: shenron
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ./docs/_build/html
