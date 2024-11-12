@@ -67,3 +67,6 @@ examples/.log.txt
 scratch/*
 /examples/examples
 /example/model/*
+
+.mypy_cache/
+.ruff_cache/
