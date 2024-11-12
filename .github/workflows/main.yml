@@ -12,8 +12,6 @@ on:
 jobs:
   build:
     runs-on: shenron
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -36,9 +34,27 @@ jobs:
           tox
           tox -e docs
 
-      - name: Deploy docs to GitHub Pages
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: ./docs/_build/html
+
+  deploy_docs:
+    runs-on: shenron
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Download docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: ./docs/_build/html
@@ -69,7 +85,7 @@ jobs:
       contains(github.event.head_commit.message, '#minor') ||
       contains(github.event.head_commit.message, '#major')
     steps:
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v4
 
       - name: Publish to PyPI
