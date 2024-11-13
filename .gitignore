@@ -8,13 +8,12 @@
 *.orig
 *.log.txt
 *.pot
-__pycache__/*
+__pycache__/
 .cache/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
 *.pth
-
 
 # Project files
 .ropeproject
@@ -29,13 +28,13 @@ tags
 *.egg
 *.eggs/
 .installed.cfg
-*.egg-info
+*.egg-info/
 
 # Unittest and coverage
 htmlcov/*
 .coverage
 .coverage.*
-.tox
+.tox/
 junit*.xml
 coverage.xml
 .pytest_cache/
@@ -44,9 +43,9 @@ coverage.xml
 build/*
 dist/*
 sdist/*
-docs/api/*
+docs/api/
 docs/_rst/*
-docs/_build/*
+docs/_build/
 cover/*
 MANIFEST
 

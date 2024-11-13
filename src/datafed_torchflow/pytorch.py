@@ -9,9 +9,7 @@ from torch.utils.data import DataLoader
 sys.path.append(os.path.abspath("/home/jg3837/DataFed_TorchFlow/DataFed_TorchFlow/src"))
 
 
-import ast
 import getpass
-import inspect
 import json
 import logging
 import pathlib
@@ -579,10 +577,6 @@ class TorchLogger:
             self.df_api.upload_file(dc_resp[0].data[0].id, str(local_file_path))
 
             self.current_checkpoint_id = dc_resp[0].data[0].id
-
-    
-
-        return return_vars
 
 
 class InferenceEvaluation:
