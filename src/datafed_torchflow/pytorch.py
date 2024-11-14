@@ -1,17 +1,29 @@
-import sys
 import os
-
+import sys
+from datetime import datetime
 
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from datetime import datetime
 
 sys.path.append(os.path.abspath("/home/jg3837/DataFed_TorchFlow/DataFed_TorchFlow/src"))
 
 
-from datafed_torchflow.datafed import DataFed
+import getpass
+import json
+import logging
+import pathlib
+import traceback
+import types
+
+import numpy as np
+from datafed.CommandLib import API
+from m3util.globus.globus import check_globus_file_access
+from m3util.util.IO import find_files_recursive, make_folder
+from tqdm import tqdm
+
 from datafed_torchflow.computer import get_system_info
+from datafed_torchflow.datafed import DataFed
 from datafed_torchflow.utils import (
     extract_instance_attributes,
     getNotebookMetadata,
@@ -20,25 +32,6 @@ from datafed_torchflow.utils import (
     clean_empty, 
     is_empty
 )
-
-import getpass
-from datetime import datetime
-from m3util.globus.globus import check_globus_file_access
-from m3util.util.IO import find_files_recursive, make_folder
-
-import json
-from tqdm import tqdm
-import logging
-import numpy as np
-import inspect
-from datafed.CommandLib import API
-import pathlib
-import types
-import ast
-import traceback
-import functools
-import operator
-
 
 # TODO: Add data and dataloader derivative.
 # TODO: Add number of FLOPS to metadata
@@ -88,6 +81,7 @@ class TorchLogger:
             input_data (numpy.ndarray, default=None): Input data for training the model.
             dataset_id (str, default=None): DataFed ID for the input dataset for the model
             logging (bool, optional): Flag for logging output. Default is False.
+            optimizer (torch.optim.Optimizer, optional): The optimizer used for training. Default is None.
         """
 
         self.current_checkpoint_id = None
@@ -96,16 +90,18 @@ class TorchLogger:
         self.model_dict = model_dict
         if "optimizer" in model_dict.keys():
             self.optimizer = self.model_dict["optimizer"]
+
         self.DataFed_path = DataFed_path
         self.local_model_path = local_model_path
         self.log_file_path = log_file_path
         self.dataset_id_or_path = dataset_id_or_path
         self.download_kwargs = download_kwargs
+
         self.logging = logging
         self.input_data_shape = input_data_shape
 
-        make_folder(self.local_model_path)                   
-            
+        make_folder(self.local_model_path)
+
         self.df_api = DataFed(
             self.DataFed_path,
             self.local_model_path,
@@ -116,14 +112,16 @@ class TorchLogger:
         )
 
         # Check if Globus has access to the local path
-        check_globus_file_access(self.df_api.endpointDefaultGet(), self.local_model_path)
+        check_globus_file_access(
+            self.df_api.endpointDefaultGet(), self.local_model_path
+        )
 
         # Save the notebook to DataFed
         self.save_notebook()
 
     def reset(self):
         self.current_checkpoint_id = None
-    
+
     @property
     def optimizer(self):
         """
@@ -197,8 +195,13 @@ class TorchLogger:
                 and "globus" not in key.casefold()
                 and "data".casefold() not in str(type(value)).casefold()
                 and "dataloader".casefold() not in str(type(value)).casefold()
-                and (not (callable(value) and key not in model_architecture_names)
-                or not (callable(value) and key not in ["optimizer","optim","optim_","optimizer_"]))
+                and (
+                    not (callable(value) and key not in model_architecture_names)
+                    or not (
+                        callable(value)
+                        and key not in ["optimizer", "optim", "optim_", "optimizer_"]
+                    )
+                )
                 and type(value)
                 not in [
                     type,
@@ -214,42 +217,39 @@ class TorchLogger:
                 # the upper limit is for nested objects that could have long sub-parts, 
                 # for example dictionaries
             ):
-                    
                 # put the model architecture into the Model Architecture sub-dictionary
-                if key in model_architecture_names:   
+                if key in model_architecture_names:
                     # serialize the optimizer
                     if not isinstance(value, str) and key.casefold() in [
                         "optimizer",
                         "optim",
                         "optim_",
-                        "optimizer_"
+                        "optimizer_",
                     ]:  # accept "optimizer" or "optim" for flexibility
                         DataFed_record_metadata["Model Parameters"][
                             "Model Architecture"
                         ][key] = serialize_pytorch_optimizer(value)
-                
+
                     else:
-                    # serialize the model architecture blocks (encoder, decoder, etc. )
+                        # serialize the model architecture blocks (encoder, decoder, etc. )
                         DataFed_record_metadata["Model Parameters"][
                             "Model Architecture"
                         ][key] = serialize_model(value)
                         DataFed_record_metadata["Model Parameters"][
                             "Model Architecture"
                         ][key].update(extract_instance_attributes(obj=value))
-                
+
                 # serialize the optimizer if not in model_dict
                 elif not isinstance(value, str) and key.casefold() in [
                     "optimizer",
                     "optim",
                     "optim_",
-                    "optimizer_"
+                    "optimizer_",
                 ]:  # accept "optimizer" or "optim" for flexibility
-                    DataFed_record_metadata["Model Parameters"][
-                        "Model Architecture"
-                    ][key] = serialize_pytorch_optimizer(value)
-                
-                
-                
+                    DataFed_record_metadata["Model Parameters"]["Model Architecture"][
+                        key
+                    ] = serialize_pytorch_optimizer(value)
+
                 # extract lists if they are not too long (arbitrarily chose to be less than 1000 characters)
                 elif isinstance(value, list):
                     # ignore long lists
@@ -282,14 +282,14 @@ class TorchLogger:
                 elif type(value) in [np.ndarray, torch.Tensor]:
                     if value.shape < self.input_data_shape:
                         # put other lists into the Model Parameters dictionary
-                        try: 
+                        try:
                             json.dumps(value.tolist())
                             DataFed_record_metadata["Model Parameters"][key] = (
                                 value.tolist()
                             )
-                        except: 
-                                DataFed_record_metadata["Model Parameters"][key] = (
-                                str(value.tolist())
+                        except:
+                            DataFed_record_metadata["Model Parameters"][key] = str(
+                                value.tolist()
                             )
                 # convert PosixPaths and pytorch devices into strings so they can be serialized into JSON
                 elif type(value) in [pathlib.PosixPath, torch.device]:
@@ -395,14 +395,13 @@ class TorchLogger:
         """
         Saves the Jupyter notebook that runs the code training the model
         """
-        # don't upload the notebook to DataFed if it is already there. 
+        # don't upload the notebook to DataFed if it is already there.
         # first, check if the notebook filename is actually its DataFed ID, in which case it already exists in DataFed
-        
+
         # first, make sure the notebook file is given (not None), otherwise there is no notebook specified to upload
-        # so just don't upload a notebook but proceed to saving the checkpoints as usual 
+        # so just don't upload a notebook but proceed to saving the checkpoints as usual
         if self.__file__ is not None:
-            
-            # check whether the notebook file name is a DataFed ID 
+            # check whether the notebook file name is a DataFed ID
             if self.__file__.startswith("d/"):
                 self.notebook_record_id = self.__file__
 
@@ -415,42 +414,46 @@ class TorchLogger:
                             self.__file__
                         )
                     )
-            
-                except Exception as e:
+
+                except Exception:
                     # the notebook is not already in DataFed, so upload it
                     # output to user
-                    old_checksum = ''
-                    
+                    old_checksum = ""
+
                     if self.logging:
                         with open(self.log_file_path, "a") as f:
                             timestamp = (
-                                datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                                datetime.now()
+                                .astimezone()
+                                .strftime("%Y-%m-%d %H:%M:%S")
                             )
-                            f.write(f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed...")
-                    
-            
-            # generate a checksum (and scipt path) for the notebook 
+                            f.write(
+                                f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed..."
+                            )
+
+            # generate a checksum (and scipt path) for the notebook
             self.notebook_metadata = getNotebookMetadata(self.__file__)
-            
+
             # extract the checksum
             new_checksum = self.notebook_metadata["script"]["checksum"]
-            
-            
-            
-            # if the notebook has a DataFed record ID, extract the checksum and compare to the new checksum  
+
+            # if the notebook has a DataFed record ID, extract the checksum and compare to the new checksum
             if self.notebook_record_id is not None:
-                notebook_DataFed_metadata = json.loads(self.df_api.dataView(self.notebook_record_id)[0].data[0].metadata)
+                notebook_DataFed_metadata = json.loads(
+                    self.df_api.dataView(self.notebook_record_id)[0].data[0].metadata
+                )
                 old_checksum = notebook_DataFed_metadata["script"]["checksum"]
-                
+
             if new_checksum != old_checksum:
-                # do the uploading 
+                # do the uploading
                 if self.logging:
                     with open(self.log_file_path, "a") as f:
                         timestamp = (
                             datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
                         )
-                        f.write(f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed...")
-                        
+                        f.write(
+                            f"\n {timestamp} - Uploading notebook {self.__file__} to DataFed..."
+                        )
 
                 current_user, current_time = self.getUserClock()
 
@@ -461,7 +464,7 @@ class TorchLogger:
 
                 # store the dataset Datafed ID in self.dataset_id. Upload the dataset to DataFed if necessary
                 self.dataset_id = self.df_api.upload_dataset_to_DataFed()
-                                
+
                 self.notebook_record_resp = self.df_api.data_record_create(
                     metadata=self.notebook_metadata,
                     record_title=self.__file__.split("/")[-1],  # .split(".")[0],
@@ -472,7 +475,8 @@ class TorchLogger:
                     self.notebook_record_resp[0].data[0].id, self.__file__
                 )
 
-                self.notebook_record_id = self.notebook_record_resp[0].data[0].id      
+                self.notebook_record_id = self.notebook_record_resp[0].data[0].id
+
     def save(
         self,
         record_file_name,
@@ -499,8 +503,7 @@ class TorchLogger:
             model_hyperparameters (dict): a dictionary where the keys are the model hyperparameters names and the values are the model hyperparameter names. Used in the saved checkpoint.
             **kwargs: Additional metadata or attributes to include in the record.
         """
-        
-        
+
         # include the model architecture state dictionary and model hyperparameters in the checkpoint
         if not str(local_file_path).endswith(".zip") and not os.path.exists(
             str(local_file_path)
@@ -529,28 +532,32 @@ class TorchLogger:
 
             self.dataset_id = self.df_api.upload_dataset_to_DataFed()
             # Create a list of IDs, excluding any that are None
-            if isinstance(self.dataset_id, str): 
+            if isinstance(self.dataset_id, str):
                 ids_to_add = [
                     id
-                    for id in [notebook_record_id, current_checkpoint_id, self.dataset_id]
+                    for id in [
+                        notebook_record_id,
+                        current_checkpoint_id,
+                        self.dataset_id,
+                    ]
                     if id is not None
                 ]
             elif isinstance(self.dataset_id, list):
-                ids_to_add = [id
+                ids_to_add = [
+                    id
                     for id in [notebook_record_id, current_checkpoint_id]
                     if id is not None
                 ]
                 for id in self.dataset_id:
                     if self.dataset_id is not None:
                         ids_to_add.append(id)
-            else: # self.dataset_id is None:
-                ids_to_add = [id
+            else:  # self.dataset_id is None:
+                ids_to_add = [
+                    id
                     for id in [notebook_record_id, current_checkpoint_id]
                     if id is not None
                 ]
-                
-                
-            
+
             # Call the API method with the valid IDs (if any)
             if ids_to_add:
                 deps = self.df_api.addDerivedFrom(ids_to_add)
@@ -558,8 +565,8 @@ class TorchLogger:
                 deps = None  # If no valid IDs are present, set deps to None
 
             # if isinstance(deps, list):
-            #     deps = functools.reduce(operator.iconcat, deps, []) #[item for sublist in deps for item in sublist] 
-            
+            #     deps = functools.reduce(operator.iconcat, deps, []) #[item for sublist in deps for item in sublist]
+
             # Generate metadata and create a data record in DataFed
             metadata = self.getMetadata(
                 local_vars=local_vars,
@@ -580,8 +587,6 @@ class TorchLogger:
             self.df_api.upload_file(dc_resp[0].data[0].id, str(local_file_path))
 
             self.current_checkpoint_id = dc_resp[0].data[0].id
-
-    
 
 
 class InferenceEvaluation:
@@ -725,10 +730,9 @@ class InferenceEvaluation:
 
 
 class TorchViewer(nn.Module):
-    def __init__(self, DataFed_path,**kwargs):
+    def __init__(self, DataFed_path, **kwargs):
         self.DataFed_path = DataFed_path
-        self.df_api = DataFed(self.DataFed_path,
-                              **kwargs)
+        self.df_api = DataFed(self.DataFed_path, **kwargs)
 
     def getModelCheckpoints(
         self,

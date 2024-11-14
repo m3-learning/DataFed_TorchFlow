@@ -1,8 +1,9 @@
-import psutil
 import json
 import platform
+
 import GPUtil
 import pkg_resources
+import psutil
 
 
 def get_system_info():

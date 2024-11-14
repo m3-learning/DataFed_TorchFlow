@@ -1,12 +1,14 @@
-from datetime import datetime
+import json
+import os
 import traceback
+from datetime import datetime
+
 import numpy as np
 from datafed.CommandLib import API
-import json
 from m3util.globus.globus import check_globus_endpoint
-from datafed_torchflow.JSON import UniversalEncoder
 from tqdm import tqdm
-import os
+
+from datafed_torchflow.JSON import UniversalEncoder
 
 
 class DataFed(API):
@@ -28,11 +30,11 @@ class DataFed(API):
     def __init__(
         self,
         datafed_path,
-        local_model_path = './Trained Models',
+        local_model_path="./Trained Models",
         log_file_path="log.txt",
         dataset_id_or_path=None,
         download_kwargs={"wait": True, "orig_fname": True},
-        upload_kwargs = {"wait": True},
+        upload_kwargs={"wait": True},
         logging=False,
     ):
         """
@@ -49,12 +51,12 @@ class DataFed(API):
         """
         super().__init__()
         self.datafed_path = datafed_path
-        
+
         self.local_model_path = local_model_path
 
         # sets the kwargs for downloads
         self.download_kwargs = download_kwargs
-        
+
         # sets the kwargs for uploads
         self.upload_kwargs = upload_kwargs
 
@@ -69,88 +71,145 @@ class DataFed(API):
         # gets the collection and project ID
         self.identify_collection_id()
 
-        # Set the dataset ID or path 
+        # Set the dataset ID or path
         self.dataset_id_or_path = dataset_id_or_path
 
         # Set the data path
-        #self.data_path = data_path
+        # self.data_path = data_path
+
     def upload_dataset_to_DataFed(self):
         """
         Checks whether the dataset record already exists on DataFed and uploads it to a collection called ``dataset" (which it will create if necessary)
-        whose parent collection is self.collection_id (where the checkpoints are stored). Works with any number of dataset files, specified by 
+        whose parent collection is self.collection_id (where the checkpoints are stored). Works with any number of dataset files, specified by
         torchlogger.dataset_id_or_path in the instantiation of the torchlogger. The dataset files can be specified as either their file names or
-        DataFed IDs (specified as a string for a single dataset file and a list of strings for multiple dataset files) 
-        
-        Args: 
+        DataFed IDs (specified as a string for a single dataset file and a list of strings for multiple dataset files)
+
+        Args:
             None (self)
-        
-        Returns: 
+
+        Returns:
             The DataFed record ID for the dataset files, as a string for a single dataset file and a list of strings for multiple dataset files.
         """
         if self.dataset_id_or_path is not None:
-            
-            
-            if type(self.dataset_id_or_path) == list: # to specify multiple dataset files
-                dataset_ids = [] 
+            if isinstance(
+                self.dataset_id_or_path, list
+            ):  # to specify multiple dataset files
+                dataset_ids = []
                 ls_resp = self.collectionItemsList(self.collection_id)
                 for dataset in self.dataset_id_or_path:
                     if dataset.startswith("d/"):
                         dataset_ids.append(dataset)
                     else:
-                        try: 
-                            path_id = ls_resp[0].item[np.where([record.title.casefold() == "Dataset".casefold() for record in ls_resp[0].item])[0].item()].id
-                            # update record (dependencies have been added) 
-                            record_id = self.get_notebook_DataFed_ID_from_path_and_title(dataset, path_id=path_id)
-                            
-                            self.data_record_update(record_id=record_id, record_title= dataset, parent_collection = path_id)
-                            
+                        try:
+                            path_id = (
+                                ls_resp[0]
+                                .item[
+                                    np.where(
+                                        [
+                                            record.title.casefold()
+                                            == "Dataset".casefold()
+                                            for record in ls_resp[0].item
+                                        ]
+                                    )[0].item()
+                                ]
+                                .id
+                            )
+                            # update record (dependencies have been added)
+                            record_id = (
+                                self.get_notebook_DataFed_ID_from_path_and_title(
+                                    dataset, path_id=path_id
+                                )
+                            )
+
+                            self.data_record_update(
+                                record_id=record_id,
+                                record_title=dataset,
+                                parent_collection=path_id,
+                            )
+
                             dataset_ids.append(record_id)
 
-                            #dataset_ids.append(self.get_notebook_DataFed_ID_from_path_and_title(dataset, path_id=path_id))
-                            
+                            # dataset_ids.append(self.get_notebook_DataFed_ID_from_path_and_title(dataset, path_id=path_id))
+
                         except:
                             if "Dataset" not in self.getCollList(self.collection_id)[0]:
-                                coll_resp = self.collectionCreate("Dataset", parent_id = self.collection_id)
-                                # try: 
-                                #     # if get_notebook_DataFed_ID_from_path_and_title fails, the record doesn't already exist and should be created. 
-                                #     # Otherwise, update it. This should maybe be replaced with a checksum comparison eventually, 
-                                #     # although it probably won't change like the notebooks do. 
+                                coll_resp = self.collectionCreate(
+                                    "Dataset", parent_id=self.collection_id
+                                )
+                                # try:
+                                #     # if get_notebook_DataFed_ID_from_path_and_title fails, the record doesn't already exist and should be created.
+                                #     # Otherwise, update it. This should maybe be replaced with a checksum comparison eventually,
+                                #     # although it probably won't change like the notebooks do.
                                 #     record_id = self.get_notebook_DataFed_ID_from_path_and_title(dataset, coll_resp[0].coll[0].id )
                                 #     self.data_record_update(record_id=record_id, record_title= dataset, parent_collection = coll_resp[0].coll[0].id)
                                 # except:
-                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = coll_resp[0].coll[0].id)
+                                dataset_id_resp = self.data_record_create(
+                                    record_title=dataset,
+                                    parent_collection=coll_resp[0].coll[0].id,
+                                )
 
-                            else: 
-                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = self.get_notebook_DataFed_ID_from_path_and_title("Dataset"))
+                            else:
+                                dataset_id_resp = self.data_record_create(
+                                    record_title=dataset,
+                                    parent_collection=self.get_notebook_DataFed_ID_from_path_and_title(
+                                        "Dataset"
+                                    ),
+                                )
                             dataset_id = dataset_id_resp[0].data[0].id
                             self.upload_file(dataset_id, dataset)
                             dataset_ids.append(dataset_id)
 
-            else: # type(dataset_id) is str, so only 1 dataset file specified
-                if self.dataset_id_or_path.startswith("d/"): 
+            else:  # type(dataset_id) is str, so only 1 dataset file specified
+                if self.dataset_id_or_path.startswith("d/"):
                     dataset_ids = self.dataset_id_or_path
                 else:
-                    
-                    try: 
-                            path_id = ls_resp[0].item[np.where([record.title.casefold() == "Dataset".casefold() for record in ls_resp[0].item])[0].item()].id
-                            # update record (dependencies have been added) 
-                            record_id = self.get_notebook_DataFed_ID_from_path_and_title(dataset, path_id=path_id)
-                            
-                            self.data_record_update(record_id=record_id, record_title= dataset, parent_collection = path_id)
-                            
-                            dataset_ids = record_id
-                            
-                    except:
-                            if "Dataset" not in self.getCollList(self.collection_id)[0]:
-                                coll_resp = self.collectionCreate("Dataset", parent_id = self.collection_id)
-                                
-                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = coll_resp[0].coll[0].id)
+                    try:
+                        path_id = (
+                            ls_resp[0]
+                            .item[
+                                np.where(
+                                    [
+                                        record.title.casefold() == "Dataset".casefold()
+                                        for record in ls_resp[0].item
+                                    ]
+                                )[0].item()
+                            ]
+                            .id
+                        )
+                        # update record (dependencies have been added)
+                        record_id = self.get_notebook_DataFed_ID_from_path_and_title(
+                            dataset, path_id=path_id
+                        )
 
-                            else: 
-                                dataset_id_resp = self.data_record_create(record_title = dataset, parent_collection = self.get_notebook_DataFed_ID_from_path_and_title("Dataset"))
-                            dataset_id = dataset_id_resp[0].data[0].id
-                            self.upload_file(dataset_id, dataset)
-                            dataset_ids = dataset_id 
+                        self.data_record_update(
+                            record_id=record_id,
+                            record_title=dataset,
+                            parent_collection=path_id,
+                        )
+
+                        dataset_ids = record_id
+
+                    except:
+                        if "Dataset" not in self.getCollList(self.collection_id)[0]:
+                            coll_resp = self.collectionCreate(
+                                "Dataset", parent_id=self.collection_id
+                            )
+
+                            dataset_id_resp = self.data_record_create(
+                                record_title=dataset,
+                                parent_collection=coll_resp[0].coll[0].id,
+                            )
+
+                        else:
+                            dataset_id_resp = self.data_record_create(
+                                record_title=dataset,
+                                parent_collection=self.get_notebook_DataFed_ID_from_path_and_title(
+                                    "Dataset"
+                                ),
+                            )
+                        dataset_id = dataset_id_resp[0].data[0].id
+                        self.upload_file(dataset_id, dataset)
+                        dataset_ids = dataset_id
                     # try:
                     #     ls_resp = self.collectionItemsList(self.collection_id, count=100000)
                     #     path_id = ls_resp[0].item[np.where([record.title.casefold() == "Dataset".casefold() for record in ls_resp[0].item])[0].item()].id
@@ -159,19 +218,17 @@ class DataFed(API):
                     #     dataset_id_resp = self.data_record_create(record_title = dataset)
                     #     dataset_ids = dataset_id_resp[0].data[0].id
                     #     self.upload_file(dataset_id, dataset)
-                        
-            self.dataset_id = dataset_ids 
-             
-            
+
+            self.dataset_id = dataset_ids
+
         else:
             self.dataset_id = None
-            
+
         return self.dataset_id
-            
-            
-            #self.getData()
-            
-          # self.original_file_path = self.file_path
+
+        # self.getData()
+
+        # self.original_file_path = self.file_path
 
     def getCollectionProjectID(self):
         """
@@ -430,7 +487,9 @@ class DataFed(API):
 
         self.collection_id = current_collection
 
-    def get_notebook_DataFed_ID_from_path_and_title(self, notebook_filename, path_id = None):
+    def get_notebook_DataFed_ID_from_path_and_title(
+        self, notebook_filename, path_id=None
+    ):
         """
         Gets the DataFed ID for the Jupyter notebook from the file name and DataFed path
 
@@ -443,8 +502,10 @@ class DataFed(API):
         Raises
             ValueError: If no item with the specified title is found
         """
-        
-        ls_resp_2 = self.collectionItemsList(path_id if path_id is not None else self.collection_id, count=10000000)
+
+        ls_resp_2 = self.collectionItemsList(
+            path_id if path_id is not None else self.collection_id, count=10000000
+        )
         notebook_ID = (
             ls_resp_2[0]
             .item[
@@ -460,7 +521,14 @@ class DataFed(API):
 
         return notebook_ID
 
-    def data_record_create(self, metadata=None, record_title=None, parent_collection = None, deps=None, **kwargs):
+    def data_record_create(
+        self,
+        metadata=None,
+        record_title=None,
+        parent_collection=None,
+        deps=None,
+        **kwargs,
+    ):
         """
         Creates the DataFed record for the saved checkpoint and uploads the relevant metadata
 
@@ -497,7 +565,9 @@ class DataFed(API):
             dc_resp = self.dataCreate(
                 str(record_title).rsplit("/", 1)[-1],
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
-                parent_id=parent_collection if parent_collection is not None else self.collection_id,
+                parent_id=parent_collection
+                if parent_collection is not None
+                else self.collection_id,
                 deps=deps,
                 # **kwargs,
             )
@@ -520,8 +590,15 @@ class DataFed(API):
 
             raise e
 
-
-    def data_record_update(self, record_id = None, record_title=None, metadata=None, deps=None, overwrite_metadata = False,  **kwargs):
+    def data_record_update(
+        self,
+        record_id=None,
+        record_title=None,
+        metadata=None,
+        deps=None,
+        overwrite_metadata=False,
+        **kwargs,
+    ):
         """
         updates the DataFed record for the saved checkpoint including the relevant metadata if it changed
 
@@ -529,8 +606,8 @@ class DataFed(API):
             metadata (dict): The relevant model and system metadata for the checkpoint.
             record_title (str): The title of the DataFed record.
             deps (list or str, optional): A list of dependencies or a single dependency to add. Defaults to None.
-            overwrite_metadata (bool, default=False): Whether to overwrite the record metadata. 
-                Merges with existing metadata if false; overwrites if true. 
+            overwrite_metadata (bool, default=False): Whether to overwrite the record metadata.
+                Merges with existing metadata if false; overwrites if true.
         Raises:
             Exception: If user is not authenticated or must re-authenticate
 
@@ -558,11 +635,11 @@ class DataFed(API):
         # This will fail when DataFed decides the user must reauthenticate.
         try:
             dc_resp = self.dataUpdate(
-                record_id, 
-                title = str(record_title).rsplit("/", 1)[-1],
+                record_id,
+                title=str(record_title).rsplit("/", 1)[-1],
                 metadata=json.dumps(metadata, cls=UniversalEncoder),
                 deps_add=deps,
-                metadata_set = overwrite_metadata,
+                metadata_set=overwrite_metadata,
                 # **kwargs,
             )
             # log that the DataFed data record has been successfully created.
@@ -583,9 +660,6 @@ class DataFed(API):
                 f.write(f"\n {timestamp} - Data creation failed with error: \n {tb}")
 
             raise e
-
-
-
 
     @staticmethod
     def addDerivedFrom(deps=None):
@@ -625,7 +699,7 @@ class DataFed(API):
 
         # try uploading the file.
         try:
-            put_resp = self.dataPut(
+            _put_resp = self.dataPut(
                 DataFed_ID,
                 file_path,
                 wait=wait,  # Waits until transfer completes.
@@ -633,7 +707,6 @@ class DataFed(API):
 
             # log that the DataFed data record has been successfully created.
             with open(self.log_file_path, "a") as f:
-
                 timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
 
                 f.write(
@@ -661,8 +734,8 @@ class DataFed(API):
             list: A list of item IDs.
         """
         return [record.id for record in listing_reply.item]
-    
-    def getIDsInCollection(self, collection_id = None):
+
+    def getIDsInCollection(self, collection_id=None):
         """
         Gets the IDs of items in a collection.
         Args:
@@ -682,7 +755,7 @@ class DataFed(API):
 
     def get_metadata(
         self,
-        collection_id = None,
+        collection_id=None,
         exclude_metadata=None,
         excluded_keys=None,
         non_unique=None,
@@ -701,13 +774,14 @@ class DataFed(API):
         Returns:
             dict: The metadata record.
         """
-        #default condition to get the metadata of the current collection
+
+        # default condition to get the metadata of the current collection
         if collection_id is None:
             collection_id = self.collection_id
-            
+
         # Retrieve the data view response for the given record ID
         # TODO: make it so it can return more than 10000 records -- not hardcoded
-        collection_list = self.collectionItemsList(self.collection_id, count=10000)[0]
+        _collection_list = self.collectionItemsList(self.collection_id, count=10000)[0]
 
         # Get the record IDs from the collection list
         record_ids_ = self.getIDsInCollection(collection_id=self.collection_id)
@@ -723,7 +797,7 @@ class DataFed(API):
 
         if format == "pandas":
             import pandas as pd
-            
+
             self.pd_df = pd.DataFrame(metadata_)
 
             return pd.DataFrame(metadata_)
@@ -978,10 +1052,10 @@ class DataFed(API):
             return None
         else:
             return no_files
-        
-        
-    def replace_missing_records(self, collection_id=None, file_path=None, upload_kwargs=None, logging=True):
 
+    def replace_missing_records(
+        self, collection_id=None, file_path=None, upload_kwargs=None, logging=True
+    ):
         if upload_kwargs is not None:
             kwargs = self.upload_kwargs.copy()
             kwargs.update(upload_kwargs)
@@ -991,15 +1065,14 @@ class DataFed(API):
         if collection_id is None:
             collection_id = self.collection_id
 
-
         if logging:
             print(f"checking collection {collection_id} for missing records")
 
-        missing_record_ids = self.check_no_files(self.getIDsInCollection(collection_id=collection_id))
-
+        missing_record_ids = self.check_no_files(
+            self.getIDsInCollection(collection_id=collection_id)
+        )
 
         if missing_record_ids is not None:
-
             if logging:
                 print(f"found {len(missing_record_ids)} missing records")
 
@@ -1008,22 +1081,39 @@ class DataFed(API):
 
             metadata = self._get_metadata_list(missing_record_ids)
 
-            for i, (record_id, metadata) in enumerate(zip(missing_record_ids, metadata)):
+            for i, (record_id, metadata) in enumerate(
+                zip(missing_record_ids, metadata)
+            ):
                 if logging:
-                    if "Model Parameters" in metadata.keys(): #record is a checkpoint
-                        print(f"trying to reupload {metadata['Model Parameters']['filename']} for record {record_id}")
+                    if "Model Parameters" in metadata.keys():  # record is a checkpoint
+                        print(
+                            f"trying to reupload {metadata['Model Parameters']['filename']} for record {record_id}"
+                        )
 
-                        if self.check_if_file_data(metadata["Model Parameters"]["filename"],metadata["Model Parameters"]["path"]): 
-                            self.upload_file(record_id, self.joinPath(metadata["Model Parameters"]['filename'],metadata["Model Parameters"]["path"]),
-                                         wait = kwargs.get("wait", False))
-                    elif "script" in metadata.keys(): # record is notebook
-                        print(f"trying to reupload {metadata['script']['path']} for record {record_id}")
-                        if self.check_if_file_data(metadata["script"]['path'],file_path):
-                            self.upload_file(record_id, metadata["script"]['path'],
-                                         wait = kwargs.get("wait", False))
-
-                         
-
+                        if self.check_if_file_data(
+                            metadata["Model Parameters"]["filename"],
+                            metadata["Model Parameters"]["path"],
+                        ):
+                            self.upload_file(
+                                record_id,
+                                self.joinPath(
+                                    metadata["Model Parameters"]["filename"],
+                                    metadata["Model Parameters"]["path"],
+                                ),
+                                wait=kwargs.get("wait", False),
+                            )
+                    elif "script" in metadata.keys():  # record is notebook
+                        print(
+                            f"trying to reupload {metadata['script']['path']} for record {record_id}"
+                        )
+                        if self.check_if_file_data(
+                            metadata["script"]["path"], file_path
+                        ):
+                            self.upload_file(
+                                record_id,
+                                metadata["script"]["path"],
+                                wait=kwargs.get("wait", False),
+                            )
 
     def getFileName(self, record_id):
         """
@@ -1069,10 +1159,10 @@ class DataFed(API):
         """
         Downloads the data from the dataset
         """
-        
-        if dataset_id is None: 
+
+        if dataset_id is None:
             dataset_id = self.dataset_id_or_path
-            
+
         # if a data path is not provided, download the data to the current directory
         if self.data_path is None:
             self.dataGet(dataset_id, "./", **self.download_kwargs)
@@ -1094,16 +1184,14 @@ class DataFed(API):
                     print(
                         f"Downloading {dataset_id} data using datafed to {self.data_path}"
                     )
-                    self.dataGet(
-                        dataset_id, self.data_path, **self.download_kwargs
-                    )
+                    self.dataGet(dataset_id, self.data_path, **self.download_kwargs)
 
             self.file_path = self.joinPath(file_name)
 
-    def joinPath(self, file_name,path_name = None):
+    def joinPath(self, file_name, path_name=None):
         """
         Joins the data path and the file name to create a full file path.
-        
+
         Args:
             file_name (str): The name of the file.
             path_name (str,default=None): The name of the file path. Defaults to self.local_model_path
@@ -1111,30 +1199,29 @@ class DataFed(API):
         Returns:
             str: The full file path.
         """
-        if path_name == None:
+        if path_name is None:
             return os.path.join(self.local_model_path, file_name)
         else:
             return os.path.join(path_name, file_name)
 
-
-    def check_if_file_data(self, file_name,path_name=None):
+    def check_if_file_data(self, file_name, path_name=None):
         """
         Check if a file exists in the specified data path.
+
         Args:
             file_name (str): The name of the file to check.
+
         Returns:
             bool: True if the file exists in the data path, False otherwise.
-            
+
         """
-        if path_name == None:   
+        if path_name is None:
             if os.path.exists(self.joinPath(file_name)):
                 return True
             else:
                 return False
         else:
-            if os.path.exists(self.joinPath(file_name,path_name)):
+            if os.path.exists(self.joinPath(file_name, path_name)):
                 return True
             else:
                 return False
-            
-            

@@ -1,9 +1,11 @@
-from m3util.notebooks.checksum import calculate_notebook_checksum
-import torch
-import numpy as np
-import json 
 import ast
 import inspect
+import json
+
+import numpy as np
+import torch
+from m3util.notebooks.checksum import calculate_notebook_checksum
+
 
 def is_jsonable(x):
     """
@@ -19,7 +21,9 @@ def is_jsonable(x):
         json.dumps(x)
         return True
     except:
-        return False 
+        return False
+
+
 def extract_instance_attributes(obj=dict()):
     """
     Recursively extracts attributes from class instances, converting NumPy integers to Python int,
@@ -28,7 +32,7 @@ def extract_instance_attributes(obj=dict()):
     This helper function traverses the attributes of a given object and returns a dictionary
     representation of those attributes. If the object has a `__dict__` attribute, it means
     the object is likely an instance of a class, and its attributes are stored in `__dict__`.
-    The function will recursively call itself to extract attributes from nested objects, 
+    The function will recursively call itself to extract attributes from nested objects,
     convert any NumPy integers to Python int, and convert NumPy arrays and Torch tensors to lists.
 
     Args:
@@ -40,8 +44,9 @@ def extract_instance_attributes(obj=dict()):
     if hasattr(obj, "__dict__"):
         return {
             key: extract_instance_attributes(
-                int(value) if isinstance(value, np.integer)
-                #else value.tolist() if isinstance(value, (np.ndarray, torch.Tensor))
+                int(value)
+                if isinstance(value, np.integer)
+                # else value.tolist() if isinstance(value, (np.ndarray, torch.Tensor))
                 else value
             )
             for key, value in obj.__dict__.items()
@@ -53,6 +58,7 @@ def extract_instance_attributes(obj=dict()):
         return obj.tolist()
     else:
         return obj
+
 
 def get_return_variables(func):
     """
@@ -73,24 +79,28 @@ def get_return_variables(func):
 
     # Get the source code of the function
     source = inspect.getsource(func)
-    
+
     # Parse the source code into an AST
     tree = ast.parse(source)
-    
+
     # Navigate to the function definition in the AST
-    function_node = next(node for node in tree.body if isinstance(node, ast.FunctionDef))
-    
+    function_node = next(
+        node for node in tree.body if isinstance(node, ast.FunctionDef)
+    )
+
     # Extract the return statement
     return_vars = []
     for node in ast.walk(function_node):
         if isinstance(node, ast.Return):
             # Check if the return value is a tuple or a single value
             if isinstance(node.value, ast.Tuple):
-                return_vars = [elt.id for elt in node.value.elts if isinstance(elt, ast.Name)]
+                return_vars = [
+                    elt.id for elt in node.value.elts if isinstance(elt, ast.Name)
+                ]
             elif isinstance(node.value, ast.Name):
                 return_vars = [node.value.id]
             break
-            
+
     return return_vars
 
 def clean_empty(data):
@@ -156,6 +166,7 @@ def getNotebookMetadata(file):
         script_checksum = calculate_notebook_checksum(file)
         file_info = {"script": {"path": file, "checksum": script_checksum}}
         return file_info
+
 
 def serialize_model(model_block):
     """
