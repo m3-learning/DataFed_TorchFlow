@@ -6,6 +6,15 @@ import ast
 import inspect
 
 def is_jsonable(x):
+    """
+    Checks whether input is JSON serializable or not
+    
+    Args:
+        x (any data type): the object to check for JSON serializability
+    
+    Returns: 
+        bool: `True` if the object is JSON serializable; `False` otherwise.
+    """
     try:
         json.dumps(x)
         return True
@@ -46,6 +55,22 @@ def extract_instance_attributes(obj=dict()):
         return obj
 
 def get_return_variables(func):
+    """
+    Recursively extracts variable names from the return statement of a given function.
+
+    This function takes another function as input, parses its source code into an 
+    Abstract Syntax Tree (AST) and returns the variable names from the other function's
+    return statement as a list
+    
+    Args: 
+        func (function): The function whose return variables are to be extracted.
+
+    Returns: 
+        list of str: A list of variable names returned by the input function. If the function has 
+        no return statement or returns a constant (not a variable), the list will be empty.
+    
+    """
+
     # Get the source code of the function
     source = inspect.getsource(func)
     
@@ -68,10 +93,60 @@ def get_return_variables(func):
             
     return return_vars
 
+def clean_empty(data):
+    """
+    Recursively removes entries with empty values in the nested metadata dictionary. 
+    Empty is defined as empty strings, "" , dictionaries, {} , lists , [], or tuples, ()
+    but NOT the number zero or the boolean False. This is defined in the ``is_empty"
+    helper function. 
+    
+    Args: 
+        data (dict, list, or tuple): 
+
+    Returns:
+        The same datatype and data as the input `data`, just without empty values   
+    """
+    if isinstance(data, dict):
+        # Recursively clean each item in the dictionary
+        return {k: clean_empty(v) for k, v in data.items() if not is_empty(v)}
+    elif isinstance(data, list):
+        # Recursively clean each item in the list and remove any empty entries
+        cleaned_list = [clean_empty(item) for item in data if not is_empty(item)]
+        return cleaned_list if not is_empty(cleaned_list) else []
+    elif isinstance(data, tuple):
+        # Recursively clean each item in the tuple and remove any empty entries
+        cleaned_tuple = tuple(clean_empty(item) for item in data if not is_empty(item))
+        return cleaned_tuple if not is_empty(cleaned_tuple) else ()
+    else:
+        # Return the item as it is if it's not a list, dict, or tuple
+        return data
+
+def is_empty(value):
+    """Helper function to determine if a value should be considered 'empty'.
+    Args: 
+        value (string, dict, list, or tuple): the object from which to remove empty values
+
+    Returns:
+        The same datatype and data as the input `data`, just without empty values   
+
+    """
+    if value == "" or value == {} or value == [] or value == ():
+        return True
+    elif isinstance(value, list) or isinstance(value, tuple):
+        # Check if all elements in a list or tuple are empty
+        return all(is_empty(item) for item in value)
+    elif isinstance(value, dict):
+        # Check if all values in a dictionary are empty
+        return all(is_empty(v) for v in value.values())
+    return False
+
 def getNotebookMetadata(file):
     """
     Calculates the checksum of the script or notebook file and includes it in the metadata.
 
+    Args: 
+        file (string) the script or notebook file path
+    
     Returns:
         dict: A dictionary containing the path and checksum of the script or notebook file.
     """
@@ -86,8 +161,12 @@ def serialize_model(model_block):
     """
     Serializes the model architecture into a dictionary format with detailed layer information.
 
+    Args: 
+        model_block (custom class): the model architecture block (i.e. `encoder`, `decoder`, etc.) 
+        to be serialized.
+    
     Returns:
-        dict: A dictionary containing the model's architecture with layer types,
+        dict: A dictionary containing the model block's architecture with layer types,
                 names, and configurations.
     """
     model_info = {}
@@ -168,6 +247,9 @@ def serialize_pytorch_optimizer(optimizer):
     """
     Serializes the optimizer's state dictionary, converting tensors to lists for JSON compatibility.
 
+    Args: 
+        optimizer (torch.optim): the model optimizer to be serialized.
+    
     Returns:
         dict: A dictionary containing the optimizer's serialized parameters.
     """

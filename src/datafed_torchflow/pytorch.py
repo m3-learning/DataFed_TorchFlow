@@ -17,6 +17,8 @@ from datafed_torchflow.utils import (
     getNotebookMetadata,
     serialize_model,
     serialize_pytorch_optimizer,
+    clean_empty, 
+    is_empty
 )
 
 import getpass
@@ -352,6 +354,8 @@ class TorchLogger:
         # add the computer information to the System Information section
         DataFed_record_metadata["System Information"] = computer_info
 
+        DataFed_record_metadata = clean_empty(DataFed_record_metadata)
+        
         # return the metadata
         return DataFed_record_metadata
 
