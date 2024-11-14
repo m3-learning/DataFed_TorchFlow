@@ -55,15 +55,28 @@ MANIFEST
 .conda*/
 .python-version
 
-/examples/data/*
-examples/mnist_cnn.pth
-examples/.log.txt
 
-/examples/MNIST*
 
 *.log
 *.pth
 *.pkl
 scratch/*
-/examples/examples
-/example/model/*
+
+SHO_example
+SHO_example/*
+
+examples/log.txt
+examples/automl
+examples/examples
+examples/MNIST
+examples/model
+examples/ax_multiobjective_nas_tutorial (1).ipynb
+examples/log.txt
+examples/.log.txt
+examples/mnist_train_nas.py
+examples/MNIST_test.py
+
+data/MNIST/
+examples/data/MNIST/
+SHO_example/5_nn_fitting_all.ipynb
+examples/log.txt

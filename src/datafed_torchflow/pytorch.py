@@ -179,15 +179,17 @@ class TorchLogger:
                 not key.startswith("_")
                 and key.casefold()
                 not in [
-                    "checkpoint",
-                    "self",
-                    "local_vars",
-                    "model_dict",
-                    "model_hyperparameters",
-                    "i",
-                    "image",
-                    "key",
-                    "value",
+                    "checkpoint".casefold(),
+                    "self".casefold(),
+                    "local_vars".casefold(),
+                    "model_dict".casefold(),
+                    "model_hyperparameters".casefold(),
+                    "i".casefold(),
+                    "image".casefold(),
+                    "In".casefold(),
+                    "Out".casefold(),
+                    "key".casefold(),
+                    "value".casefold(),
                 ]
                 and "datafed" not in key.casefold()
                 and "globus" not in key.casefold()
@@ -205,6 +207,10 @@ class TorchLogger:
                     types.NoneType,
                     types.MethodType,
                 ]
+                and len(str(value)) > 0 and len(str(value)) < 1000 
+                # the above is to remove empty values from the metadata dictionary
+                # the upper limit is for nested objects that could have long sub-parts, 
+                # for example dictionaries
             ):
                     
                 # put the model architecture into the Model Architecture sub-dictionary
