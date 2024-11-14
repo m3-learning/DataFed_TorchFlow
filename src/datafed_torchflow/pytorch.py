@@ -212,10 +212,8 @@ class TorchLogger:
                     types.NoneType,
                     types.MethodType,
                 ]
-                and len(str(value)) > 0 and len(str(value)) < 1000 
+                and len(str(value)) > 0
                 # the above is to remove empty values from the metadata dictionary
-                # the upper limit is for nested objects that could have long sub-parts, 
-                # for example dictionaries
             ):
                 # put the model architecture into the Model Architecture sub-dictionary
                 if key in model_architecture_names:
@@ -301,7 +299,7 @@ class TorchLogger:
                             extract_instance_attributes(obj=value)
                         )
 
-                elif isinstance(value, dict) and len(value) > 0:
+                elif isinstance(value, dict) and len(value) > 0 and len(str(value)) < 1000:
                     if "_" not in str(type(value[list(value.keys())[0]])):
                         try:
                             json.dumps(value)
