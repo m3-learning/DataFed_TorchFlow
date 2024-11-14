@@ -256,7 +256,7 @@ class TorchLogger:
                         if len(value) == 1:
                             DataFed_record_metadata["Model Parameters"][key] = value[0]
                         else:
-                            # if the list has many (but not too many values) extract the whole list
+                            # if the list has many (but not too many) values extract the whole list
                             DataFed_record_metadata["Model Parameters"][key] = value
                     else:
                         warning_message = (
