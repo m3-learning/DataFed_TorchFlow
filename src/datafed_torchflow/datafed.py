@@ -1054,7 +1054,7 @@ class DataFed(API):
             return no_files
 
     def replace_missing_records(
-        self, collection_id=None, file_path=None, upload_kwargs=None, logging=True
+        self, collection_id=None, upload_kwargs=None, logging=True
     ):
         if upload_kwargs is not None:
             kwargs = self.upload_kwargs.copy()
@@ -1084,36 +1084,38 @@ class DataFed(API):
             for i, (record_id, metadata) in enumerate(
                 zip(missing_record_ids, metadata)
             ):
-                if logging:
-                    if "Model Parameters" in metadata.keys():  # record is a checkpoint
+                if "Model Parameters" in metadata.keys():  # record is a checkpoint
+                    if logging: 
+                        
                         print(
                             f"trying to reupload {metadata['Model Parameters']['filename']} for record {record_id}"
                         )
 
-                        if self.check_if_file_data(
-                            metadata["Model Parameters"]["filename"],
-                            metadata["Model Parameters"]["path"],
-                        ):
-                            self.upload_file(
-                                record_id,
-                                self.joinPath(
-                                    metadata["Model Parameters"]["filename"],
-                                    metadata["Model Parameters"]["path"],
-                                ),
-                                wait=kwargs.get("wait", False),
-                            )
-                    elif "script" in metadata.keys():  # record is notebook
+                    if self.check_if_file_data(
+                        metadata["Model Parameters"]["filename"],
+                        metadata["Model Parameters"]["path"],
+                    ):
+                        self.upload_file(
+                            record_id,
+                            self.joinPath(
+                                metadata["Model Parameters"]["filename"],
+                                metadata["Model Parameters"]["path"],
+                            ),
+                            wait=kwargs.get("wait", False),
+                        )
+                elif "script" in metadata.keys():  # record is notebook
+                    if logging:
                         print(
                             f"trying to reupload {metadata['script']['path']} for record {record_id}"
                         )
-                        if self.check_if_file_data(
-                            metadata["script"]["path"], file_path
-                        ):
-                            self.upload_file(
-                                record_id,
-                                metadata["script"]["path"],
-                                wait=kwargs.get("wait", False),
-                            )
+                    if self.check_if_file_data(
+                        metadata["script"]["path"], metadata["script"]["path"]
+                    ):
+                        self.upload_file(
+                            record_id,
+                            metadata["script"]["path"],
+                            wait=kwargs.get("wait", False),
+                        )
 
     def getFileName(self, record_id):
         """
