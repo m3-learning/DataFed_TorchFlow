@@ -218,7 +218,7 @@ class TorchLogger:
                 # put the model architecture into the Model Architecture sub-dictionary
                 if key in model_architecture_names:
                     # serialize the optimizer
-                    if not isinstance(value, str) and key.casefold() in [
+                    if 'optim' in str(type(value)) and key.casefold() in [
                         "optimizer",
                         "optim",
                         "optim_",
@@ -238,7 +238,7 @@ class TorchLogger:
                         ][key].update(extract_instance_attributes(obj=value))
 
                 # serialize the optimizer if not in model_dict
-                elif not isinstance(value, str) and key.casefold() in [
+                elif 'optim' in str(type(value)) and key.casefold() in [
                     "optimizer",
                     "optim",
                     "optim_",
