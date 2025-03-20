@@ -270,6 +270,11 @@ class TorchLogger:
                             DataFed_record_metadata["Model Parameters"][
                                 "Model Hyperparameters"
                             ][key] = value.tolist()
+                    elif isinstance(value,(int,float)):
+                        DataFed_record_metadata["Model Parameters"][
+                            "Model Hyperparameters"
+                        ][key] = format(value,'0.5e')
+
                     else:
                         DataFed_record_metadata["Model Parameters"][
                             "Model Hyperparameters"
@@ -482,6 +487,7 @@ class TorchLogger:
         local_file_path=None,
         local_vars=None,
         model_hyperparameters=None,
+        save_locally = True,
         **kwargs,
     ):
         """
@@ -503,10 +509,11 @@ class TorchLogger:
         """
 
         # include the model architecture state dictionary and model hyperparameters in the checkpoint
-        if not str(local_file_path).endswith(".zip") and not os.path.exists(
-            str(local_file_path)
-        ):
-            checkpoint = self.getModelArchitectureStateDict() | model_hyperparameters
+        # if not str(local_file_path).endswith(".zip") and not os.path.exists(
+        #     str(local_file_path)
+        # ):
+        if save_locally:
+            checkpoint = self.getModelArchitectureStateDict() | model_hyperparameters 
 
             # Save the model state dict locally
             torch.save(checkpoint, local_file_path)
