@@ -52,9 +52,9 @@ def get_memory_info():
     """
     mem = psutil.virtual_memory()
     return {
-        "total": f"{mem.total / (1024 ** 3):.2f} GB",
-        "available": f"{mem.available / (1024 ** 3):.2f} GB",
-        "used": f"{mem.used / (1024 ** 3):.2f} GB",
+        "total": f"{mem.total / (1024**3):.2f} GB",
+        "available": f"{mem.available / (1024**3):.2f} GB",
+        "used": f"{mem.used / (1024**3):.2f} GB",
         "percent": mem.percent,
     }
 
