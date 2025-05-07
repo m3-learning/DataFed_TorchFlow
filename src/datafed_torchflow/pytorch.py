@@ -1,6 +1,7 @@
 import os
 import sys
 from datetime import datetime
+from typing import Any, Optional
 
 import torch
 import torch.nn as nn
@@ -60,7 +61,7 @@ class TorchLogger:
         script_path=None,
         local_model_path="/.",
         log_file_path="log.txt",
-        input_data_shape=None,
+        input_data_shape: Optional[tuple[int, ...]] = None,  # Is this right?
         dataset_id_or_path=None,
         logging=False,
         download_kwargs={"wait": True, "orig_fname": True},
@@ -140,7 +141,12 @@ class TorchLogger:
         """
         self._optimizer = optimizer
 
-    def getMetadata(self, local_vars=None, model_hyperparameters=None, **kwargs):
+    def getMetadata(
+        self,
+        local_vars: Optional[list[tuple[str, Any]]] = None,
+        model_hyperparameters: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ):
         """
         Gathers metadata including the serialized model, optimizer, system info, and user details.
 
@@ -169,6 +175,12 @@ class TorchLogger:
             "Model Parameters": {"Model Hyperparameters": {}, "Model Architecture": {}},
             "System Information": {},
         }
+
+        if local_vars is None:
+            raise ValueError("local_vars cannot be None")
+
+        if model_hyperparameters is None:
+            raise ValueError("model_hyperparameters cannot be None")
 
         # loop through the local variables to add to the metadata dictionary
         for key, value in local_vars:
@@ -259,7 +271,10 @@ class TorchLogger:
                         Warning(warning_message)
                 # put the model hyperparameters in the Model Hyperparameters sub-dictionary (the hyperparameters might be 1-value torch tensors or just floats)
                 elif key in model_hyperparameters.keys():
-                    if type(value) in [np.ndarray, torch.Tensor]:
+                    if (
+                        isinstance(value, (np.ndarray, torch.Tensor))
+                        and self.input_data_shape is not None
+                    ):
                         if value.shape < self.input_data_shape:
                             DataFed_record_metadata["Model Parameters"][
                                 "Model Hyperparameters"
@@ -271,8 +286,11 @@ class TorchLogger:
 
                 # convert numpy arrays and torch tensors that are small enough (arbitrarily chosen to be smaller than the input data dimensions)
                 # into lists so they can be serialized into JSON
-                elif type(value) in [np.ndarray, torch.Tensor]:
-                    if value.shape < self.input_data_shape:
+                elif isinstance(value, (np.ndarray, torch.Tensor)):
+                    if (
+                        self.input_data_shape is not None
+                        and value.shape < self.input_data_shape
+                    ):
                         # put other lists into the Model Parameters dictionary
                         try:
                             json.dumps(value.tolist())
@@ -423,9 +441,12 @@ class TorchLogger:
 
             # generate a checksum (and scipt path) for the notebook
             self.notebook_metadata = getNotebookMetadata(self.__file__)
+            if self.notebook_metadata is None:
+                raise ValueError(f"Failed to get metadata for notebook {self.__file__}")
 
             # extract the checksum
             new_checksum = self.notebook_metadata["script"]["checksum"]
+            old_checksum = None
 
             # if the notebook has a DataFed record ID, extract the checksum and compare to the new checksum
             if self.notebook_record_id is not None:
@@ -495,10 +516,13 @@ class TorchLogger:
         """
 
         # include the model architecture state dictionary and model hyperparameters in the checkpoint
-        if not str(local_file_path).endswith(".zip") and not os.path.exists(
-            str(local_file_path)
+        if (
+            local_file_path is not None
+            and not str(local_file_path).endswith(".zip")
+            and not os.path.exists(str(local_file_path))
         ):
-            checkpoint = self.getModelArchitectureStateDict() | model_hyperparameters
+            checkpoint = self.getModelArchitectureStateDict()
+            checkpoint.update(model_hyperparameters or {})
 
             # Save the model state dict locally
             torch.save(checkpoint, local_file_path)

@@ -2,6 +2,7 @@ import json
 import os
 import traceback
 from datetime import datetime
+from typing import Optional
 
 import numpy as np
 from datafed.CommandLib import API
@@ -29,10 +30,10 @@ class DataFed(API):
 
     def __init__(
         self,
-        datafed_path,
+        datafed_path: str,
         local_model_path="./Trained Models",
         log_file_path="log.txt",
-        dataset_id_or_path=None,
+        dataset_id_or_path: Optional[str] = None,
         download_kwargs={"wait": True, "orig_fname": True},
         upload_kwargs={"wait": True},
         logging=False,
@@ -91,11 +92,12 @@ class DataFed(API):
             The DataFed record ID for the dataset files, as a string for a single dataset file and a list of strings for multiple dataset files.
         """
         if self.dataset_id_or_path is not None:
+            ls_resp = self.collectionItemsList(self.collection_id)
+
             if isinstance(
                 self.dataset_id_or_path, list
             ):  # to specify multiple dataset files
                 dataset_ids = []
-                ls_resp = self.collectionItemsList(self.collection_id)
                 for dataset in self.dataset_id_or_path:
                     if dataset.startswith("d/"):
                         dataset_ids.append(dataset)
@@ -163,6 +165,8 @@ class DataFed(API):
                 if self.dataset_id_or_path.startswith("d/"):
                     dataset_ids = self.dataset_id_or_path
                 else:
+                    dataset = self.dataset_id_or_path  # Is this right?
+
                     try:
                         path_id = (
                             ls_resp[0]
@@ -176,6 +180,7 @@ class DataFed(API):
                             ]
                             .id
                         )
+
                         # update record (dependencies have been added)
                         record_id = self.get_notebook_DataFed_ID_from_path_and_title(
                             dataset, path_id=path_id
@@ -345,14 +350,17 @@ class DataFed(API):
             )
 
     @property
-    def user_id(self):
+    def user_id(self) -> str:
         """
         Gets the user ID from the authenticated user's information.
 
         Returns:
             str: The user ID extracted from the authenticated user information.
         """
-        return self.getAuthUser().split("/")[-1]
+        auth_user = self.getAuthUser()
+        if auth_user is None:
+            raise RuntimeError("Failed to get authenticated user information")
+        return auth_user.split("/")[-1]
 
     @staticmethod
     def check_string_for_dot_or_slash(s):
@@ -524,7 +532,7 @@ class DataFed(API):
     def data_record_create(
         self,
         metadata=None,
-        record_title=None,
+        record_title: Optional[str] = None,
         parent_collection=None,
         deps=None,
         **kwargs,
@@ -544,6 +552,9 @@ class DataFed(API):
         self.check_if_endpoint_set()
         # make sure the user is logged into DataFed
         self.check_if_logged_in()
+
+        if record_title is None:
+            raise ValueError("record_title cannot be None")
 
         # If the record title is longer than the maximum allowed by DataFed (80 characters)
         # truncate the record title to 80 characters. If logging is true, print out a statement letting the user
@@ -593,7 +604,7 @@ class DataFed(API):
     def data_record_update(
         self,
         record_id=None,
-        record_title=None,
+        record_title: Optional[str] = None,
         metadata=None,
         deps=None,
         overwrite_metadata=False,
@@ -616,6 +627,9 @@ class DataFed(API):
         self.check_if_endpoint_set()
         # make sure the user is logged into DataFed
         self.check_if_logged_in()
+
+        if record_title is None:
+            raise ValueError("record_title cannot be None")
 
         # If the record title is longer than the maximum allowed by DataFed (80 characters)
         # truncate the record title to 80 characters. If logging is true, print out a statement letting the user
@@ -835,7 +849,6 @@ class DataFed(API):
 
         return metadata
 
-    @staticmethod
     def required_keys(self, dict_list, required_keys):
         """
         Filters a list of dictionaries to include only those that contain all specified required keys.
@@ -1155,12 +1168,16 @@ class DataFed(API):
         # Split the file name by '.' and return the last part as the extension
         return "." + self.getFileName(self.dataset_id_or_path).split(".")[-1]
 
-    def getData(self, dataset_id=None):
+    def getData(self, dataset_id: Optional[str] = None):
         """
         Downloads the data from the dataset
         """
 
+        self.data_path = None  # Bandaid fix; this needs to be defined for the class!
+
         if dataset_id is None:
+            if self.dataset_id_or_path is None:
+                raise ValueError("dataset_id_or_path is not set")
             dataset_id = self.dataset_id_or_path
 
         # if a data path is not provided, download the data to the current directory
