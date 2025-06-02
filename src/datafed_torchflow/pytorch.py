@@ -168,8 +168,8 @@ class TorchLogger:
 
         # define the empty metadata dictionary to set the structure
         DataFed_record_metadata = {
-            "Model Parameters": {"Model Hyperparameters": {}, "Model Architecture": {}},
-            "System Information": {},
+            "Model_Parameters": {"Model_Hyperparameters": {}, "Model_Architecture": {}},
+            "System_Information": {},
         }
 
         # loop through the local variables to add to the metadata dictionary
@@ -224,17 +224,17 @@ class TorchLogger:
                         "optim_",
                         "optimizer_",
                     ]:  # accept "optimizer" or "optim" for flexibility
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Architecture"
+                        DataFed_record_metadata["Model_Parameters"][
+                            "Model_Architecture"
                         ][key] = serialize_pytorch_optimizer(value)
 
                     else:
                         # serialize the model architecture blocks (encoder, decoder, etc. )
-                        DataFed_record_metadata["Model Parameters"][
+                        DataFed_record_metadata["Model_Parameters"][
                             "Model Architecture"
                         ][key] = serialize_model(value)
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Architecture"
+                        DataFed_record_metadata["Model_Parameters"][
+                            "Model_Architecture"
                         ][key].update(extract_instance_attributes(obj=value))
 
                 # serialize the optimizer if not in model_dict
@@ -244,7 +244,7 @@ class TorchLogger:
                     "optim_",
                     "optimizer_",
                 ]:  # accept "optimizer" or "optim" for flexibility
-                    DataFed_record_metadata["Model Parameters"]["Model Architecture"][
+                    DataFed_record_metadata["Model_Parameters"]["Model_Architecture"][
                         key
                     ] = serialize_pytorch_optimizer(value)
 
@@ -254,10 +254,10 @@ class TorchLogger:
                     if sum(len(str(s)) for s in value) < 1000:
                         # extract the value for 1 item lists
                         if len(value) == 1:
-                            DataFed_record_metadata["Model Parameters"][key] = value[0]
+                            DataFed_record_metadata["Model_Parameters"][key] = value[0]
                         else:
                             # if the list has many (but not too many) values extract the whole list
-                            DataFed_record_metadata["Model Parameters"][key] = value
+                            DataFed_record_metadata["Model_Parameters"][key] = value
                     else:
                         warning_message = (
                             f'List in key "{key}" is too long to be extracted'
@@ -267,17 +267,17 @@ class TorchLogger:
                 elif key in model_hyperparameters.keys():
                     if type(value) in [np.ndarray, torch.Tensor]:
                         if value.shape < self.input_data_shape:
-                            DataFed_record_metadata["Model Parameters"][
+                            DataFed_record_metadata["Model_Parameters"][
                                 "Model Hyperparameters"
                             ][key] = value.tolist()
                     elif isinstance(value,(int,float)):
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Hyperparameters"
+                        DataFed_record_metadata["Model_Parameters"][
+                            "Model_Hyperparameters"
                         ][key] = format(value,'0.5e')
 
                     else:
-                        DataFed_record_metadata["Model Parameters"][
-                            "Model Hyperparameters"
+                        DataFed_record_metadata["Model_Parameters"][
+                            "Model_Hyperparameters"
                         ][key] = value
 
                 # convert numpy arrays and torch tensors that are small enough (arbitrarily chosen to be smaller than the input data dimensions)
@@ -287,20 +287,20 @@ class TorchLogger:
                         # put other lists into the Model Parameters dictionary
                         try:
                             json.dumps(value.tolist())
-                            DataFed_record_metadata["Model Parameters"][key] = (
+                            DataFed_record_metadata["Model_Parameters"][key] = (
                                 value.tolist()
                             )
                         except:
-                            DataFed_record_metadata["Model Parameters"][key] = str(
+                            DataFed_record_metadata["Model_Parameters"][key] = str(
                                 value.tolist()
                             )
                 # convert PosixPaths and pytorch devices into strings so they can be serialized into JSON
                 elif type(value) in [pathlib.PosixPath, torch.device]:
-                    DataFed_record_metadata["Model Parameters"][key] = str(value)
+                    DataFed_record_metadata["Model_Parameters"][key] = str(value)
                 # convert class instances into dictionaries of their attributes so they can be serialized into JSON
                 elif hasattr(value, "__dict__"):
                     if len(extract_instance_attributes(obj=value)) > 0:
-                        DataFed_record_metadata["Model Parameters"][key] = (
+                        DataFed_record_metadata["Model_Parameters"][key] = (
                             extract_instance_attributes(obj=value)
                         )
 
@@ -308,9 +308,9 @@ class TorchLogger:
                     if "_" not in str(type(value[list(value.keys())[0]])):
                         try:
                             json.dumps(value)
-                            DataFed_record_metadata["Model Parameters"][key] = value
+                            DataFed_record_metadata["Model_Parameters"][key] = value
                         except (TypeError, ValueError, json.JSONDecodeError):
-                            DataFed_record_metadata["Model Parameters"][key] = str(
+                            DataFed_record_metadata["Model_Parameters"][key] = str(
                                 value
                             )
 
@@ -320,10 +320,10 @@ class TorchLogger:
 
                     try:
                         json.dumps(value)
-                        DataFed_record_metadata["Model Parameters"][key] = value
+                        DataFed_record_metadata["Model_Parameters"][key] = value
                     except (TypeError, ValueError, json.JSONDecodeError):
                         try:
-                            DataFed_record_metadata["Model Parameters"][key] = str(
+                            DataFed_record_metadata["Model_Parameters"][key] = str(
                                 value
                             )
 
@@ -347,15 +347,15 @@ class TorchLogger:
                                     f.write("skipping this variable.")
 
         # add the notebook checksum and file path to the Model Parameters dictionary
-        DataFed_record_metadata["Model Parameters"].update(
+        DataFed_record_metadata["Model_Parameters"].update(
             getNotebookMetadata(self.__file__)
         )
         # add the user and timestamp to the Model Parameters dictionary
-        DataFed_record_metadata["Model Parameters"].update(
+        DataFed_record_metadata["Model_Parameters"].update(
             {"user": current_user, "timestamp": current_time}
         )
         # add the computer information to the System Information section
-        DataFed_record_metadata["System Information"] = computer_info
+        DataFed_record_metadata["System_Information"] = computer_info
 
         DataFed_record_metadata = clean_empty(DataFed_record_metadata)
         
