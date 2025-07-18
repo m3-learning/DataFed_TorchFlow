@@ -111,7 +111,7 @@ class TorchLogger:
             logging=True,
         )
 
-        # Check if Globus has access to the local path
+        #Check if Globus has access to the local path
         check_globus_file_access(
             self.df_api.endpointDefaultGet(), self.local_model_path
         )
@@ -231,7 +231,7 @@ class TorchLogger:
                     else:
                         # serialize the model architecture blocks (encoder, decoder, etc. )
                         DataFed_record_metadata["Model_Parameters"][
-                            "Model Architecture"
+                            "Model_Architecture"
                         ][key] = serialize_model(value)
                         DataFed_record_metadata["Model_Parameters"][
                             "Model_Architecture"
@@ -268,9 +268,9 @@ class TorchLogger:
                     if type(value) in [np.ndarray, torch.Tensor]:
                         if value.shape < self.input_data_shape:
                             DataFed_record_metadata["Model_Parameters"][
-                                "Model Hyperparameters"
+                                "Model_Hyperparameters"
                             ][key] = value.tolist()
-                    elif isinstance(value,(int,float)):
+                    elif isinstance(value,(int,float)) and value > 0 and abs(np.log10(value)) >= 5:
                         DataFed_record_metadata["Model_Parameters"][
                             "Model_Hyperparameters"
                         ][key] = format(value,'0.5e')
